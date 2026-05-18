@@ -19,7 +19,7 @@ export function SiteFooter({ className }: React.HTMLAttributes<HTMLElement>) {
               rel="noreferrer"
               className="font-medium underline underline-offset-4"
             >
-              Cherie Xinyue
+              {siteConfig.name}
             </a>
             . Code managed on{" "}
             <a

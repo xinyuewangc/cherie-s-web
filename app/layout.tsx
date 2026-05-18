@@ -2,10 +2,9 @@ import localFont from "next/font/local"
 
 import "@/styles/globals.css"
 import { siteConfig } from "@/config/site"
-import { absoluteUrl, cn } from "@/lib/utils"
+import { cn } from "@/lib/utils"
 import { Toaster } from "@/components/ui/toaster"
 import { Analytics } from "@/components/analytics"
-import { TailwindIndicator } from "@/components/tailwind-indicator"
 import { ThemeProvider } from "@/components/theme-provider"
 
 const fontSans = localFont({
@@ -44,16 +43,19 @@ export const metadata = {
     "Portfolio",
     "Product Design",
     "AI Workflows",
+    "AI Native UX",
+    "Design Engineer",
+    "Design Systems",
     "Notion",
     "Next.js",
   ],
   authors: [
     {
-      name: "Cherie Xinyue",
+      name: "Cherie Wang",
       url: siteConfig.url,
     },
   ],
-  creator: "Cherie Xinyue",
+  creator: "Cherie Wang",
   themeColor: [
     { media: "(prefers-color-scheme: light)", color: "white" },
     { media: "(prefers-color-scheme: dark)", color: "black" },
@@ -96,7 +98,6 @@ export default function RootLayout({ children }: RootLayoutProps) {
           {children}
           <Analytics />
           <Toaster />
-          <TailwindIndicator />
         </ThemeProvider>
       </body>
     </html>

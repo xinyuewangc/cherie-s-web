@@ -141,9 +141,34 @@ export const Page = defineDocumentType(() => ({
   computedFields,
 }))
 
+export const Lab = defineDocumentType(() => ({
+  name: "Lab",
+  filePathPattern: `lab/**/*.mdx`,
+  contentType: "mdx",
+  fields: {
+    title: {
+      type: "string",
+      required: true,
+    },
+    description: {
+      type: "string",
+      required: true,
+    },
+    date: {
+      type: "date",
+      required: true,
+    },
+    category: {
+      type: "string",
+      required: true,
+    },
+  },
+  computedFields,
+}))
+
 export default makeSource({
   contentDirPath: "./content",
-  documentTypes: [Page, Doc, Guide, Post, Author],
+  documentTypes: [Page, Doc, Guide, Post, Author, Lab],
   mdx: {
     remarkPlugins: [remarkGfm],
     rehypePlugins: [

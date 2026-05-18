@@ -1,0 +1,38 @@
+import { NextResponse } from "next/server"
+
+import { getResumeCaseStudy } from "@/lib/notion"
+
+export const dynamic = "force-dynamic"
+
+export async function GET() {
+  const resume = await getResumeCaseStudy()
+  const pdf = resume?.attachments?.find((attachment) =>
+    attachment.name.toLowerCase().endsWith(".pdf")
+  )
+
+  if (!pdf) {
+    return NextResponse.json(
+      { error: "Resume PDF was not found." },
+      { status: 404 }
+    )
+  }
+
+  const response = await fetch(pdf.url)
+
+  if (!response.ok) {
+    return NextResponse.json(
+      { error: "Resume PDF could not be loaded." },
+      { status: 502 }
+    )
+  }
+
+  const fileName = encodeURIComponent(pdf.name || "cherie-wang-resume.pdf")
+
+  return new NextResponse(await response.arrayBuffer(), {
+    headers: {
+      "Cache-Control": "private, max-age=300",
+      "Content-Disposition": `attachment; filename*=UTF-8''${fileName}`,
+      "Content-Type": "application/pdf",
+    },
+  })
+}

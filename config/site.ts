@@ -1,9 +1,9 @@
 import { SiteConfig } from "types"
 
 export const siteConfig: SiteConfig = {
-  name: "Cherie Xinyue",
+  name: "Cherie Wang",
   description:
-    "A personal portfolio for selected work, product thinking, AI workflows, and experiments.",
+    "AI Native UX Designer building calm product systems, AI workflows, and design engineering experiments.",
   url: "http://127.0.0.1:4317",
   ogImage: "http://127.0.0.1:4317/og.jpg",
   links: {

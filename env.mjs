@@ -3,26 +3,35 @@ import { z } from "zod"
 
 export const env = createEnv({
   server: {
-    // This is optional because it's only used in development.
-    // See https://next-auth.js.org/deployment.
+    NOTION_TOKEN: z.string().optional().default(""),
+    NOTION_DATABASE_ID: z.string().optional().default(""),
+    NOTION_PROJECTS_DATABASE_ID: z.string().optional().default(""),
+
+    // Legacy template services. These are optional for the portfolio site.
     NEXTAUTH_URL: z.string().url().optional(),
-    NEXTAUTH_SECRET: z.string().min(1),
-    GITHUB_CLIENT_ID: z.string().min(1),
-    GITHUB_CLIENT_SECRET: z.string().min(1),
-    GITHUB_ACCESS_TOKEN: z.string().min(1),
-    DATABASE_URL: z.string().min(1),
-    SMTP_FROM: z.string().min(1),
-    POSTMARK_API_TOKEN: z.string().min(1),
-    POSTMARK_SIGN_IN_TEMPLATE: z.string().min(1),
-    POSTMARK_ACTIVATION_TEMPLATE: z.string().min(1),
-    STRIPE_API_KEY: z.string().min(1),
-    STRIPE_WEBHOOK_SECRET: z.string().min(1),
-    STRIPE_PRO_MONTHLY_PLAN_ID: z.string().min(1),
+    NEXTAUTH_SECRET: z.string().optional().default("local-placeholder"),
+    GITHUB_CLIENT_ID: z.string().optional().default("local-placeholder"),
+    GITHUB_CLIENT_SECRET: z.string().optional().default("local-placeholder"),
+    GITHUB_ACCESS_TOKEN: z.string().optional().default("local-placeholder"),
+    DATABASE_URL: z
+      .string()
+      .optional()
+      .default("mysql://root:root@localhost:3306/taxonomy?schema=public"),
+    SMTP_FROM: z.string().optional().default("local@example.com"),
+    POSTMARK_API_TOKEN: z.string().optional().default("local-placeholder"),
+    POSTMARK_SIGN_IN_TEMPLATE: z.string().optional().default("1"),
+    POSTMARK_ACTIVATION_TEMPLATE: z.string().optional().default("1"),
+    STRIPE_API_KEY: z.string().optional().default("local-placeholder"),
+    STRIPE_WEBHOOK_SECRET: z.string().optional().default("local-placeholder"),
+    STRIPE_PRO_MONTHLY_PLAN_ID: z.string().optional().default("local-placeholder"),
   },
   client: {
-    NEXT_PUBLIC_APP_URL: z.string().min(1),
+    NEXT_PUBLIC_APP_URL: z.string().url().optional().default("http://127.0.0.1:4317"),
   },
   runtimeEnv: {
+    NOTION_TOKEN: process.env.NOTION_TOKEN,
+    NOTION_DATABASE_ID: process.env.NOTION_DATABASE_ID,
+    NOTION_PROJECTS_DATABASE_ID: process.env.NOTION_PROJECTS_DATABASE_ID,
     NEXTAUTH_URL: process.env.NEXTAUTH_URL,
     NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET,
     GITHUB_CLIENT_ID: process.env.GITHUB_CLIENT_ID,

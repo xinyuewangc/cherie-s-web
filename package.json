@@ -1,10 +1,14 @@
 {
-  "name": "taxonomy",
-  "version": "0.2.0",
+  "name": "cherie-portfolio",
+  "version": "0.1.0",
   "private": true,
+  "packageManager": "pnpm@8.15.9",
+  "engines": {
+    "node": "22.x"
+  },
   "author": {
-    "name": "shadcn",
-    "url": "https://twitter.com/shadcn"
+    "name": "Cherie Xinyue",
+    "url": "https://github.com/xinyuewangc"
   },
   "scripts": {
     "dev": "concurrently \"contentlayer dev\" \"next dev\"",

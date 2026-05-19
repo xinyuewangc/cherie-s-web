@@ -96,6 +96,8 @@ type NotionQueryResponse = {
   results?: NotionPage[]
 }
 
+type NotionRetrieveBlockResponse = RawNotionBlock
+
 type RawNotionBlock = {
   id: string
   type: string
@@ -200,7 +202,12 @@ function getYear(page: NotionPage) {
 
 function getProjectCover(page: NotionPage) {
   const coverProperty = page.properties.cover?.files?.[0]
-  return getFileUrl(page.cover) ?? getFileUrl(coverProperty)
+
+  if (page.cover || coverProperty) {
+    return `/api/notion-asset?pageId=${page.id}&kind=cover`
+  }
+
+  return null
 }
 
 function normalizeProject(page: NotionPage): PortfolioProject {
@@ -247,6 +254,10 @@ function getTextFromBlock(block: RawNotionBlock) {
 function normalizeBlock(block: RawNotionBlock, children: NotionBlock[] = []): NotionBlock {
   const value = block[block.type] ?? {}
   const mediaUrl = getFileUrl(value)
+  const proxiedUrl =
+    mediaUrl && (block.type === "image" || block.type === "file")
+      ? `/api/notion-asset?blockId=${block.id}`
+      : mediaUrl
 
   return {
     id: block.id,
@@ -254,7 +265,7 @@ function normalizeBlock(block: RawNotionBlock, children: NotionBlock[] = []): No
     text: getTextFromBlock(block),
     name: value.name,
     caption: textFromRichText(value.caption),
-    url: mediaUrl ?? value.url ?? "",
+    url: proxiedUrl ?? value.url ?? "",
     language: value.language,
     checked: value.checked,
     children,
@@ -304,6 +315,32 @@ async function notionFetch<T>(path: string, init?: RequestInit): Promise<T | nul
     console.error("Failed to load Notion data")
     return null
   }
+}
+
+export async function getFreshNotionPageCoverUrl(pageId: string) {
+  const page = await notionFetch<NotionPage>(`/pages/${pageId}`)
+
+  if (!page) {
+    return null
+  }
+
+  const coverProperty = page.properties.cover?.files?.[0]
+
+  return getFileUrl(page.cover) ?? getFileUrl(coverProperty)
+}
+
+export async function getFreshNotionBlockFileUrl(blockId: string) {
+  const block = await notionFetch<NotionRetrieveBlockResponse>(
+    `/blocks/${blockId}`
+  )
+
+  if (!block) {
+    return null
+  }
+
+  const value = block[block.type] ?? {}
+
+  return getFileUrl(value) ?? value.url ?? null
 }
 
 async function queryProjectPages(pageSize = 50) {

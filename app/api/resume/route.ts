@@ -1,10 +1,10 @@
-import { NextResponse } from "next/server"
+import { NextRequest, NextResponse } from "next/server"
 
 import { getResumeCaseStudy } from "@/lib/notion"
 
 export const dynamic = "force-dynamic"
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   const resume = await getResumeCaseStudy()
   const pdf = resume?.attachments?.find((attachment) =>
     attachment.name.toLowerCase().endsWith(".pdf")
@@ -17,7 +17,10 @@ export async function GET() {
     )
   }
 
-  const response = await fetch(pdf.url)
+  const pdfUrl = pdf.url.startsWith("/")
+    ? new URL(pdf.url, request.nextUrl.origin).toString()
+    : pdf.url
+  const response = await fetch(pdfUrl)
 
   if (!response.ok) {
     return NextResponse.json(
@@ -28,7 +31,7 @@ export async function GET() {
 
   const fileName = encodeURIComponent(pdf.name || "cherie-wang-resume.pdf")
 
-  return new NextResponse(await response.arrayBuffer(), {
+  return new NextResponse(response.body, {
     headers: {
       "Cache-Control": "private, max-age=300",
       "Content-Disposition": `attachment; filename*=UTF-8''${fileName}`,

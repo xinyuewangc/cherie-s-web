@@ -32,11 +32,12 @@ export default async function IndexPage() {
             王馨悦
           </p>
           <p className="text-foreground/85 mt-5 text-2xl font-medium tracking-tight md:text-3xl">
-            AI Native UX Designer
+            Designer × AI Builder × System Thinker
           </p>
           <p className="mt-6 max-w-2xl text-lg leading-8 text-muted-foreground md:text-xl md:leading-9">
-            I design calm, system-oriented product experiences where AI helps
-            people reason, decide, and move work forward.
+            Designer building systems between AI, code, and interfaces. This is
+            a living workspace for projects, research notes, and experimental
+            tools.
           </p>
           <div className="mt-7 flex flex-wrap gap-2">
             {focusAreas.map((item) => (
@@ -63,7 +64,7 @@ export default async function IndexPage() {
                 "gap-2 bg-background/60"
               )}
             >
-              Design philosophy
+              Operating manual
               <Zap className="h-4 w-4" />
             </Link>
           </div>
@@ -93,17 +94,19 @@ export default async function IndexPage() {
                 <span className="h-3 w-3 rounded-full bg-amber-400" />
                 <span className="h-3 w-3 rounded-full bg-emerald-400" />
                 <span className="ml-auto text-xs text-zinc-500">
-                  portfolio.system
+                  cherie.os
                 </span>
               </div>
               <div className="space-y-4 py-5 font-mono text-sm leading-7">
-                <p className="text-zinc-500">$ current_focus</p>
+                <p className="text-zinc-500">$ system_mode</p>
                 <p>
-                  <span className="text-emerald-300">AI UX</span> +{" "}
-                  <span className="text-sky-300">design engineering</span> +{" "}
-                  <span className="text-amber-200">Notion publishing</span>
+                  <span className="text-emerald-300">AI builder</span> +{" "}
+                  <span className="text-sky-300">interface systems</span> +{" "}
+                  <span className="text-amber-200">design ops</span>
                 </p>
-                <p className="text-zinc-500">$ selected_projects --source notion</p>
+                <p className="text-zinc-500">
+                  $ project_index --from notion --surface projects
+                </p>
                 <div className="grid gap-2">
                   {selectedProjects.slice(0, 4).map((project, index) => (
                     <Link
@@ -139,8 +142,12 @@ export default async function IndexPage() {
               Selected Projects
             </p>
             <h2 className="mt-4 font-heading text-4xl leading-tight tracking-tight md:text-5xl">
-              Product systems, workflow clarity, and AI-shaped making.
+              Project systems, not portfolio slides.
             </h2>
+            <p className="mt-4 text-base leading-7 text-muted-foreground">
+              A curated view into product systems, workflow tools, and AI-shaped
+              making. The full archive stays synced with Notion.
+            </p>
           </div>
           <Link
             href="/projects"
@@ -168,11 +175,15 @@ export default async function IndexPage() {
         <div className="container">
           <Reveal className="max-w-2xl">
             <p className="text-sm font-medium uppercase tracking-[0.2em] text-muted-foreground">
-              Lab / Writing
+              Lab
             </p>
             <h2 className="mt-4 font-heading text-4xl tracking-tight md:text-5xl">
-              Field notes from the design-engineering loop.
+              Ongoing research and system explorations.
             </h2>
+            <p className="mt-4 text-base leading-7 text-muted-foreground">
+              Notes on AI workflow, interface infrastructure, tokens, MCP, and
+              design-to-code practice.
+            </p>
           </Reveal>
           <MotionGrid className="mt-10 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {labTopics.slice(0, 6).map((topic) => {
@@ -205,11 +216,11 @@ export default async function IndexPage() {
             Playground
           </p>
           <h2 className="mt-4 font-heading text-4xl tracking-tight md:text-5xl">
-            Small tools for thinking with interfaces.
+            Interactive experiments for thinking with interfaces.
           </h2>
           <p className="mt-5 text-lg leading-8 text-muted-foreground">
-            A preview of experiments that turn design process into usable
-            product surfaces.
+            A preview of small tools that turn design process into usable
+            product surfaces: color, motion, prompts, flows, and AI interaction.
           </p>
           <Link
             href="/playground"
@@ -251,8 +262,13 @@ export default async function IndexPage() {
                 System loop
               </p>
               <h2 className="mt-4 text-3xl font-semibold tracking-tight">
-                Content management that stays close to the work.
+                A portfolio that behaves like a workspace.
               </h2>
+              <p className="mt-4 text-sm leading-6 text-muted-foreground">
+                Project notes stay editable in Notion. The website translates
+                them into project systems, research notes, and interactive
+                surfaces.
+              </p>
             </div>
             <div className="grid gap-4 md:grid-cols-3">
               {systemLoop.map((item) => {

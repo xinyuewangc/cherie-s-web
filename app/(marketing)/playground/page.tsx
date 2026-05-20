@@ -18,11 +18,11 @@ export default function PlaygroundPage() {
           Playground
         </p>
         <h1 className="mt-5 font-heading text-5xl leading-tight tracking-tight md:text-7xl">
-          Experiments for thinking through systems.
+          Interactive experiments for thinking through systems.
         </h1>
         <p className="mt-6 text-lg leading-8 text-muted-foreground md:text-xl md:leading-9">
-          Small interactive demos that make design process visible: mapping,
-          parsing, density, hierarchy, and AI-assisted framing.
+          Live surfaces for theme generation, OKLCH color thinking, prompt
+          systems, motion response, and AI-assisted interface concepts.
         </p>
       </Reveal>
 

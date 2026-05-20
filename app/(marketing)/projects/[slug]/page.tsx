@@ -1,7 +1,7 @@
 import { Metadata } from "next"
 import Link from "next/link"
 import { notFound } from "next/navigation"
-import { ArrowLeft, ExternalLink } from "lucide-react"
+import { ArrowLeft } from "lucide-react"
 
 import {
   getPortfolioCaseStudy,
@@ -58,13 +58,7 @@ export default async function ProjectDetailPage({
     notFound()
   }
 
-  const toc = project.toc.length
-    ? project.toc
-    : project.frame.map((item) => ({
-        id: item.title.toLowerCase().replace(/\s+/g, "-"),
-        title: item.title,
-        level: 2 as const,
-      }))
+  const toc = project.toc
 
   return (
     <main>
@@ -91,7 +85,7 @@ export default async function ProjectDetailPage({
                 </span>
               ))}
             </div>
-            <h1 className="mt-6 font-heading text-5xl leading-tight tracking-tight md:text-7xl">
+            <h1 className="mt-6 font-heading text-5xl font-bold leading-tight tracking-tight md:text-7xl">
               {project.title}
             </h1>
             <p className="mt-6 text-lg leading-8 text-muted-foreground md:text-xl md:leading-9">
@@ -107,140 +101,58 @@ export default async function ProjectDetailPage({
             />
           </Reveal>
         </div>
-        <div className="mt-8 grid gap-3 border-y py-5 text-sm text-muted-foreground md:grid-cols-4">
+        <div className="mt-8 grid gap-3 border-y py-5 text-sm text-muted-foreground md:grid-cols-3">
           <div>
-            <span className="block text-foreground">Year</span>
+            <span className="block text-foreground">Timeline</span>
             {project.year}
           </div>
           <div>
-            <span className="block text-foreground">Collaborator</span>
+            <span className="block text-foreground">Context</span>
             {project.collaborator || "Independent"}
           </div>
           <div>
-            <span className="block text-foreground">Source</span>
-            Notion case study
-          </div>
-          <div>
-            <Link
-              href={project.url}
-              target="_blank"
-              rel="noreferrer"
-              className="inline-flex items-center gap-1 text-foreground transition hover:text-muted-foreground"
-            >
-              Open source note
-              <ExternalLink className="h-3.5 w-3.5" />
-            </Link>
+            <span className="block text-foreground">Mode</span>
+            Project system
           </div>
         </div>
       </section>
 
-      <section className="container grid gap-10 pb-20 lg:grid-cols-[220px_minmax(0,1fr)]">
-        <aside className="hidden lg:block">
-          <div className="sticky top-8 rounded-xl border bg-background/70 p-4 backdrop-blur">
-            <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
-              Contents
-            </p>
-            <nav className="mt-4 grid gap-2">
-              <a
-                href="#case-frame"
-                className="rounded-md px-2 py-1.5 text-sm text-muted-foreground transition hover:bg-muted hover:text-foreground"
-              >
-                Case frame
-              </a>
-              {toc.map((item) => (
-                <a
-                  key={item.id}
-                  href={`#${item.id}`}
-                  className={cn(
-                    "rounded-md px-2 py-1.5 text-sm text-muted-foreground transition hover:bg-muted hover:text-foreground",
-                    item.level === 3 && "pl-5"
-                  )}
-                >
-                  {item.title}
-                </a>
-              ))}
-              <a
-                href="#gallery"
-                className="rounded-md px-2 py-1.5 text-sm text-muted-foreground transition hover:bg-muted hover:text-foreground"
-              >
-                Gallery
-              </a>
-              <a
-                href="#source-notes"
-                className="rounded-md px-2 py-1.5 text-sm text-muted-foreground transition hover:bg-muted hover:text-foreground"
-              >
-                Source notes
-              </a>
-            </nav>
-          </div>
-        </aside>
+      <section
+        className={cn(
+          "container grid gap-10 pb-20 xl:gap-14",
+          toc.length
+            ? "xl:grid-cols-[210px_minmax(0,1fr)]"
+            : "max-w-5xl"
+        )}
+      >
+        {toc.length ? (
+          <aside className="hidden xl:block">
+            <div className="sticky top-28 overflow-hidden rounded-xl border bg-background/80 p-4 shadow-sm backdrop-blur">
+              <p className="text-[11px] font-medium uppercase tracking-[0.2em] text-muted-foreground">
+                Contents
+              </p>
+              <nav className="mt-4 grid max-h-[calc(100vh-14rem)] gap-1 overflow-y-auto pr-1">
+                {toc.map((item) => (
+                  <a
+                    key={item.id}
+                    href={`#${item.id}`}
+                    title={item.title}
+                    className={cn(
+                      "block rounded-md p-2 text-xs leading-5 text-muted-foreground transition hover:bg-muted hover:text-foreground",
+                      item.level === 3 &&
+                        "ml-2 border-l border-border/70 pl-3"
+                    )}
+                  >
+                    <span className="line-clamp-2">{item.title}</span>
+                  </a>
+                ))}
+              </nav>
+            </div>
+          </aside>
+        ) : null}
 
         <article className="min-w-0">
-          <section
-            id="case-frame"
-            className="scroll-m-28 rounded-2xl border bg-card/70 p-5 md:p-8"
-          >
-            <p className="text-sm font-medium uppercase tracking-[0.2em] text-muted-foreground">
-              Case frame
-            </p>
-            <div className="mt-6 grid gap-4 md:grid-cols-2">
-              {project.frame.map((item) => (
-                <div key={item.title} className="rounded-xl border bg-background p-5">
-                  <h2
-                    id={item.title.toLowerCase().replace(/\s+/g, "-")}
-                    className="scroll-m-28 text-lg font-semibold"
-                  >
-                    {item.title}
-                  </h2>
-                  <p className="mt-3 text-sm leading-7 text-muted-foreground">
-                    {item.body}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </section>
-
-          <section id="gallery" className="scroll-m-28 py-12">
-            <div className="flex items-end justify-between gap-4">
-              <div>
-                <p className="text-sm font-medium uppercase tracking-[0.2em] text-muted-foreground">
-                  Gallery
-                </p>
-                <h2 className="mt-3 text-3xl font-semibold tracking-tight">
-                  Visual artifacts
-                </h2>
-              </div>
-              <span className="text-sm text-muted-foreground">
-                {project.gallery.length} assets
-              </span>
-            </div>
-            {project.gallery.length ? (
-              <div className="mt-6 grid gap-4 md:grid-cols-2">
-                {project.gallery.slice(0, 8).map((image) => (
-                  <ProjectCover
-                    key={image.id}
-                    src={image.url}
-                    alt={image.caption}
-                    className="aspect-[1.45/1]"
-                  />
-                ))}
-              </div>
-            ) : (
-              <div className="mt-6 rounded-xl border bg-card p-6 text-sm text-muted-foreground">
-                No Notion gallery images yet. Add image blocks to this project
-                page and they will appear here.
-              </div>
-            )}
-          </section>
-
-          <section id="source-notes" className="scroll-m-28">
-            <p className="text-sm font-medium uppercase tracking-[0.2em] text-muted-foreground">
-              Source notes
-            </p>
-            <div className="mt-6">
-              <NotionRenderer blocks={project.blocks} />
-            </div>
-          </section>
+          <NotionRenderer blocks={project.blocks} />
         </article>
       </section>
     </main>

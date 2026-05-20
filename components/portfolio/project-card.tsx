@@ -31,9 +31,13 @@ export function ProjectCard({ project, featured = false }: ProjectCardProps) {
           }
           priority={featured}
         />
-        <div className={featured ? "flex flex-col p-4 md:p-6" : "p-4"}>
+        <div
+          className={
+            featured ? "flex flex-col p-4 md:p-6" : "flex flex-col p-4"
+          }
+        >
           <div className="flex items-center justify-between gap-4 text-xs uppercase tracking-[0.18em] text-muted-foreground">
-            <span>{project.collaborator || "Case study"}</span>
+            <span>{project.collaborator || "Project system"}</span>
             <span>{project.year}</span>
           </div>
           <div className="mt-5 flex items-start justify-between gap-4">
@@ -56,6 +60,12 @@ export function ProjectCard({ project, featured = false }: ProjectCardProps) {
                   {tag}
                 </span>
               ))}
+          </div>
+          <div className="mt-6 flex items-center justify-between border-t pt-4 text-xs uppercase tracking-[0.18em] text-muted-foreground">
+            <span>Project system</span>
+            <span className="transition group-hover:text-foreground">
+              Open project
+            </span>
           </div>
         </div>
       </Link>

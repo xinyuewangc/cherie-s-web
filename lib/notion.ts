@@ -32,19 +32,10 @@ export type NotionAttachment = {
 export type PortfolioCaseStudy = PortfolioProject & {
   blocks: NotionBlock[]
   attachments?: NotionAttachment[]
-  gallery: Array<{
-    id: string
-    url: string
-    caption: string
-  }>
   toc: Array<{
     id: string
     title: string
     level: 2 | 3
-  }>
-  frame: Array<{
-    title: string
-    body: string
   }>
 }
 
@@ -122,9 +113,7 @@ const fallbackProjects: PortfolioCaseStudy[] = [
     cover: null,
     coverAlt: "AI Workflow OS cover",
     blocks: [],
-    gallery: [],
     toc: [],
-    frame: [],
   },
   {
     id: "design-system-lab",
@@ -139,9 +128,7 @@ const fallbackProjects: PortfolioCaseStudy[] = [
     cover: null,
     coverAlt: "Design System Lab cover",
     blocks: [],
-    gallery: [],
     toc: [],
-    frame: [],
   },
   {
     id: "notion-publishing-loop",
@@ -156,9 +143,7 @@ const fallbackProjects: PortfolioCaseStudy[] = [
     cover: null,
     coverAlt: "Notion Publishing Loop cover",
     blocks: [],
-    gallery: [],
     toc: [],
-    frame: [],
   },
 ]
 
@@ -183,6 +168,26 @@ function getFileUrl(file?: NotionFile | null) {
   return file.external?.url ?? file.file?.url ?? null
 }
 
+function isSafeExternalAssetUrl(url?: string | null) {
+  if (!url) {
+    return false
+  }
+
+  try {
+    const parsed = new URL(url)
+
+    return parsed.protocol === "https:"
+  } catch {
+    return false
+  }
+}
+
+function getExternalFileUrl(file?: NotionFile | null) {
+  const url = file?.type === "external" ? file.external?.url : null
+
+  return isSafeExternalAssetUrl(url) ? url ?? null : null
+}
+
 function getFirstPropertyByType(
   properties: Record<string, NotionProperty>,
   type: string
@@ -202,6 +207,12 @@ function getYear(page: NotionPage) {
 
 function getProjectCover(page: NotionPage) {
   const coverProperty = page.properties.cover?.files?.[0]
+  const externalCover =
+    getExternalFileUrl(page.cover) ?? getExternalFileUrl(coverProperty)
+
+  if (externalCover) {
+    return externalCover
+  }
 
   if (page.cover || coverProperty) {
     return `/api/notion-asset?pageId=${page.id}&kind=cover`
@@ -254,8 +265,11 @@ function getTextFromBlock(block: RawNotionBlock) {
 function normalizeBlock(block: RawNotionBlock, children: NotionBlock[] = []): NotionBlock {
   const value = block[block.type] ?? {}
   const mediaUrl = getFileUrl(value)
+  const isNotionManagedFile = value.type === "file" && Boolean(value.file?.url)
   const proxiedUrl =
-    mediaUrl && (block.type === "image" || block.type === "file")
+    mediaUrl &&
+    isNotionManagedFile &&
+    (block.type === "image" || block.type === "file")
       ? `/api/notion-asset?blockId=${block.id}`
       : mediaUrl
 
@@ -395,22 +409,15 @@ async function getBlockChildren(
   )
 }
 
+export async function getNotionPageBlocks(pageId: string) {
+  return getBlockChildren(pageId)
+}
+
 function flattenBlocks(blocks: NotionBlock[]): NotionBlock[] {
   return blocks.flatMap((block) => [
     block,
     ...flattenBlocks(block.children ?? []),
   ])
-}
-
-function buildGallery(blocks: NotionBlock[]) {
-  return flattenBlocks(blocks)
-    .filter((block) => block.type === "image" && block.url)
-    .slice(0, 18)
-    .map((block) => ({
-      id: block.id,
-      url: block.url || "",
-      caption: block.caption || "Project artifact",
-    }))
 }
 
 function buildAttachments(blocks: NotionBlock[]): NotionAttachment[] {
@@ -435,55 +442,6 @@ function buildToc(blocks: NotionBlock[]) {
     }))
 }
 
-function firstTextByType(blocks: NotionBlock[], types: string[]) {
-  return (
-    flattenBlocks(blocks).find(
-      (block) => types.includes(block.type) && block.text.length > 24
-    )?.text ?? ""
-  )
-}
-
-function buildFrame(project: PortfolioProject, blocks: NotionBlock[]) {
-  const firstParagraph = firstTextByType(blocks, ["paragraph", "callout", "quote"])
-  const firstHeading = firstTextByType(blocks, ["heading_2", "heading_3"])
-  const firstList = firstTextByType(blocks, [
-    "bulleted_list_item",
-    "numbered_list_item",
-  ])
-
-  return [
-    {
-      title: "Context",
-      body:
-        project.description ||
-        firstParagraph ||
-        "A case study imported from Notion and organized for portfolio reading.",
-    },
-    {
-      title: "Problem",
-      body:
-        firstHeading ||
-        "The work starts by clarifying the product surface, constraints, and user friction.",
-    },
-    {
-      title: "System Thinking",
-      body:
-        firstList ||
-        "The project is framed as a system of flows, states, content, and operational ownership.",
-    },
-    {
-      title: "Design Decisions",
-      body:
-        "Decisions are documented through Notion artifacts, visual evidence, and reusable interface patterns.",
-    },
-    {
-      title: "Outcome",
-      body:
-        "The outcome is presented as a living case study with source notes, gallery assets, and clear next context.",
-    },
-  ]
-}
-
 function toCaseStudy(
   project: PortfolioProject,
   blocks: NotionBlock[] = []
@@ -492,9 +450,7 @@ function toCaseStudy(
     ...project,
     blocks,
     attachments: buildAttachments(blocks),
-    gallery: buildGallery(blocks),
     toc: buildToc(blocks),
-    frame: buildFrame(project, blocks),
   }
 }
 

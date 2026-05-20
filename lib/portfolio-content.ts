@@ -33,31 +33,31 @@ export const socialLinks = [
 ]
 
 export const focusAreas = [
-  "AI-native UX systems",
-  "Workflow prototyping",
-  "Enterprise product clarity",
+  "Designer × AI Builder",
+  "AI interface systems",
+  "Workflow orchestration",
   "Design engineering",
 ]
 
 export const labTopics = [
   {
-    title: "AI workflow",
+    title: "AI workflow systems",
     description:
-      "Designing repeatable loops for research synthesis, interface iteration, and decision logging.",
+      "Repeatable loops for research synthesis, interface iteration, context handoff, and decision logging.",
     href: "/lab/ai-native-workflow-notes",
     icon: Activity,
   },
   {
     title: "shadcn/ui",
     description:
-      "Component primitives as a compact language for product tools and portfolio systems.",
+      "Component primitives as a compact language for product tools, documentation, and operating surfaces.",
     href: "/lab/shadcn-interface-systems",
     icon: Boxes,
   },
   {
     title: "Tailwind",
     description:
-      "A fast styling grammar for editorial spacing, dense controls, and responsive polish.",
+      "A styling grammar for spacing rhythm, dense controls, responsive polish, and visual consistency.",
     href: "/lab/tailwind-composition",
     icon: Layers,
   },
@@ -71,7 +71,7 @@ export const labTopics = [
   {
     title: "MCP",
     description:
-      "Local tools, Notion, Figma, browser checks, and code changes in one working loop.",
+      "Local tools, Notion, Figma, browser checks, and code changes connected into one working loop.",
     href: "/lab/mcp-design-ops",
     icon: Cpu,
   },
@@ -86,23 +86,23 @@ export const labTopics = [
 
 export const playgroundDemos = [
   {
-    title: "Prompt-to-flow mapper",
+    title: "Prompt-to-flow system",
     description:
-      "Turns a raw product request into actors, surfaces, decisions, and open questions.",
+      "Turns a raw request into actors, surfaces, decisions, risks, and open questions.",
     status: "Prototype",
     icon: Bot,
   },
   {
-    title: "Case study parser",
+    title: "Notion case parser",
     description:
-      "Reads Notion notes and proposes Context, Problem, System Thinking, Decisions, and Outcome.",
+      "Turns raw project notes into clearer sections for problem, thinking, decisions, and outcome.",
     status: "Live concept",
     icon: FileText,
   },
   {
-    title: "Interface rhythm board",
+    title: "Interface rhythm lab",
     description:
-      "A small sandbox for spacing, grid density, accent color, and editorial hierarchy.",
+      "A sandbox for spacing, grid density, accent color, motion, and editorial hierarchy.",
     status: "Lab",
     icon: Gauge,
   },
@@ -110,7 +110,7 @@ export const playgroundDemos = [
 
 export const experience = [
   {
-    role: "AI Native UX Designer",
+    role: "Designer × AI Builder × System Thinker",
     place: "Independent portfolio system",
     period: "2026",
     description:
@@ -146,15 +146,15 @@ export const toolStack = [
 export const designPrinciples = [
   {
     title: "Systems before screens",
-    body: "Good interface work starts with flows, states, ownership, and reusable decisions.",
+    body: "Good interface work starts with flows, states, ownership, constraints, and reusable decisions.",
   },
   {
-    title: "AI as a working surface",
+    title: "AI as working surface",
     body: "AI should clarify intent, compress routine work, and leave better traces for the next iteration.",
   },
   {
-    title: "Editorial clarity",
-    body: "Portfolio pages should read like product thinking, not a moodboard trying to win the scroll.",
+    title: "Notebook over gallery",
+    body: "This portfolio should read like product thinking in motion, not a visual gallery trying to win the scroll.",
   },
   {
     title: "Soft motion, hard structure",
@@ -199,37 +199,37 @@ export const resumeSummary = {
 
 export const heroSignals = [
   {
-    label: "Focus",
-    value: "AI tooling",
+    label: "Identity",
+    value: "Designer × builder",
   },
   {
     label: "Mode",
-    value: "UX + code",
+    value: "AI + design + code",
   },
   {
-    label: "Source",
+    label: "Content",
     value: "Notion",
   },
   {
-    label: "Motion",
-    value: "Framer",
+    label: "Surface",
+    value: "Living workspace",
   },
 ]
 
 export const systemLoop = [
   {
     label: "Capture",
-    value: "Notion projects, covers, notes, screenshots, and project metadata.",
+    value: "Notion projects, covers, notes, screenshots, resume material, and project metadata.",
     icon: Database,
   },
   {
     label: "Structure",
-    value: "Each project becomes a case study with frame, source notes, gallery, and TOC.",
+    value: "Each project becomes a modular reading system with metadata, sections, and navigation.",
     icon: Zap,
   },
   {
     label: "Ship",
-    value: "Next.js pages, MDX writing, dark mode, and Vercel-ready publishing.",
+    value: "Next.js pages, MDX notes, shadcn surfaces, motion, dark mode, and Vercel-ready publishing.",
     icon: TerminalSquare,
   },
 ]

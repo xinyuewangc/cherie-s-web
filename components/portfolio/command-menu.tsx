@@ -64,7 +64,7 @@ export function CommandMenu({
 
   return (
     <CommandDialog open={open} onOpenChange={onOpenChange}>
-      <CommandInput placeholder="Search pages, projects, lab notes..." />
+      <CommandInput placeholder="Search the workspace..." />
       <CommandList>
         <CommandEmpty>No result found.</CommandEmpty>
         <CommandGroup heading="Navigation">
@@ -85,7 +85,7 @@ export function CommandMenu({
           })}
         </CommandGroup>
         <CommandSeparator />
-        <CommandGroup heading="Selected projects">
+        <CommandGroup heading="Project systems">
           {projects.slice(0, 8).map((project) => (
             <CommandItem
               key={project.id}
@@ -102,7 +102,7 @@ export function CommandMenu({
         <CommandGroup heading="Actions">
           <CommandItem onSelect={() => goTo("/projects")}>
             <Search className="mr-2 h-4 w-4" />
-            <span>View all projects</span>
+            <span>Open full project archive</span>
           </CommandItem>
         </CommandGroup>
       </CommandList>

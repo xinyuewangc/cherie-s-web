@@ -17,7 +17,7 @@ import { buttonVariants } from "@/components/ui/button"
 export const metadata: Metadata = {
   title: "About",
   description:
-    "About Cherie Wang, AI Native UX Designer focused on systems thinking and product workflows.",
+    "About Cherie Wang, a designer building systems between AI, code, and interfaces.",
 }
 
 export default async function AboutPage() {
@@ -33,27 +33,26 @@ export default async function AboutPage() {
           About
         </p>
         <h1 className="mt-5 font-heading text-5xl leading-tight tracking-tight md:text-7xl">
-          Design for systems that help people think.
+          Designer building systems between AI, code and interfaces.
         </h1>
         <p className="mt-6 text-lg leading-8 text-muted-foreground md:text-xl md:leading-9">
-          I work at the intersection of UX, product structure, content systems,
-          and AI-assisted making. My bias is toward quiet interfaces, strong
-          information architecture, and workflows that become easier to operate
-          over time.
+          A personal operating manual for how I think, design, prototype, and
+          connect tools into workflows. Calm interfaces, strong information
+          architecture, and systems that become easier to operate over time.
         </p>
       </Reveal>
 
       <section className="mt-16 grid gap-8 rounded-2xl border bg-card/70 p-5 md:p-8 lg:grid-cols-[0.75fr_1.25fr]">
         <Reveal>
           <p className="text-sm font-medium uppercase tracking-[0.2em] text-muted-foreground">
-            Resume
+            Profile snapshot
           </p>
           <h2 className="mt-4 text-3xl font-semibold tracking-tight">
             {resume?.title ?? "王馨悦个人简历"}
           </h2>
           <p className="mt-4 text-sm leading-7 text-muted-foreground">
-            The resume is synced from the dedicated Notion document, separate
-            from the Projects case-study archive.
+            A concise view of the resume material, kept separate from the
+            Projects archive.
           </p>
           {resume ? (
             <>
@@ -89,7 +88,7 @@ export default async function AboutPage() {
 
         <div className="min-w-0 rounded-xl border bg-background/70 p-5 md:p-7">
           <p className="text-sm font-medium uppercase tracking-[0.18em] text-muted-foreground">
-            Resume Snapshot
+            Career snapshot
           </p>
           <p className="mt-4 text-base leading-8 text-muted-foreground">
             {resumeSummary.intro}
@@ -142,11 +141,11 @@ export default async function AboutPage() {
       <section className="mt-16 grid gap-10 lg:grid-cols-[0.8fr_1.2fr]">
         <Reveal>
           <h2 className="text-3xl font-semibold tracking-tight">
-            Design philosophy
+            Operating principles
           </h2>
           <p className="mt-4 text-muted-foreground">
-            Less performance, more operating system. The portfolio should feel
-            like a tool for understanding the work.
+            Less performance, more operating system. The work should be easy to
+            inspect, reuse, extend, and ship.
           </p>
         </Reveal>
         <MotionGrid className="grid gap-4 md:grid-cols-2">
@@ -191,7 +190,7 @@ export default async function AboutPage() {
 
       <section className="mt-16 rounded-2xl border bg-card/70 p-6">
         <p className="text-sm font-medium uppercase tracking-[0.2em] text-muted-foreground">
-          Skills / Tool stack
+          Favorite stack
         </p>
         <div className="mt-6 grid gap-3 sm:grid-cols-2 md:grid-cols-4">
           {toolStack.map((tool) => {

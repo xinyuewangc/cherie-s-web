@@ -1,10 +1,22 @@
 import * as React from "react"
-import Image from "next/image"
 import { useMDXComponent } from "next-contentlayer/hooks"
 
 import { cn } from "@/lib/utils"
 import { Callout } from "@/components/callout"
 import { MdxCard } from "@/components/mdx-card"
+import { MdxImage } from "@/components/portfolio/notion-media"
+
+type MdxImageComponentProps = React.ImgHTMLAttributes<HTMLImageElement> & {
+  src: string
+}
+
+function MdxLoadingImage({
+  className,
+  alt,
+  ...props
+}: MdxImageComponentProps) {
+  return <MdxImage className={className} alt={alt} {...props} />
+}
 
 const components = {
   h1: ({ className, ...props }) => (
@@ -96,8 +108,13 @@ const components = {
     alt,
     ...props
   }: React.ImgHTMLAttributes<HTMLImageElement>) => (
-    // eslint-disable-next-line @next/next/no-img-element
-    <img className={cn("rounded-md border", className)} alt={alt} {...props} />
+    <MdxImage
+      className={className}
+      alt={alt}
+      {...(props as React.ImgHTMLAttributes<HTMLImageElement> & {
+        src: string
+      })}
+    />
   ),
   hr: ({ ...props }) => <hr className="my-4 md:my-8" {...props} />,
   table: ({ className, ...props }: React.HTMLAttributes<HTMLTableElement>) => (
@@ -147,7 +164,7 @@ const components = {
       {...props}
     />
   ),
-  Image,
+  Image: MdxLoadingImage,
   Callout,
   Card: MdxCard,
 }

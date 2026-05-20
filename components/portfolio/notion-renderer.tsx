@@ -1,9 +1,10 @@
-import Image from "next/image"
+import type * as React from "react"
 import Link from "next/link"
-import { Check, Circle, ExternalLink } from "lucide-react"
+import { Check, Circle, ExternalLink, FileText } from "lucide-react"
 
 import { NotionBlock } from "@/lib/notion"
 import { cn } from "@/lib/utils"
+import { NotionImage } from "@/components/portfolio/notion-media"
 
 type NotionRendererProps = {
   blocks: NotionBlock[]
@@ -12,18 +13,25 @@ type NotionRendererProps = {
 function TextBlock({
   block,
   className,
+  renderChildren = true,
 }: {
   block: NotionBlock
   className?: string
+  renderChildren?: boolean
 }) {
   if (!block.text && !block.children?.length) {
     return null
   }
 
   return (
-    <p className={cn("text-base leading-8 text-muted-foreground", className)}>
+    <p
+      className={cn(
+        "my-4 max-w-3xl text-[17px] leading-8 text-muted-foreground",
+        className
+      )}
+    >
       {block.text}
-      <NestedBlocks blocks={block.children ?? []} />
+      {renderChildren ? <NestedBlocks blocks={block.children ?? []} /> : null}
     </p>
   )
 }
@@ -35,8 +43,11 @@ function Heading({ block, level }: { block: NotionBlock; level: 2 | 3 }) {
 
   if (level === 2) {
     return (
-      <section id={block.id} className="scroll-m-28 pt-8">
-        <h2 className="text-3xl font-semibold tracking-tight md:text-4xl">
+      <section
+        id={block.id}
+        className="scroll-m-28 border-t border-border/70 pt-10 first:border-t-0 first:pt-0"
+      >
+        <h2 className="max-w-3xl text-3xl font-semibold tracking-tight md:text-4xl">
           {block.text}
         </h2>
         <NestedBlocks blocks={block.children ?? []} />
@@ -45,8 +56,10 @@ function Heading({ block, level }: { block: NotionBlock; level: 2 | 3 }) {
   }
 
   return (
-    <section id={block.id} className="scroll-m-28 pt-5">
-      <h3 className="text-xl font-semibold tracking-tight">{block.text}</h3>
+    <section id={block.id} className="scroll-m-28 pt-7">
+      <h3 className="max-w-3xl text-xl font-semibold tracking-tight">
+        {block.text}
+      </h3>
       <NestedBlocks blocks={block.children ?? []} />
     </section>
   )
@@ -59,7 +72,7 @@ function MediaBlock({ block }: { block: NotionBlock }) {
 
   if (block.type === "video") {
     return (
-      <figure className="my-8 overflow-hidden rounded-xl border bg-card">
+      <figure className="my-10 overflow-hidden rounded-xl border bg-card shadow-sm">
         <video src={block.url} controls className="aspect-video w-full bg-black" />
         {block.caption ? (
           <figcaption className="border-t px-4 py-3 text-sm text-muted-foreground">
@@ -72,7 +85,7 @@ function MediaBlock({ block }: { block: NotionBlock }) {
 
   if (block.type === "embed") {
     return (
-      <figure className="my-8 overflow-hidden rounded-xl border bg-card">
+      <figure className="my-10 overflow-hidden rounded-xl border bg-card shadow-sm">
         <iframe
           src={block.url}
           title={block.caption || "Embedded project media"}
@@ -84,14 +97,11 @@ function MediaBlock({ block }: { block: NotionBlock }) {
   }
 
   return (
-    <figure className="my-8 overflow-hidden rounded-xl border bg-card">
-      <Image
+    <figure className="my-10 overflow-hidden rounded-xl border bg-card shadow-sm">
+      <NotionImage
         src={block.url}
         alt={block.caption || "Project artifact"}
-        width={1440}
-        height={960}
-        unoptimized
-        className="h-auto w-full bg-muted object-cover"
+        className="w-full"
       />
       {block.caption ? (
         <figcaption className="border-t px-4 py-3 text-sm text-muted-foreground">
@@ -102,18 +112,34 @@ function MediaBlock({ block }: { block: NotionBlock }) {
   )
 }
 
-function ListItem({
-  block,
-  ordered,
-}: {
-  block: NotionBlock
-  ordered?: boolean
-}) {
+function FileBlock({ block }: { block: NotionBlock }) {
+  if (!block.url) {
+    return null
+  }
+
   return (
-    <li className="pl-1 text-base leading-8 text-muted-foreground">
+    <Link
+      href={block.url}
+      target="_blank"
+      rel="noreferrer"
+      className="my-6 flex max-w-3xl items-center justify-between gap-4 rounded-xl border bg-card/70 p-4 text-sm transition hover:border-foreground/20 hover:bg-muted/40"
+    >
+      <span className="flex min-w-0 items-center gap-3">
+        <FileText className="h-4 w-4 shrink-0 text-muted-foreground" />
+        <span className="truncate">
+          {block.name || block.caption || block.text || "Project attachment"}
+        </span>
+      </span>
+      <ExternalLink className="h-4 w-4 shrink-0 text-muted-foreground" />
+    </Link>
+  )
+}
+
+function ListItem({ block }: { block: NotionBlock }) {
+  return (
+    <li className="pl-1 text-[16px] leading-8 text-muted-foreground">
       {block.text}
       <NestedBlocks blocks={block.children ?? []} />
-      {ordered ? null : null}
     </li>
   )
 }
@@ -128,7 +154,7 @@ function Bookmark({ block }: { block: NotionBlock }) {
       href={block.url || "#"}
       target="_blank"
       rel="noreferrer"
-      className="my-5 flex items-center justify-between gap-4 rounded-xl border bg-card p-4 text-sm transition hover:border-foreground/20 hover:bg-muted/40"
+      className="my-6 flex max-w-3xl items-center justify-between gap-4 rounded-xl border bg-card/70 p-4 text-sm transition hover:border-foreground/20 hover:bg-muted/40"
     >
       <span className="line-clamp-2">{block.text || block.url}</span>
       <ExternalLink className="h-4 w-4 shrink-0 text-muted-foreground" />
@@ -138,7 +164,7 @@ function Bookmark({ block }: { block: NotionBlock }) {
 
 function Todo({ block }: { block: NotionBlock }) {
   return (
-    <div className="my-3 flex gap-3 rounded-lg border bg-card p-3 text-sm text-muted-foreground">
+    <div className="my-3 flex max-w-3xl gap-3 rounded-lg border bg-card/70 p-3 text-sm text-muted-foreground">
       {block.checked ? (
         <Check className="mt-0.5 h-4 w-4 text-emerald-500" />
       ) : (
@@ -160,28 +186,32 @@ function Block({ block }: { block: NotionBlock }) {
       return <TextBlock block={block} />
     case "quote":
       return (
-        <blockquote className="my-6 border-l pl-5 text-base leading-8 text-muted-foreground">
+        <blockquote className="my-8 max-w-3xl border-l-2 pl-5 text-[17px] leading-8 text-muted-foreground">
           {block.text}
           <NestedBlocks blocks={block.children ?? []} />
         </blockquote>
       )
     case "callout":
       return (
-        <aside className="my-5 rounded-xl border bg-muted/50 p-5">
-          <TextBlock block={block} className="text-foreground" />
+        <aside className="bg-muted/45 my-8 max-w-3xl rounded-xl border p-5">
+          <TextBlock
+            block={block}
+            className="my-0 text-foreground"
+            renderChildren={false}
+          />
           <NestedBlocks blocks={block.children ?? []} />
         </aside>
       )
     case "bulleted_list_item":
       return (
-        <ul className="my-3 ml-5 list-disc">
+        <ul className="my-5 ml-5 max-w-3xl list-disc space-y-2">
           <ListItem block={block} />
         </ul>
       )
     case "numbered_list_item":
       return (
-        <ol className="my-3 ml-5 list-decimal">
-          <ListItem block={block} ordered />
+        <ol className="my-5 ml-5 max-w-3xl list-decimal space-y-2">
+          <ListItem block={block} />
         </ol>
       )
     case "to_do":
@@ -190,6 +220,8 @@ function Block({ block }: { block: NotionBlock }) {
     case "video":
     case "embed":
       return <MediaBlock block={block} />
+    case "file":
+      return <FileBlock block={block} />
     case "bookmark":
     case "link_preview":
       return <Bookmark block={block} />
@@ -197,20 +229,20 @@ function Block({ block }: { block: NotionBlock }) {
       return <hr className="my-10 border-border/70" />
     case "code":
       return (
-        <pre className="my-6 overflow-x-auto rounded-xl border bg-zinc-950 p-4 text-sm text-zinc-50">
+        <pre className="my-8 max-w-3xl overflow-x-auto rounded-xl border bg-zinc-950 p-4 text-sm text-zinc-50">
           <code>{block.text}</code>
         </pre>
       )
     case "column_list":
       return (
-        <div className="my-8 grid gap-4 md:grid-cols-2">
+        <div className="my-10 grid gap-4 md:grid-cols-2">
           <NestedBlocks blocks={block.children ?? []} />
         </div>
       )
     case "column":
     case "synced_block":
       return (
-        <div className="rounded-xl border bg-card/60 p-4">
+        <div className="rounded-xl border bg-card/60 p-5">
           <NestedBlocks blocks={block.children ?? []} />
         </div>
       )
@@ -224,13 +256,50 @@ function NestedBlocks({ blocks }: NotionRendererProps) {
     return null
   }
 
-  return (
-    <>
-      {blocks.map((block) => (
-        <Block key={block.id} block={block} />
-      ))}
-    </>
-  )
+  const nodes: React.ReactNode[] = []
+
+  for (let index = 0; index < blocks.length; index += 1) {
+    const block = blocks[index]
+
+    if (
+      block.type === "bulleted_list_item" ||
+      block.type === "numbered_list_item"
+    ) {
+      const listType = block.type
+      const listBlocks = [block]
+
+      while (blocks[index + 1]?.type === listType) {
+        index += 1
+        listBlocks.push(blocks[index])
+      }
+
+      const ListTag = listType === "numbered_list_item" ? "ol" : "ul"
+      const listClass =
+        listType === "numbered_list_item" ? "list-decimal" : "list-disc"
+
+      nodes.push(
+        <ListTag
+          key={block.id}
+          className={cn(
+            "my-5 ml-5 max-w-3xl space-y-2 marker:text-muted-foreground/70",
+            listClass
+          )}
+        >
+          {listBlocks.map((item) => (
+            <ListItem
+              key={item.id}
+              block={item}
+            />
+          ))}
+        </ListTag>
+      )
+      continue
+    }
+
+    nodes.push(<Block key={block.id} block={block} />)
+  }
+
+  return <>{nodes}</>
 }
 
 export function NotionRenderer({ blocks }: NotionRendererProps) {
@@ -243,5 +312,9 @@ export function NotionRenderer({ blocks }: NotionRendererProps) {
     )
   }
 
-  return <NestedBlocks blocks={blocks} />
+  return (
+    <div className="mx-auto max-w-5xl space-y-8">
+      <NestedBlocks blocks={blocks} />
+    </div>
+  )
 }

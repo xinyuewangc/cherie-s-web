@@ -14,7 +14,7 @@ export function ProjectCard({ project, featured = false }: ProjectCardProps) {
   return (
     <MotionItem className={featured ? "group md:col-span-2" : "group"}>
       <Link
-        href={`/work/${project.slug}`}
+        href={`/projects/${project.slug}`}
         className={
           featured
             ? "grid h-full gap-2 rounded-xl border border-border/70 bg-card/70 p-2 shadow-sm transition duration-300 hover:-translate-y-1 hover:border-foreground/20 hover:bg-card hover:shadow-2xl hover:shadow-black/5 dark:hover:shadow-black/30 md:grid-cols-[1.05fr_0.95fr]"

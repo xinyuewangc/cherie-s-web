@@ -53,7 +53,7 @@ export default async function AboutPage() {
           </h2>
           <p className="mt-4 text-sm leading-7 text-muted-foreground">
             The resume is synced from the dedicated Notion document, separate
-            from the Work case-study archive.
+            from the Projects case-study archive.
           </p>
           {resume ? (
             <>

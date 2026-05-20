@@ -17,7 +17,7 @@ import { ModeToggle } from "@/components/mode-toggle"
 
 const links = [
   { href: "/", label: "Home", icon: Home },
-  { href: "/work", label: "Work", icon: Briefcase },
+  { href: "/projects", label: "Projects", icon: Briefcase },
   { href: "/lab", label: "Lab", icon: Zap },
   { href: "/playground", label: "Playground", icon: Beaker },
   { href: "/about", label: "About", icon: User },

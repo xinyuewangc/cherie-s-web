@@ -50,10 +50,10 @@ export default async function IndexPage() {
           </div>
           <div className="mt-9 flex flex-col gap-3 sm:flex-row">
             <Link
-              href="/work"
+              href="/projects"
               className={cn(buttonVariants({ size: "lg" }), "gap-2")}
             >
-              View work
+              View projects
               <ArrowRight className="h-4 w-4" />
             </Link>
             <Link
@@ -103,12 +103,12 @@ export default async function IndexPage() {
                   <span className="text-sky-300">design engineering</span> +{" "}
                   <span className="text-amber-200">Notion publishing</span>
                 </p>
-                <p className="text-zinc-500">$ selected_work --source notion</p>
+                <p className="text-zinc-500">$ selected_projects --source notion</p>
                 <div className="grid gap-2">
                   {selectedProjects.slice(0, 4).map((project, index) => (
                     <Link
                       key={project.id}
-                      href={`/work/${project.slug}`}
+                      href={`/projects/${project.slug}`}
                       className="flex items-center justify-between rounded-lg border border-white/10 bg-white/[0.03] px-3 py-2 transition hover:bg-white/[0.07]"
                     >
                       <span>{project.title}</span>
@@ -132,24 +132,24 @@ export default async function IndexPage() {
         </Reveal>
       </section>
 
-      <section id="work" className="container py-20">
+      <section id="projects" className="container py-20">
         <Reveal className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
           <div className="max-w-2xl">
             <p className="text-sm font-medium uppercase tracking-[0.2em] text-muted-foreground">
-              Selected Work
+              Selected Projects
             </p>
             <h2 className="mt-4 font-heading text-4xl leading-tight tracking-tight md:text-5xl">
               Product systems, workflow clarity, and AI-shaped making.
             </h2>
           </div>
           <Link
-            href="/work"
+            href="/projects"
             className={cn(
               buttonVariants({ variant: "outline" }),
               "w-fit gap-2 bg-background/60"
             )}
           >
-            View all work
+            View all projects
             <ArrowRight className="h-4 w-4" />
           </Link>
         </Reveal>

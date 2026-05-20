@@ -32,9 +32,9 @@ type CommandMenuProps = {
 
 const pages = [
   { label: "Home", href: "/", icon: Home, shortcut: "H" },
-  { label: "Work", href: "/work", icon: Briefcase, shortcut: "W" },
+  { label: "Projects", href: "/projects", icon: Briefcase, shortcut: "P" },
   { label: "Lab", href: "/lab", icon: Zap, shortcut: "L" },
-  { label: "Playground", href: "/playground", icon: Beaker, shortcut: "P" },
+  { label: "Playground", href: "/playground", icon: Beaker, shortcut: "G" },
   { label: "About", href: "/about", icon: User, shortcut: "A" },
 ]
 
@@ -64,7 +64,7 @@ export function CommandMenu({
 
   return (
     <CommandDialog open={open} onOpenChange={onOpenChange}>
-      <CommandInput placeholder="Search pages, work, lab notes..." />
+      <CommandInput placeholder="Search pages, projects, lab notes..." />
       <CommandList>
         <CommandEmpty>No result found.</CommandEmpty>
         <CommandGroup heading="Navigation">
@@ -85,12 +85,12 @@ export function CommandMenu({
           })}
         </CommandGroup>
         <CommandSeparator />
-        <CommandGroup heading="Selected work">
+        <CommandGroup heading="Selected projects">
           {projects.slice(0, 8).map((project) => (
             <CommandItem
               key={project.id}
               value={`${project.title} ${project.description}`}
-              onSelect={() => goTo(`/work/${project.slug}`)}
+              onSelect={() => goTo(`/projects/${project.slug}`)}
             >
               <FileText className="mr-2 h-4 w-4" />
               <span>{project.title}</span>
@@ -100,9 +100,9 @@ export function CommandMenu({
         </CommandGroup>
         <CommandSeparator />
         <CommandGroup heading="Actions">
-          <CommandItem onSelect={() => goTo("/work")}>
+          <CommandItem onSelect={() => goTo("/projects")}>
             <Search className="mr-2 h-4 w-4" />
-            <span>View all work</span>
+            <span>View all projects</span>
           </CommandItem>
         </CommandGroup>
       </CommandList>

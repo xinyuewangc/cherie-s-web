@@ -6,7 +6,6 @@ import { motion } from "framer-motion"
 import {
   Beaker,
   Briefcase,
-  Home,
   User,
   Zap,
 } from "lucide-react"
@@ -14,8 +13,7 @@ import {
 import { cn } from "@/lib/utils"
 
 const links = [
-  { href: "/", label: "Home", icon: Home },
-  { href: "/projects", label: "Projects", icon: Briefcase },
+  { href: "/projects", label: "Work", icon: Briefcase },
   { href: "/lab", label: "Lab", icon: Zap },
   { href: "/playground", label: "Playground", icon: Beaker },
   { href: "/about", label: "About", icon: User },
@@ -34,10 +32,7 @@ export function DockNav() {
       <div className="flex items-center gap-1">
         {links.map((item) => {
           const Icon = item.icon
-          const active =
-            item.href === "/"
-              ? pathname === item.href
-              : pathname?.startsWith(item.href)
+          const active = pathname?.startsWith(item.href)
 
           return (
             <Link

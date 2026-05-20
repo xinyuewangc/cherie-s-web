@@ -9,6 +9,7 @@ import {
   Bot,
   Code2,
   Command,
+  MapPin,
   Network,
 } from "lucide-react"
 
@@ -50,7 +51,7 @@ export function PortfolioShell({ children, projects }: PortfolioShellProps) {
   const [labMenuOpen, setLabMenuOpen] = React.useState(false)
   const pathname = usePathname()
   const topLinks = [
-    { href: "/projects", label: "Projects" },
+    { href: "/projects", label: "Work" },
     { href: "/lab", label: "Lab" },
     { href: "/playground", label: "Playground" },
     { href: "/about", label: "About" },
@@ -65,16 +66,24 @@ export function PortfolioShell({ children, projects }: PortfolioShellProps) {
         initial={{ opacity: 0, y: -12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-        className="fixed inset-x-3 top-3 z-40 mx-auto flex max-w-5xl items-center justify-between rounded-2xl border border-border/70 bg-background/80 px-3 py-2 text-sm shadow-sm backdrop-blur-xl"
+        className="fixed inset-x-0 top-0 z-40 bg-background/80 text-sm backdrop-blur-xl"
       >
-        <Link href="/" className="flex items-center gap-3">
-          <span className="flex h-7 w-7 items-center justify-center rounded-xl border bg-card font-mono text-[11px]">
-            CW
-          </span>
-          <span className="font-medium">Cherie Wang</span>
-        </Link>
-        <div className="flex items-center gap-2">
-          <nav className="hidden items-center gap-1 md:flex">
+        <div className="mx-auto grid h-20 max-w-[1500px] grid-cols-[1fr_auto_1fr] items-center gap-4 px-5 md:px-7">
+          <Link href="/" className="flex min-w-0 items-center gap-4">
+            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border bg-card font-mono text-xs shadow-sm">
+              CW
+            </span>
+            <span className="hidden min-w-0 sm:block">
+              <span className="block truncate font-semibold leading-none tracking-tight">
+                Cherie Wang
+              </span>
+              <span className="mt-1 block truncate font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
+                AI-native systems
+              </span>
+            </span>
+          </Link>
+
+          <nav className="hidden items-center gap-2 md:flex">
             {topLinks.map((item) => {
               const active = pathname?.startsWith(item.href)
 
@@ -99,11 +108,23 @@ export function PortfolioShell({ children, projects }: PortfolioShellProps) {
                     <Link
                       href={item.href}
                       className={cn(
-                        "rounded-xl px-3 py-1.5 text-muted-foreground transition hover:bg-muted hover:text-foreground",
-                        active && "bg-muted text-foreground"
+                        "relative isolate rounded-full px-3.5 py-2 text-muted-foreground transition-colors duration-300 hover:bg-muted/60 hover:text-foreground",
+                        active && "text-foreground hover:bg-transparent"
                       )}
                     >
-                      {item.label}
+                      {active ? (
+                        <motion.span
+                          layoutId="top-nav-active"
+                          className="absolute inset-0 rounded-full bg-muted"
+                          transition={{
+                            type: "spring",
+                            stiffness: 420,
+                            damping: 34,
+                            mass: 0.7,
+                          }}
+                        />
+                      ) : null}
+                      <span className="relative">{item.label}</span>
                     </Link>
                     <div
                       className={cn(
@@ -149,29 +170,48 @@ export function PortfolioShell({ children, projects }: PortfolioShellProps) {
                   key={item.href}
                   href={item.href}
                   className={cn(
-                    "rounded-xl px-3 py-1.5 text-muted-foreground transition hover:bg-muted hover:text-foreground",
-                    active && "bg-muted text-foreground"
+                    "relative isolate rounded-full px-3.5 py-2 text-muted-foreground transition-colors duration-300 hover:bg-muted/60 hover:text-foreground",
+                    active && "text-foreground hover:bg-transparent"
                   )}
                 >
-                  {item.label}
+                  {active ? (
+                    <motion.span
+                      layoutId="top-nav-active"
+                      className="absolute inset-0 rounded-full bg-muted"
+                      transition={{
+                        type: "spring",
+                        stiffness: 420,
+                        damping: 34,
+                        mass: 0.7,
+                      }}
+                    />
+                  ) : null}
+                  <span className="relative">{item.label}</span>
                 </Link>
               )
             })}
           </nav>
-          <div className="h-6 w-px bg-border" />
-          <button
-            type="button"
-            onClick={() => setOpen(true)}
-            className="inline-flex h-9 items-center gap-2 rounded-xl px-3 text-muted-foreground transition hover:bg-muted hover:text-foreground"
-          >
-            <Command className="h-4 w-4" />
-            <span className="hidden sm:inline">Search</span>
-            <kbd className="hidden rounded-md border bg-background px-1.5 py-0.5 text-[10px] lg:inline">
-              ⌘K
-            </kbd>
-          </button>
-          <div className="relative inline-flex h-9 w-9 items-center justify-center rounded-xl text-muted-foreground transition hover:bg-muted hover:text-foreground">
-            <ModeToggle />
+
+          <div className="flex min-w-0 items-center justify-end gap-3">
+            <div className="hidden items-center gap-2 border-r border-border/80 pr-4 font-mono text-[10px] uppercase tracking-[0.16em] text-muted-foreground lg:flex">
+              <MapPin className="h-3.5 w-3.5" />
+              <span>Shanghai, China</span>
+              <span className="text-muted-foreground/45">UTC+8</span>
+            </div>
+            <button
+              type="button"
+              onClick={() => setOpen(true)}
+              className="inline-flex h-9 items-center gap-2 rounded-full border bg-card px-3 text-muted-foreground shadow-sm transition hover:bg-muted hover:text-foreground"
+            >
+              <Command className="h-3.5 w-3.5" />
+              <span className="hidden text-sm sm:inline">Search</span>
+              <kbd className="hidden rounded-full border bg-background px-1.5 py-0.5 text-[9px] lg:inline">
+                ⌘K
+              </kbd>
+            </button>
+            <div className="relative inline-flex h-9 w-9 items-center justify-center rounded-full border bg-card text-muted-foreground shadow-sm transition hover:bg-muted hover:text-foreground [&_svg]:h-4 [&_svg]:w-4">
+              <ModeToggle />
+            </div>
           </div>
         </div>
       </motion.header>

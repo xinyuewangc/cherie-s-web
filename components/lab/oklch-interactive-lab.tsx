@@ -1,7 +1,7 @@
 "use client"
 
 import { useMemo, useState } from "react"
-import type { CSSProperties, ComponentType, ReactNode } from "react"
+import type { ComponentType, ReactNode } from "react"
 import Link from "next/link"
 import { ArrowLeft, Check, Droplets, Flower2, Leaf, Waves } from "lucide-react"
 
@@ -256,12 +256,10 @@ function SectionHeading({
   eyebrow,
   title,
   children,
-  titleStyle,
 }: {
   eyebrow: string
   title: string
   children: ReactNode
-  titleStyle?: CSSProperties
 }) {
   return (
     <header className="grid gap-3">
@@ -270,7 +268,6 @@ function SectionHeading({
       </Badge>
       <h2
         className="font-sans text-3xl font-bold leading-tight tracking-tight md:text-4xl"
-        style={titleStyle}
       >
         {title}
       </h2>
@@ -447,20 +444,6 @@ function ColorSystemButton({
 export function OklchLabArticle() {
   const [language] = useLanguagePreference()
   const copy = articleCopy[language]
-  const chineseTitleStyle: CSSProperties | undefined =
-    language === "zh"
-      ? ({
-          fontFamily: "MiSans, sans-serif",
-          fontWeight: 630,
-        } as CSSProperties)
-      : undefined
-  const chineseSectionHeadingStyle: CSSProperties | undefined =
-    language === "zh"
-      ? ({
-          fontFamily: "MiSans, sans-serif",
-          fontWeight: 520,
-        } as CSSProperties)
-      : undefined
 
   return (
     <main className="container max-w-6xl py-12 md:py-16">
@@ -476,11 +459,10 @@ export function OklchLabArticle() {
         <div>
           <h1
             className="font-sans text-4xl font-bold leading-tight tracking-tight md:text-6xl"
-            style={chineseTitleStyle}
           >
             {copy.title}
           </h1>
-          <p className="mt-4 max-w-3xl text-lg leading-8 text-muted-foreground">
+          <p className="mt-4 max-w-3xl text-lg leading-7 text-muted-foreground">
             {copy.intro}
           </p>
         </div>
@@ -519,17 +501,14 @@ export function OklchLabArticle() {
         </div>
 
         <Card className="max-w-3xl bg-card/70">
-          <CardContent className="p-5 text-base leading-8 text-muted-foreground">
+          <CardContent className="p-5 text-base leading-7 text-muted-foreground">
             {copy.transition}
           </CardContent>
         </Card>
       </section>
 
       <article className="mt-12">
-        <OklchInteractiveLab
-          language={language}
-          headingStyle={chineseSectionHeadingStyle}
-        />
+        <OklchInteractiveLab language={language} />
       </article>
     </main>
   )
@@ -537,10 +516,8 @@ export function OklchLabArticle() {
 
 export function OklchInteractiveLab({
   language,
-  headingStyle,
 }: {
   language: SiteLanguage
-  headingStyle?: CSSProperties
 }) {
   const copy = labCopy[language]
   const [syntax, setSyntax] = useState({
@@ -747,7 +724,6 @@ export function OklchInteractiveLab({
         <SectionHeading
           eyebrow="01 / Syntax"
           title={copy.syntaxTitle}
-          titleStyle={headingStyle}
         >
           <p>{copy.syntaxBody}</p>
         </SectionHeading>
@@ -859,7 +835,6 @@ export function OklchInteractiveLab({
         <SectionHeading
           eyebrow="02 / Perceptual Uniformity"
           title={copy.uniformityTitle}
-          titleStyle={headingStyle}
         >
           <p>{copy.uniformityBody}</p>
         </SectionHeading>
@@ -913,7 +888,6 @@ export function OklchInteractiveLab({
         <SectionHeading
           eyebrow="03 / Color Palettes"
           title={copy.paletteTitle}
-          titleStyle={headingStyle}
         >
           <p>{copy.paletteBody}</p>
         </SectionHeading>
@@ -970,7 +944,6 @@ export function OklchInteractiveLab({
         <SectionHeading
           eyebrow="04 / Relative Colors"
           title={copy.relativeTitle}
-          titleStyle={headingStyle}
         >
           <p>{copy.relativeBody}</p>
         </SectionHeading>
@@ -1052,7 +1025,6 @@ export function OklchInteractiveLab({
         <SectionHeading
           eyebrow="05 / Gradient Quality"
           title={copy.gradientTitle}
-          titleStyle={headingStyle}
         >
           <p>{copy.gradientBody}</p>
         </SectionHeading>

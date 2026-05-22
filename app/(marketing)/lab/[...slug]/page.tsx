@@ -64,7 +64,7 @@ export default async function LabNotePage({ params }: LabNotePageProps) {
         <h1 className="mt-5 font-heading text-5xl leading-tight tracking-tight md:text-6xl">
           {note.title}
         </h1>
-        <p className="mt-5 max-w-3xl text-lg leading-8 text-muted-foreground">
+        <p className="mt-5 max-w-3xl text-lg leading-7 text-muted-foreground">
           {note.description}
         </p>
         <time

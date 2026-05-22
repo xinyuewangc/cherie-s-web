@@ -13,7 +13,7 @@ const prompts = [
 
 const surfaces = ["Actors", "States", "Risks", "Artifacts"]
 
-export function PlaygroundPanel() {
+export default function PlaygroundPanel() {
   const [activePrompt, setActivePrompt] = React.useState(prompts[0])
   const [density, setDensity] = React.useState(2)
 

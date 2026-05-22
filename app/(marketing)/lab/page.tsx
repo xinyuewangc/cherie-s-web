@@ -180,7 +180,7 @@ export default async function LabPage() {
         <h1 className="mt-5 font-heading text-5xl leading-tight tracking-tight md:text-7xl">
           Ongoing research & system explorations.
         </h1>
-        <p className="mt-6 max-w-3xl text-lg leading-8 text-muted-foreground md:text-xl md:leading-9">
+        <p className="mt-6 max-w-3xl text-lg leading-7 text-muted-foreground md:text-xl md:leading-8">
           Not a blog. Lab is a working space for research notes, technical
           thinking, AI-native workflows, and system experiments that keep
           evolving.

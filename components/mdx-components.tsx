@@ -81,23 +81,23 @@ const components = {
   ),
   p: ({ className, ...props }) => (
     <p
-      className={cn("leading-7 [&:not(:first-child)]:mt-6", className)}
+      className={cn("leading-[1.58] [&:not(:first-child)]:mt-3", className)}
       {...props}
     />
   ),
   ul: ({ className, ...props }) => (
-    <ul className={cn("my-6 ml-6 list-disc", className)} {...props} />
+    <ul className={cn("my-3 ml-6 list-disc", className)} {...props} />
   ),
   ol: ({ className, ...props }) => (
-    <ol className={cn("my-6 ml-6 list-decimal", className)} {...props} />
+    <ol className={cn("my-3 ml-6 list-decimal", className)} {...props} />
   ),
   li: ({ className, ...props }) => (
-    <li className={cn("mt-2", className)} {...props} />
+    <li className={cn("mt-1 leading-[1.58]", className)} {...props} />
   ),
   blockquote: ({ className, ...props }) => (
     <blockquote
       className={cn(
-        "mt-6 border-l-2 pl-6 italic [&>*]:text-muted-foreground",
+        "mt-4 border-l-2 pl-5 italic [&>*]:text-muted-foreground",
         className
       )}
       {...props}
@@ -149,7 +149,7 @@ const components = {
   pre: ({ className, ...props }) => (
     <pre
       className={cn(
-        "mb-4 mt-6 overflow-x-auto rounded-lg border bg-black py-4",
+        "my-4 overflow-x-auto rounded-lg border bg-black py-4 leading-6",
         className
       )}
       {...props}

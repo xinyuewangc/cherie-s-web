@@ -25,7 +25,7 @@ export function StaticMdxPage({ slug }: StaticMdxPageProps) {
         {page.title}
       </h1>
       {page.description ? (
-        <p className="mt-5 text-lg leading-8 text-muted-foreground">
+        <p className="mt-5 text-lg leading-7 text-muted-foreground">
           {page.description}
         </p>
       ) : null}

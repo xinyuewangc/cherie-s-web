@@ -10,6 +10,15 @@ export type SiteLanguage = "en" | "zh"
 const LANGUAGE_STORAGE_KEY = "cherie-site-language"
 const LANGUAGE_EVENT = "cherie-language-change"
 
+function syncDocumentLanguage(language: SiteLanguage) {
+  if (typeof document === "undefined") {
+    return
+  }
+
+  document.documentElement.lang = language === "zh" ? "zh-CN" : "en"
+  document.documentElement.dataset.language = language
+}
+
 function readLanguagePreference(): SiteLanguage {
   if (typeof window === "undefined") {
     return "zh"
@@ -31,16 +40,25 @@ export function useLanguagePreference() {
   const [language, setLanguage] = React.useState<SiteLanguage>("zh")
 
   React.useEffect(() => {
-    setLanguage(readLanguagePreference())
+    const initialLanguage = readLanguagePreference()
+
+    setLanguage(initialLanguage)
+    syncDocumentLanguage(initialLanguage)
 
     function handleStorage(event: StorageEvent) {
       if (event.key === LANGUAGE_STORAGE_KEY) {
-        setLanguage(readLanguagePreference())
+        const nextLanguage = readLanguagePreference()
+
+        setLanguage(nextLanguage)
+        syncDocumentLanguage(nextLanguage)
       }
     }
 
     function handleLanguageChange(event: Event) {
-      setLanguage((event as CustomEvent<SiteLanguage>).detail ?? "zh")
+      const nextLanguage = (event as CustomEvent<SiteLanguage>).detail ?? "zh"
+
+      setLanguage(nextLanguage)
+      syncDocumentLanguage(nextLanguage)
     }
 
     window.addEventListener("storage", handleStorage)
@@ -54,6 +72,7 @@ export function useLanguagePreference() {
 
   const setPreferredLanguage = React.useCallback((next: SiteLanguage) => {
     setLanguage(next)
+    syncDocumentLanguage(next)
     writeLanguagePreference(next)
   }, [])
 

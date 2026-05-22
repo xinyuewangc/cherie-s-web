@@ -35,7 +35,7 @@ export default async function AboutPage() {
         <h1 className="mt-5 font-heading text-5xl leading-tight tracking-tight md:text-7xl">
           Designer building systems between AI, code and interfaces.
         </h1>
-        <p className="mt-6 text-lg leading-8 text-muted-foreground md:text-xl md:leading-9">
+        <p className="mt-6 text-lg leading-7 text-muted-foreground md:text-xl md:leading-8">
           A personal operating manual for how I think, design, prototype, and
           connect tools into workflows. Calm interfaces, strong information
           architecture, and systems that become easier to operate over time.
@@ -90,7 +90,7 @@ export default async function AboutPage() {
           <p className="text-sm font-medium uppercase tracking-[0.18em] text-muted-foreground">
             Career snapshot
           </p>
-          <p className="mt-4 text-base leading-8 text-muted-foreground">
+          <p className="mt-4 text-base leading-7 text-muted-foreground">
             {resumeSummary.intro}
           </p>
           <div className="mt-6 grid gap-3">

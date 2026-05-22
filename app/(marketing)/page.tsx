@@ -34,7 +34,7 @@ export default async function IndexPage() {
           <p className="text-foreground/85 mt-5 text-2xl font-medium tracking-tight md:text-3xl">
             Designer × AI Builder × System Thinker
           </p>
-          <p className="mt-6 max-w-2xl text-lg leading-8 text-muted-foreground md:text-xl md:leading-9">
+          <p className="mt-6 max-w-2xl text-lg leading-7 text-muted-foreground md:text-xl md:leading-8">
             Designer building systems between AI, code, and interfaces. This is
             a living workspace for projects, research notes, and experimental
             tools.
@@ -218,7 +218,7 @@ export default async function IndexPage() {
           <h2 className="mt-4 font-heading text-4xl tracking-tight md:text-5xl">
             Interactive experiments for thinking with interfaces.
           </h2>
-          <p className="mt-5 text-lg leading-8 text-muted-foreground">
+          <p className="mt-5 text-lg leading-7 text-muted-foreground">
             A preview of small tools that turn design process into usable
             product surfaces: color, motion, prompts, flows, and AI interaction.
           </p>

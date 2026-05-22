@@ -26,7 +26,7 @@ function TextBlock({
   return (
     <p
       className={cn(
-        "my-4 max-w-3xl text-[17px] leading-8 text-muted-foreground",
+        "my-2 max-w-3xl text-base leading-[1.58] text-muted-foreground md:text-[16.5px]",
         className
       )}
     >
@@ -45,7 +45,7 @@ function Heading({ block, level }: { block: NotionBlock; level: 2 | 3 }) {
     return (
       <section
         id={block.id}
-        className="scroll-m-28 border-t border-border/70 pt-10 first:border-t-0 first:pt-0"
+        className="scroll-m-28 border-t border-border/70 pt-8 first:border-t-0 first:pt-0"
       >
         <h2 className="max-w-3xl text-3xl font-semibold tracking-tight md:text-4xl">
           {block.text}
@@ -56,7 +56,7 @@ function Heading({ block, level }: { block: NotionBlock; level: 2 | 3 }) {
   }
 
   return (
-    <section id={block.id} className="scroll-m-28 pt-7">
+    <section id={block.id} className="scroll-m-28 pt-5">
       <h3 className="max-w-3xl text-xl font-semibold tracking-tight">
         {block.text}
       </h3>
@@ -75,7 +75,7 @@ function MediaBlock({ block }: { block: NotionBlock }) {
       <figure className="my-10 overflow-hidden rounded-xl border bg-card shadow-sm">
         <video src={block.url} controls className="aspect-video w-full bg-black" />
         {block.caption ? (
-          <figcaption className="border-t px-4 py-3 text-sm text-muted-foreground">
+          <figcaption className="border-t px-4 py-3 text-sm leading-6 text-muted-foreground">
             {block.caption}
           </figcaption>
         ) : null}
@@ -104,7 +104,7 @@ function MediaBlock({ block }: { block: NotionBlock }) {
         className="w-full"
       />
       {block.caption ? (
-        <figcaption className="border-t px-4 py-3 text-sm text-muted-foreground">
+        <figcaption className="border-t px-4 py-3 text-sm leading-6 text-muted-foreground">
           {block.caption}
         </figcaption>
       ) : null}
@@ -137,7 +137,7 @@ function FileBlock({ block }: { block: NotionBlock }) {
 
 function ListItem({ block }: { block: NotionBlock }) {
   return (
-    <li className="pl-1 text-[16px] leading-8 text-muted-foreground">
+    <li className="pl-1 text-base leading-[1.58] text-muted-foreground md:text-[16.5px]">
       {block.text}
       <NestedBlocks blocks={block.children ?? []} />
     </li>
@@ -164,7 +164,7 @@ function Bookmark({ block }: { block: NotionBlock }) {
 
 function Todo({ block }: { block: NotionBlock }) {
   return (
-    <div className="my-3 flex max-w-3xl gap-3 rounded-lg border bg-card/70 p-3 text-sm text-muted-foreground">
+    <div className="my-3 flex max-w-3xl gap-3 rounded-lg border bg-card/70 p-3 text-sm leading-6 text-muted-foreground">
       {block.checked ? (
         <Check className="mt-0.5 h-4 w-4 text-emerald-500" />
       ) : (
@@ -186,7 +186,7 @@ function Block({ block }: { block: NotionBlock }) {
       return <TextBlock block={block} />
     case "quote":
       return (
-        <blockquote className="my-8 max-w-3xl border-l-2 pl-5 text-[17px] leading-8 text-muted-foreground">
+        <blockquote className="my-4 max-w-3xl border-l-2 pl-5 text-base leading-[1.58] text-muted-foreground md:text-[16.5px]">
           {block.text}
           <NestedBlocks blocks={block.children ?? []} />
         </blockquote>
@@ -204,13 +204,13 @@ function Block({ block }: { block: NotionBlock }) {
       )
     case "bulleted_list_item":
       return (
-        <ul className="my-5 ml-5 max-w-3xl list-disc space-y-2">
+        <ul className="my-3 ml-5 max-w-3xl list-disc space-y-1">
           <ListItem block={block} />
         </ul>
       )
     case "numbered_list_item":
       return (
-        <ol className="my-5 ml-5 max-w-3xl list-decimal space-y-2">
+        <ol className="my-3 ml-5 max-w-3xl list-decimal space-y-1">
           <ListItem block={block} />
         </ol>
       )
@@ -229,7 +229,7 @@ function Block({ block }: { block: NotionBlock }) {
       return <hr className="my-10 border-border/70" />
     case "code":
       return (
-        <pre className="my-8 max-w-3xl overflow-x-auto rounded-xl border bg-zinc-950 p-4 text-sm text-zinc-50">
+        <pre className="my-5 max-w-3xl overflow-x-auto rounded-xl border bg-zinc-950 p-4 text-sm leading-6 text-zinc-50">
           <code>{block.text}</code>
         </pre>
       )
@@ -281,7 +281,7 @@ function NestedBlocks({ blocks }: NotionRendererProps) {
         <ListTag
           key={block.id}
           className={cn(
-            "my-5 ml-5 max-w-3xl space-y-2 marker:text-muted-foreground/70",
+            "my-3 ml-5 max-w-3xl space-y-1 marker:text-muted-foreground/70",
             listClass
           )}
         >
@@ -305,7 +305,7 @@ function NestedBlocks({ blocks }: NotionRendererProps) {
 export function NotionRenderer({ blocks }: NotionRendererProps) {
   if (!blocks.length) {
     return (
-      <div className="rounded-xl border bg-card p-6 text-sm leading-7 text-muted-foreground">
+      <div className="rounded-xl border bg-card p-6 text-sm leading-6 text-muted-foreground">
         This case study is ready for Notion content. Add page notes, headings,
         images, embeds, or videos in Notion and they will render here.
       </div>
@@ -313,7 +313,7 @@ export function NotionRenderer({ blocks }: NotionRendererProps) {
   }
 
   return (
-    <div className="mx-auto max-w-5xl space-y-8">
+    <div className="mx-auto max-w-5xl space-y-4 md:space-y-5">
       <NestedBlocks blocks={blocks} />
     </div>
   )

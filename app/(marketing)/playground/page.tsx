@@ -1,7 +1,7 @@
 import { Metadata } from "next"
 
 import { playgroundDemos } from "@/lib/portfolio-content"
-import { PlaygroundPanel } from "@/components/portfolio/playground-panel"
+import PlaygroundPanel from "@/components/portfolio/playground-panel"
 import { MotionGrid, MotionItem, Reveal } from "@/components/portfolio/reveal"
 
 export const metadata: Metadata = {
@@ -20,7 +20,7 @@ export default function PlaygroundPage() {
         <h1 className="mt-5 font-heading text-5xl leading-tight tracking-tight md:text-7xl">
           Interactive experiments for thinking through systems.
         </h1>
-        <p className="mt-6 text-lg leading-8 text-muted-foreground md:text-xl md:leading-9">
+        <p className="mt-6 text-lg leading-7 text-muted-foreground md:text-xl md:leading-8">
           Live surfaces for theme generation, OKLCH color thinking, prompt
           systems, motion response, and AI-assisted interface concepts.
         </p>

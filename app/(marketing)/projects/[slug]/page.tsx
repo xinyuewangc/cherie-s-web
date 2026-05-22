@@ -88,7 +88,7 @@ export default async function ProjectDetailPage({
             <h1 className="mt-6 font-heading text-5xl font-bold leading-tight tracking-tight md:text-7xl">
               {project.title}
             </h1>
-            <p className="mt-6 text-lg leading-8 text-muted-foreground md:text-xl md:leading-9">
+            <p className="mt-6 text-lg leading-7 text-muted-foreground md:text-xl md:leading-8">
               {project.description}
             </p>
           </Reveal>

@@ -15,6 +15,7 @@ import {
 
 import { PortfolioProject } from "@/lib/notion"
 import { cn } from "@/lib/utils"
+import { LanguageToggle } from "@/components/language-toggle"
 import { ModeToggle } from "@/components/mode-toggle"
 import { CommandMenu } from "@/components/portfolio/command-menu"
 import { CursorGlow } from "@/components/portfolio/cursor-glow"
@@ -211,6 +212,9 @@ export function PortfolioShell({ children, projects }: PortfolioShellProps) {
             </button>
             <div className="relative inline-flex h-9 w-9 items-center justify-center rounded-full border bg-card text-muted-foreground shadow-sm transition hover:bg-muted hover:text-foreground [&_svg]:h-4 [&_svg]:w-4">
               <ModeToggle />
+            </div>
+            <div className="relative inline-flex h-9 items-center justify-center rounded-full border bg-card text-muted-foreground shadow-sm transition hover:bg-muted hover:text-foreground [&_svg]:h-4 [&_svg]:w-4">
+              <LanguageToggle />
             </div>
           </div>
         </div>

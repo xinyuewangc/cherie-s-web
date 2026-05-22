@@ -1,10 +1,10 @@
-import { Metadata } from "next"
 import Link from "next/link"
 import { notFound } from "next/navigation"
 import { ArrowLeft } from "lucide-react"
 
 import { getLabNoteBySlug, getLabNotes } from "@/lib/lab"
 import { cn, formatDate } from "@/lib/utils"
+import { OklchLabArticle } from "@/components/lab/oklch-interactive-lab"
 import { NotionRenderer } from "@/components/portfolio/notion-renderer"
 import { ProjectCover } from "@/components/portfolio/project-cover"
 import { Reveal } from "@/components/portfolio/reveal"
@@ -19,6 +19,8 @@ type LabNotePageProps = {
   }
 }
 
+const OKLCH_LAB_SLUG = "get-to-know-oklch"
+
 function slugFromParams(params: LabNotePageProps["params"]) {
   return params.slug?.join("/")
 }
@@ -31,31 +33,19 @@ export async function generateStaticParams() {
   }))
 }
 
-export async function generateMetadata({
-  params,
-}: LabNotePageProps): Promise<Metadata> {
-  const note = await getLabNoteBySlug(slugFromParams(params))
-
-  if (!note) {
-    return {}
-  }
-
-  return {
-    title: note.title,
-    description: note.description,
-    openGraph: {
-      title: note.title,
-      description: note.description,
-      images: note.cover ? [note.cover] : undefined,
-    },
-  }
-}
-
 export default async function LabNotePage({ params }: LabNotePageProps) {
-  const note = await getLabNoteBySlug(slugFromParams(params))
+  const slug = slugFromParams(params)
+  const note =
+    slug === OKLCH_LAB_SLUG
+      ? (await getLabNotes()).find((item) => item.slug === slug)
+      : await getLabNoteBySlug(slug)
 
   if (!note) {
     notFound()
+  }
+
+  if (slug === OKLCH_LAB_SLUG) {
+    return <OklchLabArticle />
   }
 
   return (

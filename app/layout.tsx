@@ -34,53 +34,8 @@ interface RootLayoutProps {
 }
 
 export const metadata = {
-  title: {
-    default: siteConfig.name,
-    template: `%s | ${siteConfig.name}`,
-  },
+  title: siteConfig.name,
   description: siteConfig.description,
-  keywords: [
-    "Portfolio",
-    "Product Design",
-    "AI Workflows",
-    "AI Native UX",
-    "Design Engineer",
-    "Design Systems",
-    "Notion",
-    "Next.js",
-  ],
-  authors: [
-    {
-      name: "Cherie Wang",
-      url: siteConfig.url,
-    },
-  ],
-  creator: "Cherie Wang",
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "white" },
-    { media: "(prefers-color-scheme: dark)", color: "black" },
-  ],
-  openGraph: {
-    type: "website",
-    locale: "en_US",
-    url: siteConfig.url,
-    title: siteConfig.name,
-    description: siteConfig.description,
-    siteName: siteConfig.name,
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: siteConfig.name,
-    description: siteConfig.description,
-    images: [`${siteConfig.url}/og.jpg`],
-    creator: "@xinyuewangc",
-  },
-  icons: {
-    icon: "/favicon.ico",
-    shortcut: "/favicon-16x16.png",
-    apple: "/apple-touch-icon.png",
-  },
-  manifest: `${siteConfig.url}/site.webmanifest`,
 }
 
 export default function RootLayout({ children }: RootLayoutProps) {

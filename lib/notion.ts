@@ -99,6 +99,23 @@ type RawNotionBlock = {
 const NOTION_VERSION = "2022-06-28"
 const MAX_BLOCK_DEPTH = 3
 
+const dataSelfServiceAgentProject: PortfolioCaseStudy = {
+  id: "data-self-service-agent",
+  title: "数据自助查询 Agent",
+  slug: "agent",
+  description:
+    "一次从传统查数工具到 AI Native 数据工作流的产品设计：让用户用自然语言表达需求，并通过澄清、方案确认、证据追溯和可复用视图完成可信的数据查询。",
+  tags: ["AI Native Workflow", "Agent UX", "Data Platform", "shadcn/ui"],
+  collaborator: "miHoYo Data Platform",
+  year: "2026",
+  url: "#",
+  cover: null,
+  coverAlt: "数据自助查询 Agent case study cover",
+  blocks: [],
+  attachments: [],
+  toc: [],
+}
+
 const fallbackProjects: PortfolioCaseStudy[] = [
   {
     id: "ai-workflow-os",
@@ -148,7 +165,12 @@ const fallbackProjects: PortfolioCaseStudy[] = [
 ]
 
 function textFromRichText(value?: NotionRichText[]) {
-  return value?.map((item) => item.plain_text ?? "").join("").trim() ?? ""
+  return (
+    value
+      ?.map((item) => item.plain_text ?? "")
+      .join("")
+      .trim() ?? ""
+  )
 }
 
 function slugify(value: string) {
@@ -196,7 +218,10 @@ function getFirstPropertyByType(
 }
 
 function getDateProperty(properties: Record<string, NotionProperty>) {
-  return properties["日期"]?.date?.start ?? getFirstPropertyByType(properties, "date")?.date?.start
+  return (
+    properties["日期"]?.date?.start ??
+    getFirstPropertyByType(properties, "date")?.date?.start
+  )
 }
 
 function getYear(page: NotionPage) {
@@ -223,7 +248,8 @@ function getProjectCover(page: NotionPage) {
 
 function normalizeProject(page: NotionPage): PortfolioProject {
   const titleProperty =
-    page.properties["Project Name"] ?? getFirstPropertyByType(page.properties, "title")
+    page.properties["Project Name"] ??
+    getFirstPropertyByType(page.properties, "title")
   const title = textFromRichText(titleProperty?.title) || "Untitled project"
   const description =
     textFromRichText(page.properties.Description?.rich_text) ||
@@ -262,7 +288,10 @@ function getTextFromBlock(block: RawNotionBlock) {
   return textFromRichText(value?.rich_text)
 }
 
-function normalizeBlock(block: RawNotionBlock, children: NotionBlock[] = []): NotionBlock {
+function normalizeBlock(
+  block: RawNotionBlock,
+  children: NotionBlock[] = []
+): NotionBlock {
   const value = block[block.type] ?? {}
   const mediaUrl = getFileUrl(value)
   const isNotionManagedFile = value.type === "file" && Boolean(value.file?.url)
@@ -298,7 +327,10 @@ function getNotionConfig() {
   return { token, databaseId }
 }
 
-async function notionFetch<T>(path: string, init?: RequestInit): Promise<T | null> {
+async function notionFetch<T>(
+  path: string,
+  init?: RequestInit
+): Promise<T | null> {
   const config = getNotionConfig()
 
   if (!config) {
@@ -455,36 +487,55 @@ function toCaseStudy(
 }
 
 export function getFallbackProjects() {
-  return fallbackProjects
+  return [dataSelfServiceAgentProject, ...fallbackProjects]
+}
+
+function mergeCuratedProjects(projects: PortfolioProject[]) {
+  const curated = [dataSelfServiceAgentProject]
+  const curatedSlugs = new Set(curated.map((project) => project.slug))
+  const curatedIds = new Set(curated.map((project) => project.id))
+
+  return [
+    ...curated,
+    ...projects.filter(
+      (project) =>
+        !curatedSlugs.has(project.slug) && !curatedIds.has(project.id)
+    ),
+  ]
 }
 
 export async function getPortfolioProjects(): Promise<PortfolioProject[]> {
   const pages = await queryProjectPages()
 
   if (!pages.length) {
-    return fallbackProjects
+    return getFallbackProjects()
   }
 
-  return pages.map(normalizeProject).filter((project) => !isResumeProject(project))
+  return mergeCuratedProjects(
+    pages.map(normalizeProject).filter((project) => !isResumeProject(project))
+  )
 }
 
 export async function getPortfolioCaseStudies(): Promise<PortfolioCaseStudy[]> {
   const pages = await queryProjectPages()
 
   if (!pages.length) {
-    return fallbackProjects
+    return getFallbackProjects()
   }
 
-  return Promise.all(
+  const notionStudies = await Promise.all(
     pages
       .map(normalizeProject)
       .filter((project) => !isResumeProject(project))
+      .filter((project) => project.slug !== dataSelfServiceAgentProject.slug)
       .map(async (project) => {
         const blocks = await getBlockChildren(project.id)
 
         return toCaseStudy(project, blocks)
       })
   )
+
+  return [dataSelfServiceAgentProject, ...notionStudies]
 }
 
 export async function getResumeCaseStudy() {
@@ -506,6 +557,10 @@ export async function getResumeCaseStudy() {
 }
 
 export async function getPortfolioCaseStudy(slug: string) {
+  if (slug === dataSelfServiceAgentProject.slug) {
+    return dataSelfServiceAgentProject
+  }
+
   const projects = await getPortfolioProjects()
   const project = projects.find((item) => item.slug === slug)
 

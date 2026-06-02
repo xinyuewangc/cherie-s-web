@@ -3,15 +3,13 @@ import Link from "next/link"
 import { notFound } from "next/navigation"
 import { ArrowLeft } from "lucide-react"
 
-import {
-  getPortfolioCaseStudy,
-  getPortfolioProjects,
-} from "@/lib/notion"
+import { getPortfolioCaseStudy, getPortfolioProjects } from "@/lib/notion"
 import { cn } from "@/lib/utils"
+import { buttonVariants } from "@/components/ui/button"
+import { DataAgentCaseStudy } from "@/components/portfolio/data-agent-case-study"
 import { NotionRenderer } from "@/components/portfolio/notion-renderer"
 import { ProjectCover } from "@/components/portfolio/project-cover"
 import { Reveal } from "@/components/portfolio/reveal"
-import { buttonVariants } from "@/components/ui/button"
 
 type ProjectDetailPageProps = {
   params: {
@@ -60,6 +58,10 @@ export default async function ProjectDetailPage({
 
   const toc = project.toc
 
+  if (project.slug === "agent") {
+    return <DataAgentCaseStudy project={project} />
+  }
+
   return (
     <main>
       <section className="container py-10 md:py-16">
@@ -76,14 +78,16 @@ export default async function ProjectDetailPage({
         <div className="grid gap-10 lg:grid-cols-[0.95fr_1.05fr] lg:items-end">
           <Reveal>
             <div className="flex flex-wrap gap-2">
-              {(project.tags.length ? project.tags : ["Case study"]).map((tag) => (
-                <span
-                  key={tag}
-                  className="rounded-full border bg-background/70 px-3 py-1 text-sm text-muted-foreground"
-                >
-                  {tag}
-                </span>
-              ))}
+              {(project.tags.length ? project.tags : ["Case study"]).map(
+                (tag) => (
+                  <span
+                    key={tag}
+                    className="rounded-full border bg-background/70 px-3 py-1 text-sm text-muted-foreground"
+                  >
+                    {tag}
+                  </span>
+                )
+              )}
             </div>
             <h1 className="mt-6 font-heading text-5xl font-bold leading-tight tracking-tight md:text-7xl">
               {project.title}
@@ -120,9 +124,7 @@ export default async function ProjectDetailPage({
       <section
         className={cn(
           "container grid gap-10 pb-20 xl:gap-14",
-          toc.length
-            ? "xl:grid-cols-[210px_minmax(0,1fr)]"
-            : "max-w-5xl"
+          toc.length ? "xl:grid-cols-[210px_minmax(0,1fr)]" : "max-w-5xl"
         )}
       >
         {toc.length ? (
@@ -139,8 +141,7 @@ export default async function ProjectDetailPage({
                     title={item.title}
                     className={cn(
                       "block rounded-md p-2 text-xs leading-5 text-muted-foreground transition hover:bg-muted hover:text-foreground",
-                      item.level === 3 &&
-                        "ml-2 border-l border-border/70 pl-3"
+                      item.level === 3 && "ml-2 border-l border-border/70 pl-3"
                     )}
                   >
                     <span className="line-clamp-2">{item.title}</span>

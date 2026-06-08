@@ -90,6 +90,7 @@ export const playgroundDemos = [
     description:
       "Turns a raw request into actors, surfaces, decisions, risks, and open questions.",
     status: "Prototype",
+    href: "/playground#prompt-to-flow-system",
     icon: Bot,
   },
   {
@@ -97,6 +98,7 @@ export const playgroundDemos = [
     description:
       "Turns raw project notes into clearer sections for problem, thinking, decisions, and outcome.",
     status: "Live concept",
+    href: "/playground#notion-case-parser",
     icon: FileText,
   },
   {
@@ -104,6 +106,7 @@ export const playgroundDemos = [
     description:
       "A sandbox for spacing, grid density, accent color, motion, and editorial hierarchy.",
     status: "Lab",
+    href: "/playground#interface-rhythm-lab",
     icon: Gauge,
   },
 ]

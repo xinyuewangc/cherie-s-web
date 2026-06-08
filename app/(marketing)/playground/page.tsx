@@ -1,4 +1,6 @@
 import { Metadata } from "next"
+import Link from "next/link"
+import { ArrowUpRight } from "lucide-react"
 
 import { playgroundDemos } from "@/lib/portfolio-content"
 import PlaygroundPanel from "@/components/portfolio/playground-panel"
@@ -35,19 +37,26 @@ export default function PlaygroundPage() {
           const Icon = demo.icon
 
           return (
-            <MotionItem key={demo.title}>
-              <div className="h-full rounded-xl border bg-card/70 p-5">
+            <MotionItem key={demo.title} className="group">
+              <Link
+                id={demo.href.split("#")[1]}
+                href={demo.href}
+                className="block h-full scroll-mt-28 rounded-xl border bg-card/70 p-5 shadow-sm transition duration-300 hover:-translate-y-1 hover:border-foreground/20 hover:bg-card hover:shadow-2xl hover:shadow-black/5 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-background dark:hover:shadow-black/30"
+              >
                 <div className="flex items-start justify-between gap-4">
                   <Icon className="h-5 w-5 text-muted-foreground" />
                   <span className="rounded-full border bg-background px-2.5 py-1 text-xs text-muted-foreground">
                     {demo.status}
                   </span>
                 </div>
-                <h2 className="mt-5 text-xl font-semibold">{demo.title}</h2>
+                <div className="mt-5 flex items-start justify-between gap-4">
+                  <h2 className="text-xl font-semibold">{demo.title}</h2>
+                  <ArrowUpRight className="mt-1 h-4 w-4 shrink-0 text-muted-foreground transition group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-foreground" />
+                </div>
                 <p className="mt-3 text-sm leading-6 text-muted-foreground">
                   {demo.description}
                 </p>
-              </div>
+              </Link>
             </MotionItem>
           )
         })}

@@ -7,11 +7,12 @@ import {
   ArrowRight,
   BarChart3,
   Bot,
-  CheckCircle,
+  CheckCircle2,
   Code2,
   Database,
   FileText,
-  Layers,
+  GitBranch,
+  Image as ImageIcon,
   MessageSquare,
   Network,
   Save,
@@ -23,23 +24,8 @@ import {
 
 import { PortfolioCaseStudy } from "@/lib/notion"
 import { cn } from "@/lib/utils"
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion"
 import { Badge } from "@/components/ui/badge"
 import { buttonVariants } from "@/components/ui/button"
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
-import { Progress } from "@/components/ui/progress"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Reveal } from "@/components/portfolio/reveal"
 
 type DataAgentCaseStudyProps = {
@@ -48,871 +34,1001 @@ type DataAgentCaseStudyProps = {
 
 type IconType = React.ComponentType<{ className?: string }>
 
-const sections = [
-  { id: "why", label: "Why" },
-  { id: "hard", label: "Hard" },
-  { id: "how", label: "How" },
+const actionAnchors = [
+  { id: "hero", label: "Intro" },
+  { id: "situation", label: "Situation" },
+  { id: "task", label: "Task" },
+  { id: "action", label: "Action" },
   { id: "result", label: "Result" },
-  { id: "learned", label: "Learned" },
+  { id: "reflection", label: "Reflection" },
 ]
 
-const flowSteps = [
+const pathItems = [
   {
-    title: "表达需求",
-    description: "用户用业务语言发起查数，不需要先知道表、字段或 SQL。",
+    step: "找",
+    title: "找数据",
+    text: "用户能不能找到可能有用的数据资产",
+    design: "搜索、推荐、数据集市浏览、AI 对话入口",
+    icon: Search,
+  },
+  {
+    step: "查",
+    title: "查数据",
+    text: "用户能不能把需求转化为筛选、查询或联查",
+    design: "自然语言输入、意图解析、澄清追问、preflight 确认",
     icon: MessageSquare,
   },
   {
-    title: "澄清意图",
-    description: "Agent 先做轻量意图识别，遇到主体、链路、口径不清时尽早追问。",
-    icon: Bot,
-  },
-  {
-    title: "确认方案",
-    description: "生成前展示视图类型、核心数据、展示字段、筛选项和链路范围。",
-    icon: CheckCircle,
-  },
-  {
-    title: "生成视图",
-    description: "产出 SQL、表头、筛选条件、数据流转、处理规则和预览数据。",
+    step: "用",
+    title: "用数据",
+    text: "用户能不能理解、调整和消费结果",
+    design: "思考链展示、数据流转 Tab、筛选/排序/列设置、图表切换",
     icon: Table,
   },
   {
-    title: "保存复用",
-    description: "把一次查数沉淀为可再次打开、调整、导出或发布的正式数据视图。",
+    step: "留",
+    title: "留数据",
+    text: "用户能不能把一次结果沉淀为下次可复用的资产",
+    design: "保存视图、发布 MCP、资产管理中心",
     icon: Save,
   },
 ]
 
-const challenges = [
+const trustLayers = [
   {
-    value: "task-model",
-    tabLabel: "任务模型",
-    kicker: "UX Challenge 1",
-    title: "如何把“我要查数”翻译成可设计的任务模型？",
-    problem:
-      "老版本平台可以按模块拆解：数据集市、订阅、查询、联查、导出。但如果只顺着功能模块优化，很容易变成“每个页面都好用了一点”，却没有回答用户是否真的完成了查数任务。这个阶段我先把问题从页面层拉回任务层：用户不是要点击查询按钮，而是要从一个业务问题得到一份能理解、能验证、能继续使用的数据视图。",
-    judgment:
-      "我的判断是先建立任务路径，再拆页面和功能。只有当团队先对“查数到底包含哪些阶段”达成共识，后面的搜索、对话、预览、SQL、保存视图才不会变成一堆孤立能力。",
-    actions: [
-      {
-        title: "从功能地图改成用户路径地图",
-        text: "把原来“找资产、查询、联查、消费”的平台视角，重组为“找数据、AI 对话构建视图、数据预览与消费、数据资产沉淀与复用”。这让讨论从“有没有这个功能”转向“用户在这一步卡在哪里，系统应该替他完成什么”。",
-        visualTitle: "旧功能地图 vs 新任务路径",
-        visualIdea:
-          "建议放一张左右对比图：左侧是老平台模块地图，右侧是四阶段用户旅程，用高亮标出你重新定义的任务路径。",
-      },
-      {
-        title: "为每个阶段定义体验成功标准",
-        text: "找数据看能否发现有用资产，查数据看能否把业务问题转成字段、筛选和关联关系，用数据看用户是否能理解结果来源，留数据看一次生成能否保存为下一次可复用的工作对象。",
-        visualTitle: "阶段成功标准矩阵",
-        visualIdea:
-          "建议放一张表格或看板：横向是找数据、查数据、用数据、留数据，纵向是用户问题、设计响应、验证指标。",
-      },
-      {
-        title: "把证据层提前纳入主流程",
-        text: "数据流转、处理规则、SQL 不再被当成高级用户才看的附属页，而是成为用户判断结果可信度的证据。它们未必每次都被打开，但必须作为“可检查”的结构存在。",
-        visualTitle: "证据层纳入主流程",
-        visualIdea:
-          "建议放结果页局部截图或线框：标注数据流转、处理规则、SQL 在主流程中的位置，体现它们不是隐藏的高级功能。",
-      },
-    ],
-    structure: [
-      "找数据",
-      "AI 对话构建视图",
-      "数据预览与消费",
-      "资产沉淀与复用",
-    ],
-    tradeoff:
-      "这里的取舍是克制地做 MVP：先证明自然语言到结构化视图的主链路，而不是一开始覆盖所有高级分析。这样项目目标更清楚，也便于后续用漏斗验证每一步的损耗。",
-    learning:
-      "复杂 B 端项目的第一步经常不是画界面，而是把问题结构讲清楚。设计价值有时先表现为：团队终于用同一种方式理解了这个问题。",
-    image: "功能模块地图 → 用户任务路径地图",
-    icon: Search,
+    title: "思考过程透明",
+    text: "Agent 的思考链集中在可折叠容器中。默认收起不打断流程，展开可查看完整推理过程。",
   },
   {
-    value: "clarify",
-    tabLabel: "澄清对话",
-    kicker: "UX Challenge 2",
-    title: "如何设计“从模糊需求到可执行任务”的 AI 对话？",
-    problem:
-      "自然语言降低了输入门槛，也把不确定性带进了系统。用户说“查一下这个产品的数据”时，可能缺少产品对象、指标口径、时间范围、明细或汇总方式，甚至不知道自己需要哪张表。如果 Agent 不追问，结果会变得不可靠；如果追问太多，又会让 AI 显得不聪明。",
-    judgment:
-      "我的判断是把“澄清”设计成 AI workflow 的正常环节，而不是失败状态。系统需要承担把模糊语言翻译成结构化任务的责任，并在关键节点让用户用最小成本补齐信息。",
-    actions: [
-      {
-        title: "定义 Agent 什么时候必须追问",
-        text: "当意图不清、数据请求信息不完整、工具调用失败且无法合理产出时，Agent 应该停下来问，而不是继续猜。追问本身也要分层：能收敛成少量选项时给选项，选项过多或缺口复杂时再用自然语言补问。",
-        visualTitle: "追问触发判断树",
-        visualIdea:
-          "建议放一张决策树：意图不清、字段缺失、口径冲突、工具失败分别流向选项追问、自然语言追问或错误恢复。",
-      },
-      {
-        title: "把对话拆成一组运行时状态",
-        text: "我把 AI 对话拆成初始态、自然语言提问、文件上传提问、思考过程、Agent 追问、结果呈现、基于上文继续追问。这样研发实现时可以按状态验证，而不是只复刻一个聊天框外观。",
-        visualTitle: "AI 对话状态流",
-        visualIdea:
-          "建议放状态流图或多屏拼图：初始态、提问态、上传态、思考态、追问态、结果态、继续追问态各截一帧。",
-      },
-      {
-        title: "把思考过程做成可展开的透明层",
-        text: "数据场景需要透明度，但用户不应该被工具调用细节淹没。所以复杂步骤默认收起，只露出最新进度；当用户需要核查时，再展开看到处理链路。",
-        visualTitle: "折叠 / 展开思考过程",
-        visualIdea:
-          "建议放前后状态对比：默认只显示当前进度，展开后展示工具调用、处理步骤、失败重试或数据链路细节。",
-      },
-      {
-        title: "在生成前加入方案确认",
-        text: "生成视图前让用户看到视图类型、核心数据、展示字段、筛选项和链路范围。确认卡片只呈现用户需要判断的内容，不暴露内部 payload 和字段映射噪音。",
-        visualTitle: "Preflight 方案确认卡片",
-        visualIdea:
-          "建议放确认卡片设计稿：标注视图类型、数据资产、字段、筛选条件、排序和关联范围，体现生成前的可确认节点。",
-      },
-    ],
-    structure: ["用户表达", "意图识别", "按需澄清", "方案确认", "生成结果"],
-    tradeoff:
-      "核心取舍是速度和可信度之间的平衡。不是所有模糊点都值得追问，只有会改变数据对象、口径、筛选或链路的缺口才应该打断用户。",
-    learning:
-      "AI 产品里，不确定性不是边缘状态，而是主流程。设计需要回答的不只是“怎么问”，还有“何时问、问完如何继续、失败后如何恢复”。",
-    image: "提问 → 澄清 → 确认 → 生成的对话状态流",
-    icon: MessageSquare,
+    title: "结果呈现分层",
+    text: "统一「结论 + 数据/图表」的分层结构。先给结论，再给明细。",
   },
   {
-    value: "workbench",
-    tabLabel: "可信工作台",
-    kicker: "UX Challenge 3",
-    title: "如何让 AI 生成结果变成可信、可复用的工作对象？",
-    problem:
-      "聊天答案很轻，但数据决策很重。用户拿到结果后，还需要看明细、字段、筛选、处理步骤、SQL、趋势图，也需要判断这次结果下次能不能复用。如果结果只停留在一条聊天消息里，它很难进入真实工作流。",
-    judgment:
-      "我的判断是把生成结果从“回答”升级为“工作对象”：它必须可查看、可修改、可解释、可保存、可复用。对话适合承接需求和调整意图，结构化工作台适合承载复杂结果和证据。",
-    actions: [
-      {
-        title: "采用左对话、右工作台的双区结构",
-        text: "左侧保留 AI 对话，用来发起需求、澄清、调整和继续追问；右侧承载明细数据、可视化看板、数据流转、处理规则和 SQL。用户可以一边和 AI 讨论，一边核查结构化结果。",
-        visualTitle: "左对话 + 右工作台总览",
-        visualIdea:
-          "建议放完整页面截图并加注释：左侧标注需求协商，右侧标注明细、看板、证据层，强调双区分工。",
-      },
-      {
-        title: "重组右侧信息架构",
-        text: "右侧不是平铺“数据预览、数据流转、处理规则、SQL、看板”，而是先分成明细表和可视化看板；在明细表内部再放明细数据、数据流转、处理规则、SQL。顺序变成“先看结果，再看结果怎么来的”。",
-        visualTitle: "右侧 IA 前后对比",
-        visualIdea:
-          "建议放一张 before / after：旧版平铺 tab 与新版两层结构并排，突出“先看结果，再看来源”的顺序变化。",
-      },
-      {
-        title: "把可信度拆成可检查的证据",
-        text: "数据流转回答来源与节点，处理规则回答筛选、聚合、转换，SQL 回答最终查询逻辑。它们不需要强迫用户每次都读完，但要让用户知道结果不是黑箱。",
-        visualTitle: "可信证据三件套",
-        visualIdea:
-          "建议放三联图：数据流转图、处理规则列表、SQL 展示区，分别说明来源、加工逻辑和最终查询。",
-      },
-      {
-        title: "把一次生成沉淀为可复用资产",
-        text: "保存到“我的数据资产”后，视图可以再次打开、继续查询、查看字段和规则，也可以发布 MCP，被外部场景调用。AI 的价值从一次性答案转成长期可复用的数据资产。",
-        visualTitle: "保存视图到发布 MCP 链路",
-        visualIdea:
-          "建议放流程图或多屏串联：生成结果、保存到我的数据资产、再次打开复用、发布 MCP、外部调用。",
-      },
-    ],
-    structure: [
-      "对话承接意图",
-      "明细表核查结果",
-      "证据层解释来源",
-      "看板辅助分析",
-      "保存并发布复用",
-    ],
-    tradeoff:
-      "这里的取舍是避免把结果页做成信息堆叠。用户首先需要确认“这是不是我要的数”，再逐层进入“为什么可信”和“如何继续用”。",
-    learning:
-      "AI 生成物必须有产品容器。只有当结果可被检查、修改、保存和调用，它才真正进入用户的工作流。",
-    image: "对话区 + 结构化工作台 + 资产沉淀链路",
-    icon: Layers,
+    title: "数据来源可查",
+    text: "三个 Tab：「数据流转」「处理规则」「SQL」，满足不同深度的核实需求。",
+  },
+  {
+    title: "结果可调整",
+    text: "支持筛选/排序/列设置调整，以及通过「页面元素选取」让 AI 局部修订。",
+  },
+  {
+    title: "反馈闭环",
+    text: "点赞/点踩 + 埋点跟踪调整频率和重置率，反向衡量生成质量。",
   },
 ]
 
-const validationSteps = [
-  { label: "需求发起", value: 88, note: "从自然语言问题进入视图生成流程" },
-  { label: "澄清完成", value: 72, note: "主体、链路、筛选口径被确认" },
-  { label: "生成通过", value: 64, note: "SQL、表头、筛选和 payload 校验通过" },
-  { label: "保存复用", value: 49, note: "保存到我的数据，进入后续复用链路" },
-]
-
-const learnings = [
-  {
-    title: "可信不是语气问题，而是证据结构问题",
-    description:
-      "用户相信一个数据结果，通常不是因为 Agent 说得自信，而是因为能看到字段、规则、SQL、流转和校验边界。",
-  },
-  {
-    title: "AI 产品要先设计“不确定性如何被解决”",
-    description:
-      "模糊意图、业务术语歧义、资产召回不完整，都不应该被包装成顺滑体验；它们需要被拆成可回答、可确认、可重跑的节点。",
-  },
-  {
-    title: "生成物需要产品容器",
-    description:
-      "一次生成的 SQL 或表格价值有限。保存、复用、导出、发布 MCP、继续生成看板，才让 AI 输出进入真实工作流。",
-  },
-]
-
-function ImagePlaceholder({
-  title,
-  description,
-  className,
-}: {
-  title: string
-  description: string
-  className?: string
-}) {
-  return (
-    <div
-      className={cn(
-        "group relative overflow-hidden rounded-lg border border-dashed bg-muted/30 p-5",
-        className
-      )}
-    >
-      <div className="cover-grid-bg opacity-45 absolute inset-0 transition group-hover:opacity-80" />
-      <div className="relative flex h-full min-h-[220px] flex-col justify-between">
-        <div className="flex items-center justify-between gap-4">
-          <Badge variant="outline" className="bg-background/80">
-            图位预留
-          </Badge>
-          <Zap className="h-4 w-4 text-muted-foreground" />
-        </div>
-        <div>
-          <p className="text-lg font-semibold tracking-tight">{title}</p>
-          <p className="mt-2 max-w-xl text-sm leading-6 text-muted-foreground">
-            {description}
-          </p>
-        </div>
-      </div>
-    </div>
-  )
-}
-
-function ActionVisualPlaceholder({
+function SectionHeader({
+  number,
   title,
   description,
 }: {
+  number: string
   title: string
   description: string
 }) {
   return (
-    <div className="relative min-h-[260px] overflow-hidden border-b bg-muted/20 p-4 md:min-h-[320px]">
-      <div className="cover-grid-bg absolute inset-0 opacity-40" />
-      <div className="relative flex h-full min-h-[228px] flex-col justify-between md:min-h-[288px]">
-        <div className="flex items-center justify-between gap-3">
-          <Badge variant="outline" className="bg-background/80">
-            配图预留
-          </Badge>
-          <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
-            case image
-          </span>
-        </div>
-        <div>
-          <p className="text-base font-semibold tracking-tight">{title}</p>
-          <p className="mt-2 text-xs leading-5 text-muted-foreground">
-            {description}
-          </p>
-        </div>
-      </div>
-    </div>
-  )
-}
-
-function FlowStep({
-  title,
-  description,
-  icon: Icon,
-  index,
-}: {
-  title: string
-  description: string
-  icon: IconType
-  index: number
-}) {
-  return (
-    <div className="relative rounded-lg border bg-card p-4 shadow-sm">
-      <div className="mb-4 flex items-center justify-between gap-3">
-        <span className="flex h-9 w-9 items-center justify-center rounded-md bg-muted">
-          <Icon className="h-4 w-4" />
-        </span>
-        <span className="font-mono text-xs text-muted-foreground">
-          0{index + 1}
-        </span>
-      </div>
-      <p className="font-semibold tracking-tight">{title}</p>
-      <p className="mt-2 text-sm leading-6 text-muted-foreground">
-        {description}
-      </p>
-    </div>
-  )
-}
-
-function MetricBar({
-  label,
-  value,
-  note,
-}: {
-  label: string
-  value: number
-  note: string
-}) {
-  return (
-    <div>
-      <div className="mb-2 flex items-center justify-between gap-3">
-        <span className="text-sm font-medium">{label}</span>
-        <span className="font-mono text-xs text-muted-foreground">
-          {value}%
-        </span>
-      </div>
-      <Progress value={value} className="h-2" />
-      <p className="mt-2 text-xs leading-5 text-muted-foreground">{note}</p>
-    </div>
-  )
-}
-
-function ChallengeStructure({
-  items,
-  value,
-}: {
-  items: string[]
-  value: string
-}) {
-  return (
-    <div className="rounded-lg border bg-background p-4">
-      <p className="text-sm font-medium">设计转译路径</p>
-      <div className="mt-4 grid gap-2">
-        {items.map((item, index) => (
-          <div key={item} className="flex items-center gap-3">
-            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-muted font-mono text-[11px] text-muted-foreground">
-              {String(index + 1).padStart(2, "0")}
-            </span>
-            <div className="min-w-0 flex-1 rounded-md border bg-card px-3 py-2 text-sm font-medium">
-              {item}
-            </div>
-          </div>
-        ))}
-      </div>
-      {value === "task-model" ? (
-        <p className="mt-4 text-xs leading-5 text-muted-foreground">
-          这条路径把“查数”从平台功能列表，改写成用户完成任务的连续旅程。
-        </p>
-      ) : null}
-      {value === "clarify" ? (
-        <p className="mt-4 text-xs leading-5 text-muted-foreground">
-          这条路径把不确定性显性化，让 Agent
-          在关键缺口处停下来，而不是直接生成。
-        </p>
-      ) : null}
-      {value === "workbench" ? (
-        <p className="mt-4 text-xs leading-5 text-muted-foreground">
-          这条路径把一次性回答变成可核查、可调整、可保存的工作对象。
-        </p>
-      ) : null}
-    </div>
-  )
-}
-
-function SectionHeading({
-  eyebrow,
-  title,
-  description,
-}: {
-  eyebrow: string
-  title: string
-  description: string
-}) {
-  return (
-    <Reveal className="max-w-3xl">
-      <p className="text-xs font-medium uppercase tracking-[0.22em] text-muted-foreground">
-        {eyebrow}
-      </p>
-      <h2 className="mt-4 text-3xl font-semibold leading-tight tracking-tight md:text-5xl">
+    <Reveal className="mb-14 max-w-3xl">
+      <span className="font-mono text-xs font-semibold uppercase tracking-[0.2em] text-primary">
+        {number}
+      </span>
+      <h2 className="mt-4 font-heading text-4xl font-semibold tracking-tight text-foreground md:text-6xl">
         {title}
       </h2>
-      <p className="mt-5 text-base leading-7 text-muted-foreground md:text-lg md:leading-8">
+      <p className="mt-4 text-base text-muted-foreground md:text-lg">
         {description}
       </p>
     </Reveal>
   )
 }
 
-export function DataAgentCaseStudy({ project }: DataAgentCaseStudyProps) {
+function ImagePlaceholder({ label }: { label: string }) {
   return (
-    <main className="font-sans">
-      <section className="container py-10 md:py-16">
-        <Link
-          href="/projects"
-          className={cn(
-            buttonVariants({ variant: "ghost" }),
-            "mb-8 w-fit gap-2 px-0"
-          )}
+    <div className="my-8 overflow-hidden rounded-sm border border-dashed border-primary/25 bg-muted/40 transition duration-300 hover:border-primary/45 hover:bg-accent/60">
+      <div className="cover-grid-bg flex min-h-[260px] flex-col items-center justify-center gap-4 p-8 text-center md:min-h-[340px]">
+        <span className="flex h-12 w-12 items-center justify-center rounded-sm border bg-background text-muted-foreground shadow-sm">
+          <ImageIcon className="h-5 w-5" />
+        </span>
+        <p className="max-w-2xl text-sm leading-6 text-muted-foreground">
+          {label}
+        </p>
+      </div>
+    </div>
+  )
+}
+
+function ActionTag({
+  children,
+  tone,
+}: {
+  children: React.ReactNode
+  tone: "insight" | "moves"
+}) {
+  return (
+    <span
+      className={cn(
+        "inline-flex w-fit rounded-sm px-3 py-1 font-mono text-[11px] font-semibold uppercase tracking-[0.12em]",
+        tone === "insight"
+          ? "bg-secondary text-secondary-foreground"
+          : "bg-primary text-primary-foreground"
+      )}
+    >
+      {children}
+    </span>
+  )
+}
+
+function BulletList({ items }: { items: React.ReactNode[] }) {
+  return (
+    <ul className="mt-4 grid gap-3">
+      {items.map((item, index) => (
+        <li
+          key={index}
+          className="flex gap-3 text-sm leading-7 text-muted-foreground"
         >
-          <ArrowLeft className="h-4 w-4" />
-          Work
-        </Link>
+          <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" />
+          <span>{item}</span>
+        </li>
+      ))}
+    </ul>
+  )
+}
 
-        <div className="grid gap-10 lg:grid-cols-[0.92fr_1.08fr] lg:items-end">
-          <Reveal>
-            <div className="flex flex-wrap gap-2">
-              {project.tags.map((tag) => (
-                <Badge key={tag} variant="outline" className="bg-background/70">
-                  {tag}
-                </Badge>
-              ))}
-            </div>
-            <h1 className="mt-6 text-5xl font-bold leading-tight tracking-tight md:text-7xl">
-              {project.title}
-            </h1>
-            <p className="mt-6 text-lg leading-8 text-muted-foreground md:text-xl md:leading-9">
-              从“用户自己找表查数”，转向“Agent
-              帮用户把业务问题变成可验证、可保存、可复用的数据视图”。
-              这个项目真正让我把 AI Native workflow 当作产品系统来设计。
+function ActionCard({
+  number,
+  title,
+  children,
+}: {
+  number: string
+  title: string
+  children: React.ReactNode
+}) {
+  return (
+    <Reveal>
+      <article className="relative overflow-hidden rounded-sm border bg-card p-6 shadow-2xl shadow-black/5 dark:shadow-black/20 md:p-10">
+        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-primary via-primary/50 to-transparent" />
+        <span className="absolute right-6 top-4 font-mono text-6xl font-bold leading-none text-primary/[0.07] md:right-8 md:text-8xl">
+          {number}
+        </span>
+        <h3 className="relative max-w-3xl pr-16 text-2xl font-semibold tracking-tight text-foreground md:text-3xl">
+          {title}
+        </h3>
+        <div className="relative mt-8">{children}</div>
+      </article>
+    </Reveal>
+  )
+}
+
+function PathGrid() {
+  return (
+    <div className="mt-5 grid gap-4 md:grid-cols-4">
+      {pathItems.map((item) => {
+        const Icon = item.icon
+
+        return (
+          <div
+            key={item.step}
+            className="rounded-sm border bg-background p-5 text-center transition duration-300 hover:-translate-y-1 hover:border-primary/40"
+          >
+            <span className="mx-auto flex h-11 w-11 items-center justify-center rounded-full border bg-muted text-sm font-bold text-foreground">
+              {item.step}
+            </span>
+            <Icon className="mx-auto mt-5 h-4 w-4 text-muted-foreground" />
+            <h4 className="mt-4 font-semibold text-foreground">{item.title}</h4>
+            <p className="mt-2 text-xs leading-5 text-muted-foreground">
+              {item.text}
             </p>
-          </Reveal>
+            <p className="mt-4 border-t pt-4 text-[11px] leading-5 text-muted-foreground">
+              {item.design}
+            </p>
+          </div>
+        )
+      })}
+    </div>
+  )
+}
 
-          <Reveal delay={0.1}>
-            <div className="overflow-hidden rounded-lg border bg-card shadow-sm">
-              <div className="border-b p-4">
-                <div className="flex items-center justify-between gap-4">
-                  <div>
-                    <p className="text-sm font-medium">Agent Workflow Map</p>
-                    <p className="mt-1 text-xs text-muted-foreground">
-                      预留后续配图：产品流程、界面截图或 Agent pipeline
-                    </p>
-                  </div>
-                  <Badge variant="secondary">2026</Badge>
-                </div>
-              </div>
-              <div className="grid gap-3 p-4 sm:grid-cols-2">
-                {[
-                  ["输入", "自然语言问题"],
-                  ["判断", "intent-first triage"],
-                  ["确认", "preflight summary"],
-                  ["产出", "view / SQL / trace"],
-                ].map(([label, value]) => (
-                  <div
-                    key={label}
-                    className="rounded-md border bg-background p-4"
+function HeroVisual() {
+  return (
+    <div className="relative overflow-hidden rounded-sm border bg-card shadow-2xl shadow-black/10 dark:shadow-black/40">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_12%,hsl(var(--accent-soft)/0.18),transparent_34%),radial-gradient(circle_at_82%_0%,hsl(var(--primary)/0.08),transparent_30%)]" />
+      <div className="relative border-b px-4 py-3">
+        <div className="flex items-center justify-between gap-4">
+          <div className="flex items-center gap-2">
+            <span className="h-2.5 w-2.5 rounded-full bg-red-400/80" />
+            <span className="h-2.5 w-2.5 rounded-full bg-amber-300/80" />
+            <span className="h-2.5 w-2.5 rounded-full bg-emerald-400/80" />
+          </div>
+          <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
+            Agent workflow preview
+          </span>
+        </div>
+      </div>
+      <div className="relative grid min-h-[460px] gap-0 lg:grid-cols-[0.86fr_1.14fr]">
+        <div className="border-b p-5 lg:border-b-0 lg:border-r">
+          <div className="flex items-center gap-3">
+            <span className="flex h-9 w-9 items-center justify-center rounded-sm bg-muted text-foreground">
+              <Bot className="h-4 w-4" />
+            </span>
+            <div>
+              <p className="text-sm font-medium text-foreground">SDA Agent</p>
+              <p className="text-xs text-muted-foreground">
+                clarify before generate
+              </p>
+            </div>
+          </div>
+
+          <div className="mt-8 space-y-4">
+            <div className="rounded-sm border bg-background p-4">
+              <p className="text-sm leading-6 text-foreground">
+                查一下 2024 Q4 项目 A 的收入、成本和毛利，按区域拆分。
+              </p>
+            </div>
+            <div className="rounded-sm border bg-accent p-4 text-accent-foreground">
+              <p className="text-xs font-medium">Agent 追问</p>
+              <p className="mt-2 text-sm leading-6">
+                我理解你要做经营分析。请确认收入口径是否包含税费？
+              </p>
+              <div className="mt-4 flex flex-wrap gap-2">
+                {["含税", "不含税", "沿用上次口径"].map((item) => (
+                  <span
+                    key={item}
+                    className="rounded-full border bg-background/70 px-3 py-1 text-xs text-foreground"
                   >
-                    <p className="text-xs text-muted-foreground">{label}</p>
-                    <p className="mt-2 font-medium">{value}</p>
-                  </div>
+                    {item}
+                  </span>
                 ))}
               </div>
-              <ImagePlaceholder
-                title="主视觉图位"
-                description="建议放一张组合图：左侧自然语言查数对话，右侧数据预览、流转图、SQL 与看板，强调它不是聊天机器人，而是一个可落库的数据工作台。"
-                className="m-4 mt-0"
-              />
             </div>
-          </Reveal>
+          </div>
         </div>
 
-        <div className="mt-8 grid gap-3 border-y py-5 text-sm text-muted-foreground md:grid-cols-3">
-          <div>
-            <span className="block text-foreground">Role</span>
-            Product UX / AI workflow design / front-end validation
+        <div className="p-5">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <p className="text-sm font-medium text-foreground">可信数据视图</p>
+              <p className="mt-1 text-xs text-muted-foreground">
+                result, evidence, SQL, reusable asset
+              </p>
+            </div>
+            <Badge variant="secondary">
+              Ready to save
+            </Badge>
           </div>
-          <div>
-            <span className="block text-foreground">Context</span>
-            {project.collaborator}
+
+          <div className="mt-6 grid gap-3 sm:grid-cols-3">
+            {[
+              ["收入", "128.4M", "+12.8%"],
+              ["成本", "74.2M", "+5.1%"],
+              ["毛利", "54.2M", "+21.4%"],
+            ].map(([label, value, change]) => (
+              <div
+                key={label}
+                className="rounded-sm border bg-background p-4"
+              >
+                <p className="text-xs text-muted-foreground">{label}</p>
+                <p className="mt-2 text-xl font-semibold text-foreground">
+                  {value}
+                </p>
+                <p className="mt-1 text-xs text-muted-foreground">{change}</p>
+              </div>
+            ))}
           </div>
-          <div>
-            <span className="block text-foreground">Status</span>
-            MVP to 2.0, with research and tracking plan
+
+          <div className="mt-4 overflow-hidden rounded-sm border">
+            <div className="grid grid-cols-4 border-b bg-muted/50 text-xs text-muted-foreground">
+              {["区域", "收入", "成本", "毛利"].map((item) => (
+                <span key={item} className="px-3 py-2">
+                  {item}
+                </span>
+              ))}
+            </div>
+            {[
+              ["华东", "46.2M", "25.8M", "20.4M"],
+              ["华南", "35.1M", "19.7M", "15.4M"],
+              ["海外", "28.6M", "17.2M", "11.4M"],
+            ].map((row) => (
+              <div
+                key={row[0]}
+                className="grid grid-cols-4 border-b text-xs text-muted-foreground last:border-b-0"
+              >
+                {row.map((cell) => (
+                  <span key={cell} className="px-3 py-3">
+                    {cell}
+                  </span>
+                ))}
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-4 grid gap-3 md:grid-cols-3">
+            {[
+              ["数据流转", "SDA MCP -> fact table -> regional view"],
+              ["处理规则", "按区域聚合，排除测试订单"],
+              ["SQL", "SELECT region, SUM(revenue)..."],
+            ].map(([label, text]) => (
+              <div
+                key={label}
+                className="rounded-sm border bg-background p-3"
+              >
+                <p className="text-xs font-medium text-foreground">{label}</p>
+                <p className="mt-2 text-[11px] leading-5 text-muted-foreground">
+                  {text}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function FloatingToc() {
+  return (
+    <aside
+      aria-label="Case study contents"
+      className="group/toc fixed right-4 top-1/2 z-30 hidden -translate-y-1/2 items-center xl:flex"
+    >
+      <div className="flex h-[440px] w-8 flex-col items-center justify-center gap-3 rounded-full border border-transparent bg-background/20 backdrop-blur-sm transition group-hover/toc:border-border group-hover/toc:bg-background/85 group-hover/toc:shadow-2xl group-hover/toc:shadow-black/10 group-focus-within/toc:border-border group-focus-within/toc:bg-background/85 group-focus-within/toc:shadow-2xl group-focus-within/toc:shadow-black/10">
+        {actionAnchors.map((item, index) => (
+          <a
+            key={item.id}
+            href={`#${item.id}`}
+            className={cn(
+              "block h-0.5 rounded-full bg-muted-foreground/25 transition hover:bg-foreground focus-visible:bg-foreground focus-visible:outline-none",
+              index === 0 ? "w-5 bg-foreground" : "w-3"
+            )}
+            aria-label={item.label}
+          />
+        ))}
+      </div>
+      <div className="pointer-events-none absolute right-11 top-1/2 w-[340px] -translate-y-1/2 translate-x-3 opacity-0 transition duration-200 group-hover/toc:pointer-events-auto group-hover/toc:translate-x-0 group-hover/toc:opacity-100 group-focus-within/toc:pointer-events-auto group-focus-within/toc:translate-x-0 group-focus-within/toc:opacity-100">
+        <div className="rounded-lg border bg-background/95 p-5 shadow-2xl shadow-black/10 backdrop-blur-xl dark:shadow-black/10 dark:shadow-black/40">
+          <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
+            Contents
+          </p>
+          <nav className="mt-4 grid gap-1">
+            {actionAnchors.map((item) => (
+              <a
+                key={item.id}
+                href={`#${item.id}`}
+                className="rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition hover:bg-muted hover:text-foreground focus-visible:bg-muted focus-visible:text-foreground focus-visible:outline-none"
+              >
+                {item.label}
+              </a>
+            ))}
+          </nav>
+        </div>
+      </div>
+    </aside>
+  )
+}
+
+export function DataAgentCaseStudy({ project }: DataAgentCaseStudyProps) {
+  return (
+    <main
+      id="hero"
+      className="relative isolate overflow-hidden bg-background text-foreground"
+    >
+      <div className="pointer-events-none fixed inset-0 -z-10 bg-[radial-gradient(ellipse_at_50%_0%,hsl(var(--accent-soft)/0.22),transparent_44%),radial-gradient(ellipse_at_78%_16%,hsl(var(--primary)/0.06),transparent_34%)]" />
+      <div className="pointer-events-none fixed inset-0 -z-10 cover-grid-bg opacity-[0.10] dark:opacity-[0.06]" />
+      <FloatingToc />
+
+      <section className="relative min-h-screen border-b pt-28">
+        <div className="container pb-20 md:pb-28">
+          <Link
+            href="/projects"
+            className={cn(
+              buttonVariants({ variant: "ghost" }),
+              "mb-10 w-fit gap-2 px-0 text-muted-foreground hover:bg-muted hover:text-foreground"
+            )}
+          >
+            <ArrowLeft className="h-4 w-4" />
+            Work
+          </Link>
+
+          <div className="grid gap-10 xl:grid-cols-[0.82fr_1.18fr] xl:items-end">
+            <Reveal>
+              <Badge
+                variant="outline"
+                className="bg-background/70"
+              >
+                UX Design x AI Native Workflow
+              </Badge>
+              <h1 className="mt-7 font-heading text-5xl font-semibold leading-none tracking-tight text-foreground md:text-7xl">
+                数据自助查询
+              </h1>
+              <p className="mt-6 max-w-2xl text-lg leading-8 text-muted-foreground md:text-xl md:leading-9">
+                从模糊业务问题到可信数据资产的 AI Native 工作流设计
+              </p>
+              <div className="mt-8 flex flex-wrap items-center gap-3 font-mono text-xs uppercase tracking-[0.14em] text-muted-foreground">
+                <span>Senior UX Designer</span>
+                <span className="text-muted-foreground/50">/</span>
+                <span>2024 - 2025</span>
+                <span className="text-muted-foreground/50">/</span>
+                <span>Enterprise Data Platform</span>
+              </div>
+            </Reveal>
+
+            <Reveal delay={0.1}>
+              <HeroVisual />
+            </Reveal>
           </div>
         </div>
       </section>
 
-      <section className="container grid gap-10 pb-20 xl:grid-cols-[210px_minmax(0,1fr)] xl:gap-14">
-        <aside className="hidden xl:block">
-          <div className="sticky top-28 overflow-hidden rounded-lg border bg-background/80 p-4 shadow-sm backdrop-blur">
-            <p className="text-[11px] font-medium uppercase tracking-[0.2em] text-muted-foreground">
-              Contents
-            </p>
-            <nav className="mt-4 grid gap-1">
-              {sections.map((section) => (
-                <a
-                  key={section.id}
-                  href={`#${section.id}`}
-                  className="rounded-md px-3 py-2 text-sm text-muted-foreground transition hover:bg-muted hover:text-foreground"
-                >
-                  {section.label}
-                </a>
-              ))}
-            </nav>
+      <section className="border-b py-20 md:py-28">
+        <div className="container max-w-5xl">
+          <div className="min-w-0 space-y-24">
+            <Reveal>
+              <div className="max-w-4xl">
+                <p className="text-2xl font-medium leading-10 text-foreground md:text-3xl md:leading-[1.65]">
+                  数据自助查询是一个我真正觉得接近 AI Native Workflow
+                  的项目。它不是简单地把聊天框接进数据平台，而是将用户原本散落在&quot;找数、问人、导出、Excel加工、反复核对、沉淀口径&quot;里的工作，重新组织成一条可以被
+                  AI 参与、被用户验证、被系统沉淀的完整工作流。
+                </p>
+              </div>
+            </Reveal>
+
+            <Reveal>
+              <div className="rounded-sm border bg-card p-6 md:p-8">
+                <p className="text-sm leading-8 text-muted-foreground md:text-base">
+                  这个项目让我思考两件事。第一，当 AI
+                  进入高可信的企业数据场景，如何重新定义用户任务、交互节奏与结果可信度。第二，产品、设计与开发的边界是否还有意义——Lee
+                  Robinson 提过一个观点：AI
+                  时代不再需要严格的角色分工，而是需要能端到端交付用户价值的
+                  Builder。在这个项目中我切实体验到了这种融合：写交互
+                  Demo、在代码分支上走查提交、定义 Agent
+                  行为逻辑。这不是设计师「跨界」，而是 AI Native
+                  语境下角色边界自然消融的结果。
+                </p>
+              </div>
+            </Reveal>
           </div>
-        </aside>
+        </div>
+      </section>
 
-        <div className="min-w-0 space-y-24">
-          <section id="why" className="scroll-mt-28">
-            <SectionHeading
-              eyebrow="Why"
-              title="为什么这个项目值得做"
-              description="数据自助查询的核心矛盾不是“有没有数据”，而是业务用户很难把一个自然语言问题稳定地转成正确的数据资产、字段、筛选、链路和结果解释。项目的目标，是把查数从工具操作变成一个可被 Agent 承接、可被用户确认、可被平台保存的工作流。"
-            />
+      <section id="situation" className="py-20 md:py-28">
+        <div className="container max-w-5xl">
+          <div className="min-w-0">
+            <SectionHeader number="01" title="Situation" description="背景与问题" />
 
-            <Reveal delay={0.08} className="mt-10 grid gap-4 md:grid-cols-3">
-              {[
-                {
-                  title: "用户痛点",
-                  text: "用户知道自己想问什么，却不一定知道该找哪张表、哪个字段、什么业务口径。",
-                  icon: MessageSquare,
-                },
-                {
-                  title: "平台痛点",
-                  text: "数据资产、查询、分析、保存分散在不同路径里，查数结果难以沉淀为下一次可复用的视图。",
-                  icon: Database,
-                },
-                {
-                  title: "AI 机会",
-                  text: "Agent 可以承担从问题理解到结构化视图生成的中间层，但前提是边界、证据和确认机制被设计清楚。",
-                  icon: Bot,
-                },
-              ].map((item) => {
-                const Icon = item.icon
-
-                return (
-                  <Card key={item.title}>
-                    <CardHeader>
-                      <Icon className="mb-3 h-5 w-5 text-muted-foreground" />
-                      <CardTitle>{item.title}</CardTitle>
-                      <CardDescription className="leading-6">
-                        {item.text}
-                      </CardDescription>
-                    </CardHeader>
-                  </Card>
-                )
-              })}
-            </Reveal>
-
-            <Reveal delay={0.12} className="mt-6">
-              <div className="rounded-lg border bg-card p-5">
-                <div className="grid gap-3 md:grid-cols-5">
-                  {flowSteps.map((step, index) => (
-                    <FlowStep key={step.title} {...step} index={index} />
-                  ))}
-                </div>
-              </div>
-            </Reveal>
-          </section>
-
-          <section id="hard" className="scroll-mt-28">
-            <SectionHeading
-              eyebrow="What's hard"
-              title="真正难的是让 AI 查数可控"
-              description="这个项目里最值得讲的挑战，不是做一个漂亮的 demo，而是把高风险的数据生成过程拆成可控的产品节点：什么时候问、问什么、什么时候确认、证据从哪里来、结果如何复用。"
-            />
-
-            <Reveal className="mt-10 grid gap-4 lg:grid-cols-[1fr_1fr]">
-              <div className="rounded-lg border bg-card p-6">
-                <div className="flex items-center gap-3">
-                  <Shield className="h-5 w-5 text-muted-foreground" />
-                  <h3 className="text-xl font-semibold tracking-tight">
-                    信任边界
-                  </h3>
-                </div>
-                <p className="mt-4 text-sm leading-7 text-muted-foreground">
-                  数据资产真相只能来自 SDA MCP，表关系只能来自关系文档，跨
-                  catalog 的 SQL 联查需要被禁止。设计上不能把“AI
-                  会生成”误导成“AI 可以随意生成”。
+            <Reveal>
+              <div className="space-y-5">
+                <h3 className="text-2xl font-semibold tracking-tight text-foreground">
+                  从工具视角看：旧平台已有&quot;查数能力&quot;，但用户完成任务困难
+                </h3>
+                <p className="text-sm leading-8 text-muted-foreground md:text-base">
+                  数据自助查询平台的原始目标是成为&quot;一站式查数工具&quot;，替代用户线下用
+                  Excel
+                  查数、对数的习惯。从功能上看，它已经具备数据资产浏览、订阅、查询、筛选、联查、导出等能力。但灰测后暴露的核心问题是：
                 </p>
-              </div>
-              <div className="rounded-lg border bg-card p-6">
-                <div className="flex items-center gap-3">
-                  <Network className="h-5 w-5 text-muted-foreground" />
-                  <h3 className="text-xl font-semibold tracking-tight">
-                    协作落差
-                  </h3>
-                </div>
-                <p className="mt-4 text-sm leading-7 text-muted-foreground">
-                  早期 demo
-                  到研发实现之间会损失很多运行时细节。后来更有效的方式，是直接在研发分支上做交互和样式验收，把状态、文案、边界情况一起验证掉。
+                <BulletList
+                  items={[
+                    "用户到底有没有真正用起来？",
+                    "哪些功能在用，哪些被忽略？",
+                    "核心能力（如联查）对用户是“有用但难用”，还是“压根没被理解”？",
+                  ]}
+                />
+                <p className="text-sm leading-8 text-muted-foreground md:text-base">
+                  更深层的发现是：用户的真实查数过程并不是从&quot;打开一个已知数据表&quot;开始，而是从一个不完整的业务问题开始。
                 </p>
               </div>
             </Reveal>
 
-            <Reveal delay={0.08} className="mt-6">
-              <ImagePlaceholder
-                title="挑战地图图位"
-                description="建议用一张 2x2 图说明：业务术语歧义、资产召回不完整、生成结果可信度、跨团队实现还原度。"
-              />
+            <Reveal>
+              <ImagePlaceholder label="配图：旧平台问题示意 / 用户旅程痛点地图" />
             </Reveal>
-          </section>
 
-          <section id="how" className="scroll-mt-28">
-            <SectionHeading
-              eyebrow="How"
-              title="三个 UX Challenge 与设计决策"
-              description="这里不按流程罗列产出物，而按真正影响体验质量的岔路口来讲：如何定义查数任务、Agent 如何处理不确定性、AI 生成结果如何被用户验证并继续使用。"
-            />
+            <Reveal>
+              <div className="space-y-5">
+                <h3 className="text-2xl font-semibold tracking-tight text-foreground">
+                  从用户视角看：查数不是一个动作，而是一条链路
+                </h3>
+                <p className="text-sm leading-8 text-muted-foreground md:text-base">
+                  <strong className="font-semibold text-foreground">用户是谁：</strong>
+                  财务BP、财务分析、经营分析、业务同学
+                </p>
+                <p className="text-sm leading-8 text-muted-foreground md:text-base">
+                  对这些用户而言，查数包含五个连续动作：①找到正确的数据
+                  ②理解字段、口径和数据关系 ③根据业务问题筛选/联查/加工
+                  ④判断结果是否可信 ⑤把有价值的结果留到下次继续用。
+                </p>
+                <p className="text-sm leading-8 text-muted-foreground md:text-base">
+                  传统数据平台只支撑第1~3步，而 AI Native
+                  的机会在于把第2、3、4、5步重新串起来。
+                </p>
+              </div>
+            </Reveal>
+          </div>
+        </div>
+      </section>
 
-            <Reveal className="mt-10">
-              <Tabs defaultValue="task-model" className="w-full">
-                <TabsList className="grid h-auto w-full grid-cols-1 gap-1 p-1 md:grid-cols-3">
-                  {challenges.map((challenge) => (
-                    <TabsTrigger
-                      key={challenge.value}
-                      value={challenge.value}
-                      className="justify-start whitespace-normal px-4 py-3 text-left"
-                    >
-                      <span>
-                        <span className="block text-xs text-muted-foreground">
-                          {challenge.kicker}
+      <section id="task" className="border-y border-border py-20 md:py-28">
+        <div className="container max-w-5xl">
+          <div className="min-w-0">
+            <SectionHeader number="02" title="Task" description="项目目标与约束" />
+
+            <Reveal>
+              <div className="space-y-6">
+                <h3 className="text-2xl font-semibold tracking-tight text-foreground">
+                  不是做一个 AI 查数助手，而是设计一套新的数据工作方式
+                </h3>
+                <BulletList
+                  items={[
+                    "让用户可以用自然语言表达模糊需求",
+                    "让 Agent 在需求不完整时主动澄清",
+                    "让系统把 AI 的结果呈现为可检查的数据视图",
+                    "让用户可以理解数据来源、处理规则和 SQL，建立可信度",
+                    "让一次临时问数可以保存为“我的数据资产”，并进一步被复用或发布为 MCP",
+                  ]}
+                />
+                <div className="rounded-sm border-l-2 border-primary bg-card p-5">
+                  <p className="text-base font-medium leading-8 text-foreground">
+                    一句话概括：把一次临时查数，转化为一个可验证、可调整、可保存、可复用的数据资产。
+                  </p>
+                </div>
+              </div>
+            </Reveal>
+
+            <Reveal>
+              <div className="mt-12 rounded-sm border border-border bg-card p-6 md:p-8">
+                <h3 className="text-xl font-semibold tracking-tight text-foreground">
+                  核心约束：数据场景天然高风险
+                </h3>
+                <p className="mt-4 text-sm leading-8 text-muted-foreground md:text-base">
+                  在财务和经营数据场景里，AI
+                  不能只回答得流畅。用户真正关心的是：数据是不是取对了、口径是不是正确、过滤条件有没有漏、联查关系是否合理、结果能不能用于汇报或决策。
+                </p>
+              </div>
+            </Reveal>
+          </div>
+        </div>
+      </section>
+
+      <section id="action" className="py-20 md:py-28">
+        <div className="container max-w-5xl">
+          <div className="min-w-0">
+            <SectionHeader number="03" title="Action" description="设计行动" />
+
+            <div className="space-y-16">
+              <ActionCard
+                number="01"
+                title="用户任务建模 — 从功能地图转向路径地图"
+              >
+                <div className="rounded-sm border-l-2 border-primary bg-muted/40 p-5">
+                  <ActionTag tone="insight">Insight</ActionTag>
+                  <p className="mt-4 text-sm leading-8 text-muted-foreground">
+                    旧平台有数据集市、订阅、查询、联查、导出等功能。如果按功能模块来优化，很容易变成「每个页面都改一点」，但不知道是否真正改善了用户完成任务的能力。核心判断：先建立查数任务路径，而不是先拆页面。
+                  </p>
+                </div>
+
+                <div className="mt-8">
+                  <ActionTag tone="moves">Moves</ActionTag>
+                  <p className="mt-4 text-sm leading-8 text-muted-foreground">
+                    我把用户任务拆成四段路径：
+                  </p>
+                  <PathGrid />
+                </div>
+
+                <ImagePlaceholder label="配图：四段路径模型图 / 用户任务流程图" />
+              </ActionCard>
+
+              <ActionCard
+                number="02"
+                title="AI 对话交互设计 — 设计“从模糊到明确”的澄清机制"
+              >
+                <div className="rounded-sm border-l-2 border-primary bg-muted/40 p-5">
+                  <ActionTag tone="insight">Insight</ActionTag>
+                  <p className="mt-4 text-sm leading-8 text-muted-foreground">
+                    自然语言降低了输入门槛，但也带来了不确定性。不追问，答案不可信；追问太多，用户觉得
+                    AI
+                    没帮上忙。核心判断：澄清不是失败，而是 AI 工作流的一部分。
+                  </p>
+                </div>
+
+                <div className="mt-8">
+                  <ActionTag tone="moves">Moves</ActionTag>
+
+                  <div className="mt-6 space-y-8">
+                    <div>
+                      <h4 className="text-lg font-semibold text-foreground">
+                        1. 定义追问触发条件
+                      </h4>
+                      <p className="mt-3 text-sm leading-8 text-muted-foreground">
+                        Agent 在三种情况下主动澄清：
+                      </p>
+                      <BulletList
+                        items={[
+                          <span key="intent">
+                            <strong className="font-semibold text-foreground">
+                              意图识别不清：
+                            </strong>
+                            用户输入无法解析为明确的 queryType，Agent
+                            主动追问意图方向
+                          </span>,
+                          <span key="slot">
+                            <strong className="font-semibold text-foreground">
+                              槽位缺失：
+                            </strong>
+                            意图清晰但关键信息不完整，Agent
+                            用选项卡或自然语言补问
+                          </span>,
+                          <span key="fail">
+                            <strong className="font-semibold text-foreground">
+                              执行失败：
+                            </strong>
+                            Skill/工具调用返回异常，Agent
+                            向用户解释原因并引导修正
+                          </span>,
+                        ]}
+                      />
+                    </div>
+
+                    <ImagePlaceholder label="配图：三种追问触发场景的对话示例截图" />
+
+                    <div>
+                      <h4 className="text-lg font-semibold text-foreground">
+                        2. 设计分层追问体验
+                      </h4>
+                      <BulletList
+                        items={[
+                          <span key="options">
+                            <strong className="font-semibold text-foreground">
+                              选项卡（结构化选择）：
+                            </strong>
+                            可选范围明确且数量有限时，如「含税/不含税」「确认时间范围」。点一下就能继续
+                          </span>,
+                          <span key="free">
+                            <strong className="font-semibold text-foreground">
+                              自然语言追问：
+                            </strong>
+                            范围不明确或选项过多时，用开放式问句引导补充
+                          </span>,
+                          <span key="preflight">
+                            <strong className="font-semibold text-foreground">
+                              Preflight 确认：
+                            </strong>
+                            意图已完整但结果影响较大时，生成前先展示方案摘要让用户确认
+                          </span>,
+                        ]}
+                      />
+                    </div>
+
+                    <ImagePlaceholder label="配图：选项卡 / 自然语言追问 / Preflight 确认的 UI 对比" />
+
+                    <div>
+                      <h4 className="text-lg font-semibold text-foreground">
+                        3. 定义对话节奏规则
+                      </h4>
+                      <BulletList
+                        items={[
+                          "每次追问都携带已理解的部分，让用户感知到进展",
+                          "澄清和生成可以交叉进行——先生成初步结果，用户再通过局部修订（revise-skill）迭代",
+                        ]}
+                      />
+                    </div>
+
+                    <ImagePlaceholder label="配图：完整对话流程截图 — 展示澄清→生成→修订的节奏" />
+                  </div>
+                </div>
+              </ActionCard>
+
+              <ActionCard
+                number="03"
+                title="结果可信性设计 — 让用户敢用 AI 的结果"
+              >
+                <div className="rounded-sm border-l-2 border-primary bg-muted/40 p-5">
+                  <ActionTag tone="insight">Insight</ActionTag>
+                  <p className="mt-4 text-sm leading-8 text-muted-foreground">
+                    数据场景的难点不在让 AI
+                    回答，而在让用户敢用。财务同学查的数据会进入汇报、进入决策。如果无法核实，就不会信任。核心判断：在高可信场景，透明度
+                    &gt; 效率。
+                  </p>
+                </div>
+
+                <div className="mt-8">
+                  <ActionTag tone="moves">Moves</ActionTag>
+                  <p className="mt-4 text-sm leading-8 text-muted-foreground">
+                    五层可检查机制：
+                  </p>
+
+                  <div className="mt-5 divide-y divide-border rounded-sm border bg-background">
+                    {trustLayers.map((layer, index) => (
+                      <div
+                        key={layer.title}
+                        className="grid gap-4 p-5 md:grid-cols-[44px_1fr]"
+                      >
+                        <span className="flex h-9 w-9 items-center justify-center rounded-full bg-muted font-mono text-xs font-bold text-foreground">
+                          {index + 1}
                         </span>
-                        <span className="mt-1 block">{challenge.tabLabel}</span>
-                      </span>
-                    </TabsTrigger>
-                  ))}
-                </TabsList>
-                {challenges.map((challenge) => {
-                  const Icon = challenge.icon
-
-                  return (
-                    <TabsContent
-                      key={challenge.value}
-                      value={challenge.value}
-                      className="mt-6"
-                    >
-                      <div className="rounded-lg border bg-card p-5 md:p-6">
-                        <div className="grid gap-6 lg:grid-cols-[0.98fr_1.02fr]">
-                          <div>
-                            <div className="flex items-start gap-4">
-                              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-md bg-muted">
-                                <Icon className="h-5 w-5" />
-                              </span>
-                              <div>
-                                <Badge variant="secondary">
-                                  {challenge.kicker}
-                                </Badge>
-                                <h3 className="mt-4 text-2xl font-semibold leading-tight tracking-tight md:text-3xl">
-                                  {challenge.title}
-                                </h3>
-                              </div>
-                            </div>
-
-                            <div className="mt-8 grid gap-5">
-                              <div>
-                                <p className="text-sm font-medium">问题定义</p>
-                                <p className="mt-3 text-sm leading-7 text-muted-foreground">
-                                  {challenge.problem}
-                                </p>
-                              </div>
-                              <div>
-                                <p className="text-sm font-medium">我的判断</p>
-                                <p className="mt-3 text-sm leading-7 text-muted-foreground">
-                                  {challenge.judgment}
-                                </p>
-                              </div>
-                            </div>
-                          </div>
-
-                          <div className="grid gap-4">
-                            <ChallengeStructure
-                              items={challenge.structure}
-                              value={challenge.value}
-                            />
-                            <div className="rounded-lg border bg-background p-4">
-                              <p className="text-sm font-medium">设计取舍</p>
-                              <p className="mt-3 text-sm leading-7 text-muted-foreground">
-                                {challenge.tradeoff}
-                              </p>
-                            </div>
-                            <div className="rounded-lg border bg-background p-4">
-                              <p className="text-sm font-medium">方法沉淀</p>
-                              <p className="mt-3 text-sm leading-7 text-muted-foreground">
-                                {challenge.learning}
-                              </p>
-                            </div>
-                          </div>
-                        </div>
-
-                        <div className="mt-8 border-t pt-6">
-                          <div className="flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
-                            <div>
-                              <p className="text-sm font-medium">
-                                我具体做了什么
-                              </p>
-                              <p className="mt-2 text-sm leading-6 text-muted-foreground">
-                                把 Notion
-                                里的项目思考转成可落地的体验决策和研发验收点。
-                              </p>
-                            </div>
-                            <Badge variant="outline" className="w-fit">
-                              decision log
-                            </Badge>
-                          </div>
-
-                          <div className="mt-5 grid gap-4">
-                            {challenge.actions.map((action, index) => (
-                              <div
-                                key={action.title}
-                                className="overflow-hidden rounded-lg border bg-background"
-                              >
-                                <ActionVisualPlaceholder
-                                  title={action.visualTitle}
-                                  description={action.visualIdea}
-                                />
-                                <div className="p-4">
-                                  <div className="mb-3 flex items-center justify-between gap-3">
-                                    <p className="text-sm font-semibold">
-                                      {action.title}
-                                    </p>
-                                    <span className="font-mono text-xs text-muted-foreground">
-                                      {String(index + 1).padStart(2, "0")}
-                                    </span>
-                                  </div>
-                                  <p className="text-sm leading-7 text-muted-foreground">
-                                    {action.text}
-                                  </p>
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-
-                        <div className="mt-6 grid gap-6 lg:grid-cols-[0.82fr_1.18fr]">
-                          <div className="rounded-lg border bg-background p-4">
-                            <div className="flex items-center gap-3">
-                              <ArrowRight className="h-4 w-4 text-muted-foreground" />
-                              <p className="text-sm font-medium">
-                                可以配合展示的材料
-                              </p>
-                            </div>
-                            <p className="mt-3 text-sm leading-7 text-muted-foreground">
-                              {challenge.image}
-                            </p>
-                          </div>
-                          <ImagePlaceholder
-                            title={challenge.image}
-                            description="这里可以放对应阶段的线框、前后对比、流程图或真实界面截图。页面已预留稳定比例，后续替换图片不会破坏版式。"
-                          />
+                        <div>
+                          <h4 className="font-semibold text-foreground">
+                            {layer.title}
+                          </h4>
+                          <p className="mt-2 text-sm leading-7 text-muted-foreground">
+                            {layer.text}
+                          </p>
                         </div>
                       </div>
-                    </TabsContent>
-                  )
-                })}
-              </Tabs>
-            </Reveal>
-          </section>
-
-          <section id="result" className="scroll-mt-28">
-            <SectionHeading
-              eyebrow="So what"
-              title="结果不是一个页面，而是一条验证链路"
-              description="2.0 阶段更适合把结果讲成“可验证的漏斗”和“可持续优化的埋点框架”。在还没有公开精确指标时，页面不虚构数字，而是说明应该如何判断这个 Agent 是否真的降低了查数成本。"
-            />
-
-            <Reveal className="mt-10 grid gap-6 lg:grid-cols-[0.9fr_1.1fr]">
-              <div className="rounded-lg border bg-card p-6">
-                <h3 className="text-xl font-semibold tracking-tight">
-                  建议沉淀的验证口径
-                </h3>
-                <div className="mt-6 grid gap-6">
-                  {validationSteps.map((step) => (
-                    <MetricBar key={step.label} {...step} />
-                  ))}
+                    ))}
+                  </div>
                 </div>
-                <p className="mt-6 text-xs leading-5 text-muted-foreground">
-                  这里的百分比是页面展示占位，不作为真实业务数据；后续可替换为
-                  2.0 调研与埋点中的实际漏斗。
-                </p>
-              </div>
 
-              <div className="grid gap-4">
-                {[
-                  {
-                    title: "生成成功不等于任务成功",
-                    text: "需要同时看澄清完成率、方案确认调整率、校验失败原因、保存率和二次打开率。",
-                    icon: Code2,
-                  },
-                  {
-                    title: "用户反馈要贴近工作流节点",
-                    text: "与其问“AI 好不好用”，不如问“哪一步让你不敢继续”“哪一段证据不够解释结果”。",
-                    icon: FileText,
-                  },
-                  {
-                    title: "看板与导出体现后续价值",
-                    text: "如果用户愿意在当前结果集内继续做派生字段、透视表、图表或导出，说明视图已经从答案变成工作资产。",
-                    icon: BarChart3,
-                  },
-                ].map((item) => {
-                  const Icon = item.icon
+                <ImagePlaceholder label="配图：结果页面全貌 — 展示思考链容器、分层结果、三个 Tab" />
+                <ImagePlaceholder label="配图：局部修订交互 — 「页面元素选取」功能演示" />
+              </ActionCard>
 
-                  return (
-                    <Card key={item.title}>
-                      <CardHeader>
-                        <div className="flex items-start gap-4">
-                          <Icon className="mt-1 h-5 w-5 shrink-0 text-muted-foreground" />
-                          <div>
-                            <CardTitle>{item.title}</CardTitle>
-                            <CardDescription className="mt-2 leading-6">
+              <ActionCard
+                number="04"
+                title="资产沉淀闭环 — 从一次性问数到可复用资产"
+              >
+                <div className="rounded-sm border-l-2 border-primary bg-muted/40 p-5">
+                  <ActionTag tone="insight">Insight</ActionTag>
+                  <p className="mt-4 text-sm leading-8 text-muted-foreground">
+                    如果每次问数都是一次性的，那产品只是一个「智能搜索框」。真正的价值在于沉淀。核心判断：沉淀是价值的放大器，它把「一次性工作」转化为「组织资产」。
+                  </p>
+                </div>
+
+                <div className="mt-8">
+                  <ActionTag tone="moves">Moves</ActionTag>
+                  <p className="mt-4 text-sm leading-8 text-muted-foreground">
+                    三级沉淀与复用机制：
+                  </p>
+
+                  <div className="mt-5 grid gap-4 md:grid-cols-[1fr_auto_1fr_auto_1fr] md:items-stretch">
+                    {[
+                      {
+                        title: "临时会话 → 保存视图",
+                        text: "一次问数生成的视图可保存为「我的数据资产」，解决重复查数问题。",
+                        icon: Save,
+                      },
+                      {
+                        title: "保存视图 → 发布 MCP",
+                        text: "有价值的视图发布为 MCP 接口，从「个人工具」变成「组织能力」。",
+                        icon: Network,
+                      },
+                      {
+                        title: "官方资产管理",
+                        text: "经过验证的高质量模板推荐给其他用户，降低新用户冷启动门槛。",
+                        icon: Database,
+                      },
+                    ].map((item, index) => {
+                      const Icon = item.icon
+
+                      return (
+                        <React.Fragment key={item.title}>
+                          <div className="rounded-sm border border-border bg-background p-5 text-center">
+                            <Icon className="mx-auto h-6 w-6 text-muted-foreground" />
+                            <h4 className="mt-4 font-semibold text-foreground">
+                              {item.title}
+                            </h4>
+                            <p className="mt-2 text-sm leading-6 text-muted-foreground">
                               {item.text}
-                            </CardDescription>
+                            </p>
+                          </div>
+                          {index < 2 ? (
+                            <ArrowRight className="mx-auto hidden h-full w-5 text-muted-foreground md:block" />
+                          ) : null}
+                        </React.Fragment>
+                      )
+                    })}
+                  </div>
+                </div>
+
+                <ImagePlaceholder label="配图：资产沉淀流程图 / 保存视图 → MCP 发布的界面截图" />
+              </ActionCard>
+
+              <ActionCard
+                number="05"
+                title="AI Native 协作方式 — 设计师如何重新定义自己的交付物"
+              >
+                <div className="relative pl-8">
+                  <div className="absolute bottom-0 left-0 top-0 w-px bg-gradient-to-b from-border via-primary to-border" />
+                  {[
+                    {
+                      label: "过去",
+                      title: "传统瀑布模式",
+                      body: "严格串行流：用户想法 → PRD → UX设计稿 → 前后端实现 → 测试 → 上线。设计师交付「静态设计稿」。但在 AI Agent 产品中，非确定性输出 + 深度耦合 Prompt/Skill 架构 + 以周为单位的迭代，让这个前提失效了。",
+                    },
+                    {
+                      label: "现在",
+                      title: "我的实践",
+                      body: null,
+                      current: true,
+                    },
+                    {
+                      label: "未来",
+                      title: "我的思考",
+                      body: null,
+                    },
+                  ].map((item) => (
+                    <div key={item.label} className="relative pb-10 last:pb-0">
+                      <span
+                        className={cn(
+                          "absolute -left-[37px] top-1 h-3 w-3 rounded-full border-2 border-background bg-muted-foreground",
+                          item.current && "bg-primary shadow-lg shadow-primary/30"
+                        )}
+                      />
+                      <p className="font-mono text-xs uppercase tracking-[0.16em] text-foreground0">
+                        {item.label}
+                      </p>
+                      <h4 className="mt-2 text-xl font-semibold tracking-tight text-foreground">
+                        {item.title}
+                      </h4>
+                      {item.body ? (
+                        <p className="mt-3 text-sm leading-8 text-muted-foreground">
+                          {item.body}
+                        </p>
+                      ) : null}
+                      {item.label === "现在" ? (
+                        <div className="mt-3 space-y-3">
+                          <BulletList
+                            items={[
+                              <span key="mvp">
+                                <strong className="font-semibold text-foreground">
+                                  MVP 阶段：
+                                </strong>
+                                用代码代替设计稿。基于自研 cc-agent-sdk
+                                直接写交互 Demo，表达动态节奏、Tool Calling 链路、AI 能力边界
+                              </span>,
+                              <span key="v2">
+                                <strong className="font-semibold text-foreground">
+                                  2.0 阶段：
+                                </strong>
+                                直接在研发代码上做交付。通过 Platgit
+                                拉取分支，走查交互/样式后直接提交
+                                MR。设计意图从「传达」变成「执行」
+                              </span>,
+                            ]}
+                          />
+                          <div className="rounded-sm border bg-muted/40 p-4">
+                            <p className="text-sm font-medium leading-7 text-foreground">
+                              本质：设计师与产品实现之间的「距离」在不断缩短。信息损耗趋近零。
+                            </p>
                           </div>
                         </div>
-                      </CardHeader>
-                    </Card>
-                  )
-                })}
+                      ) : null}
+                      {item.label === "未来" ? (
+                        <BulletList
+                          items={[
+                            "设计师核心产出从「界面」转向「规则」——Skill 定义文件即「行为设计稿」",
+                            "AI Native 的真正影响不是「用 AI 提效」，而是「重新定义交付物」",
+                            "设计师、产品、研发边界模糊 → 产品体验工程师",
+                          ]}
+                        />
+                      ) : null}
+                    </div>
+                  ))}
+                </div>
+              </ActionCard>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="result" className="border-y border-border py-20 md:py-28">
+        <div className="container max-w-5xl">
+          <div className="min-w-0">
+            <SectionHeader number="04" title="Result" description="成果与度量" />
+            <Reveal>
+              <div className="grid gap-5 md:grid-cols-2">
+                <div className="rounded-sm border border-border bg-card p-6">
+                  <BarChart3 className="h-5 w-5 text-foreground0" />
+                  <h4 className="mt-5 text-xl font-semibold text-foreground">
+                    产品成果
+                  </h4>
+                  <BulletList
+                    items={[
+                      "MVP：完成数据 Agent 全流程交互设计与 Demo 开发",
+                      '2.0：从"问数工具"转型为"数据工作流平台"',
+                      "Skill 三层架构设计",
+                      "19+ 真实财务场景验证",
+                    ]}
+                  />
+                </div>
+                <div className="rounded-sm border border-border bg-card p-6">
+                  <FileText className="h-5 w-5 text-foreground0" />
+                  <h4 className="mt-5 text-xl font-semibold text-foreground">
+                    度量体系
+                  </h4>
+                  <p className="mt-4 text-sm leading-7 text-muted-foreground">
+                    围绕四条任务路径建立埋点：
+                  </p>
+                  <BulletList
+                    items={[
+                      <span key="find">
+                        <strong className="font-semibold text-foreground">
+                          找：
+                        </strong>
+                        搜索无结果率、点击转化率
+                      </span>,
+                      <span key="query">
+                        <strong className="font-semibold text-foreground">
+                          查：
+                        </strong>
+                        问答次数、生成时间、终止频率
+                      </span>,
+                      <span key="use">
+                        <strong className="font-semibold text-foreground">
+                          用：
+                        </strong>
+                        成功率、调整频率、重置率
+                      </span>,
+                      <span key="keep">
+                        <strong className="font-semibold text-foreground">
+                          留：
+                        </strong>
+                        保存率、复用率、MCP 发布量
+                      </span>,
+                    ]}
+                  />
+                </div>
+              </div>
+            </Reveal>
+          </div>
+        </div>
+      </section>
+
+      <section id="reflection" className="py-20 md:py-28">
+        <div className="container max-w-5xl">
+          <div className="min-w-0">
+            <SectionHeader
+              number="05"
+              title="Reflection"
+              description="我的 AI Native 思考"
+            />
+
+            <Reveal>
+              <div className="grid gap-5 md:grid-cols-3">
+                <div className="rounded-sm border border-border bg-card p-6">
+                  <Code2 className="h-5 w-5 text-foreground0" />
+                  <h4 className="mt-5 font-semibold text-foreground">
+                    关于设计师角色
+                  </h4>
+                  <p className="mt-4 text-sm leading-7 text-muted-foreground">
+                    工作范围覆盖了用户任务建模、埋点体系设计、Skill
+                    架构定义、交互 Demo 开发、代码走查与 Merge。AI
+                    时代的设计师需要同时具备：产品思维、工程能力、AI 理解。
+                  </p>
+                </div>
+                <div className="rounded-sm border border-border bg-card p-6">
+                  <Shield className="h-5 w-5 text-foreground0" />
+                  <h4 className="mt-5 font-semibold text-foreground">
+                    关于设计原则
+                  </h4>
+                  <BulletList
+                    items={[
+                      "不是给功能加 AI，而是用 AI 重新组织任务流",
+                      "可检查性 > 流畅性",
+                      "沉淀是价值的放大器",
+                      "埋点跟着任务走，不跟着功能走",
+                    ]}
+                  />
+                </div>
+                <div className="rounded-sm border border-border bg-card p-6">
+                  <GitBranch className="h-5 w-5 text-foreground0" />
+                  <h4 className="mt-5 font-semibold text-foreground">
+                    关于迭代思维
+                  </h4>
+                  <p className="mt-4 text-sm leading-7 text-muted-foreground">
+                    AI 产品的验证逻辑是&quot;先找到一个刮骨场景做到极致，再扩展&quot;，而不是&quot;先做完整再优化&quot;。
+                  </p>
+                </div>
               </div>
             </Reveal>
 
-            <Reveal delay={0.08} className="mt-6">
-              <ImagePlaceholder
-                title="埋点漏斗与反馈样本图位"
-                description="建议放 2.0 调研与埋点中的漏斗图、关键事件表或用户反馈摘录，用来支撑“哪些环节被验证、哪些仍需优化”。"
-              />
-            </Reveal>
-          </section>
-
-          <section id="learned" className="scroll-mt-28">
-            <SectionHeading
-              eyebrow="What I learned"
-              title="可以迁移到下个 AI 产品的原则"
-              description="这个项目最有价值的部分，是它逼着设计从界面层往工作流层移动：AI 不是一个更聪明的输入框，而是一组需要被约束、确认、验证和沉淀的协作机制。"
-            />
-
-            <Reveal className="mt-10">
-              <Accordion type="single" collapsible defaultValue="trust">
-                {learnings.map((learning, index) => (
-                  <AccordionItem
-                    key={learning.title}
-                    value={index === 0 ? "trust" : `item-${index}`}
-                  >
-                    <AccordionTrigger className="text-left text-lg">
-                      {learning.title}
-                    </AccordionTrigger>
-                    <AccordionContent>
-                      <p className="max-w-3xl text-sm leading-7 text-muted-foreground">
-                        {learning.description}
-                      </p>
-                    </AccordionContent>
-                  </AccordionItem>
-                ))}
-              </Accordion>
-            </Reveal>
-
-            <Reveal delay={0.08} className="mt-8">
-              <div className="rounded-lg border bg-card p-6">
-                <div className="flex items-center gap-3">
-                  <Zap className="h-5 w-5 text-muted-foreground" />
-                  <h3 className="text-xl font-semibold tracking-tight">
-                    对作品集讲述的取舍
-                  </h3>
-                </div>
-                <p className="mt-4 text-sm leading-7 text-muted-foreground">
-                  前半段用 STAR-R
-                  的变体讲清楚项目合理性、挑战和关键决策；后半段再讲协作方式的变化。这样不会把页面写成过程流水账，也能保留“我如何用
-                  AI Native 的方式做设计与验收”的个人判断。
+            <Reveal>
+              <div className="mt-12 rounded-sm border border-border bg-gradient-to-br from-card to-background p-8 text-center">
+                <CheckCircle2 className="mx-auto h-6 w-6 text-muted-foreground" />
+                <p className="mx-auto mt-5 max-w-4xl text-lg font-medium leading-9 text-foreground">
+                  数据自助查询 2.0 不是一个 AI
+                  问数入口，而是一条从模糊业务问题到结构化数据视图，再到可信验证、资产沉淀与复用的
+                  AI Native 数据工作流。
                 </p>
               </div>
             </Reveal>
-          </section>
+          </div>
         </div>
       </section>
     </main>

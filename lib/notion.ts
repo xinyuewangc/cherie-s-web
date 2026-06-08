@@ -104,8 +104,8 @@ const dataSelfServiceAgentProject: PortfolioCaseStudy = {
   title: "数据自助查询 Agent",
   slug: "agent",
   description:
-    "一次从传统查数工具到 AI Native 数据工作流的产品设计：让用户用自然语言表达需求，并通过澄清、方案确认、证据追溯和可复用视图完成可信的数据查询。",
-  tags: ["AI Native Workflow", "Agent UX", "Data Platform", "shadcn/ui"],
+    "从模糊业务问题到可信数据资产的 AI Native 工作流设计：用澄清、方案确认、证据追溯和资产沉淀，把一次临时问数变成可复用的数据工作对象。",
+  tags: ["AI Native Workflow", "Agent UX", "Data Platform", "Workflow UX"],
   collaborator: "miHoYo Data Platform",
   year: "2026",
   url: "#",

@@ -4,7 +4,6 @@ import { ArrowLeft } from "lucide-react"
 
 import { getLabNoteBySlug, getLabNotes } from "@/lib/lab"
 import { cn, formatDate } from "@/lib/utils"
-import { OklchLabArticle } from "@/components/lab/oklch-interactive-lab"
 import { NotionRenderer } from "@/components/portfolio/notion-renderer"
 import { ProjectCover } from "@/components/portfolio/project-cover"
 import { Reveal } from "@/components/portfolio/reveal"
@@ -18,8 +17,6 @@ type LabNotePageProps = {
     slug: string[]
   }
 }
-
-const OKLCH_LAB_SLUG = "get-to-know-oklch"
 
 function slugFromParams(params: LabNotePageProps["params"]) {
   return params.slug?.join("/")
@@ -35,17 +32,10 @@ export async function generateStaticParams() {
 
 export default async function LabNotePage({ params }: LabNotePageProps) {
   const slug = slugFromParams(params)
-  const note =
-    slug === OKLCH_LAB_SLUG
-      ? (await getLabNotes()).find((item) => item.slug === slug)
-      : await getLabNoteBySlug(slug)
+  const note = await getLabNoteBySlug(slug)
 
   if (!note) {
     notFound()
-  }
-
-  if (slug === OKLCH_LAB_SLUG) {
-    return <OklchLabArticle />
   }
 
   return (

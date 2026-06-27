@@ -32,7 +32,7 @@ type CommandMenuProps = {
 
 const pages = [
   { label: "Home", href: "/", icon: Home, shortcut: "H" },
-  { label: "Projects", href: "/projects", icon: Briefcase, shortcut: "P" },
+  { label: "Work", href: "/projects", icon: Briefcase, shortcut: "W" },
   { label: "Lab", href: "/lab", icon: Zap, shortcut: "L" },
   { label: "Playground", href: "/playground", icon: Beaker, shortcut: "G" },
   { label: "About", href: "/about", icon: User, shortcut: "A" },

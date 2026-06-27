@@ -13,6 +13,8 @@ type ProjectCoverProps = {
   priority?: boolean
 }
 
+const PROJECT_PLACEHOLDER_SRC = "/images/project-placeholder.png"
+
 export function ProjectCover({
   src,
   alt,
@@ -21,53 +23,38 @@ export function ProjectCover({
 }: ProjectCoverProps) {
   const [loaded, setLoaded] = React.useState(false)
   const [failed, setFailed] = React.useState(false)
+  const usesPlaceholder = !src || failed
+  const imageSrc = usesPlaceholder ? PROJECT_PLACEHOLDER_SRC : src
 
-  if (!src) {
-    return (
-      <div
-        className={cn(
-          "relative overflow-hidden rounded-lg border bg-[radial-gradient(circle_at_25%_10%,hsl(var(--foreground)/0.14),transparent_32%),linear-gradient(135deg,hsl(var(--muted)),hsl(var(--background)))]",
-          className
-        )}
-      >
-        <div className="cover-grid-bg absolute inset-0 opacity-50" />
-        <div className="absolute bottom-4 left-4 rounded-full border bg-background/75 px-3 py-1 text-xs text-muted-foreground backdrop-blur">
-          Cover pending
-        </div>
-      </div>
-    )
-  }
-
-  if (failed) {
-    return (
-      <div
-        className={cn(
-          "relative overflow-hidden rounded-lg border bg-[radial-gradient(circle_at_25%_10%,hsl(var(--foreground)/0.14),transparent_32%),linear-gradient(135deg,hsl(var(--muted)),hsl(var(--background)))]",
-          className
-        )}
-      >
-        <div className="cover-grid-bg absolute inset-0 opacity-50" />
-        <div className="absolute bottom-4 left-4 rounded-full border bg-background/75 px-3 py-1 text-xs text-muted-foreground backdrop-blur">
-          Preview unavailable
-        </div>
-      </div>
-    )
-  }
+  React.useEffect(() => {
+    setLoaded(false)
+    setFailed(false)
+  }, [src])
 
   return (
-    <div className={cn("relative overflow-hidden rounded-lg border bg-muted", className)}>
-      <ImageLoadingState hidden={loaded} />
+    <div
+      className={cn(
+        "relative overflow-hidden rounded-lg border bg-muted",
+        className
+      )}
+    >
+      {!usesPlaceholder ? <ImageLoadingState hidden={loaded} /> : null}
       <Image
-        src={src}
+        src={imageSrc}
         alt={alt}
         fill
         priority={priority}
         unoptimized
         sizes="(min-width: 1024px) 45vw, 100vw"
         onLoadingComplete={() => setLoaded(true)}
-        onError={() => setFailed(true)}
+        onError={() => {
+          if (!usesPlaceholder) {
+            setFailed(true)
+          }
+        }}
         className={cn(
-          "object-cover text-transparent opacity-0 transition duration-700 group-hover:scale-[1.03]",
+          "object-cover text-transparent transition duration-700 group-hover:scale-[1.03]",
+          usesPlaceholder ? "opacity-100" : "opacity-0",
           loaded && "opacity-100"
         )}
       />

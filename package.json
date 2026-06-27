@@ -2,9 +2,10 @@
   "name": "cherie-portfolio",
   "version": "0.1.0",
   "private": true,
-  "packageManager": "pnpm@8.15.9",
+  "packageManager": "pnpm@9.15.9",
   "engines": {
-    "node": "22.x"
+    "node": ">=22 <25",
+    "pnpm": ">=9 <10"
   },
   "author": {
     "name": "Cherie Xinyue",

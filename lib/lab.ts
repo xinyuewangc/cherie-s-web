@@ -78,6 +78,9 @@ type NotionQueryResponse = {
 
 const NOTION_VERSION = "2022-06-28"
 const DISCOVERED_LAB_DATABASE_ID = "36559cfd-921d-809a-8297-f2dfeb4ed37a"
+const labCoverOverrides: Record<string, string> = {
+  "basic-of-tailwind-css": "/images/lab/basic-of-tailwind-css-cover.png",
+}
 
 export const labCategories: LabCategory[] = [
   {
@@ -294,7 +297,7 @@ function fallbackDescription(categoryKey: LabCategoryKey) {
 function getNotionConfig() {
   const token = process.env.NOTION_TOKEN
   const databaseId =
-    process.env.NOTION_LAB_DATABASE_ID ?? DISCOVERED_LAB_DATABASE_ID
+    process.env.NOTION_LAB_DATABASE_ID || DISCOVERED_LAB_DATABASE_ID
 
   if (!token || !databaseId) {
     return null
@@ -369,6 +372,7 @@ async function getNotionLabNotes(): Promise<LabNote[]> {
       const externalCover =
         getExternalFileUrl(page.cover) ?? getExternalFileUrl(coverProperty)
       const cover =
+        labCoverOverrides[slug] ??
         externalCover ??
         (page.cover || coverProperty
           ? `/api/notion-asset?pageId=${page.id}&kind=cover`
@@ -399,6 +403,7 @@ function getMdxLabNotes(): LabNote[] {
       category: note.category,
       tags,
     })
+    const cover = note.cover ?? labCoverOverrides[note.slugAsParams]
 
     return {
       id: note._id,
@@ -411,6 +416,7 @@ function getMdxLabNotes(): LabNote[] {
       categoryKey,
       tags,
       source: "mdx",
+      cover,
       bodyCode: note.body.code,
     }
   })
@@ -423,9 +429,9 @@ export async function getLabNotes() {
   ])
   const seen = new Set<string>()
 
-  return [...notionNotes, ...mdxNotes]
+  return [...mdxNotes, ...notionNotes]
     .filter((note) => {
-      const key = `${note.source}:${note.slug}`
+      const key = note.slug
 
       if (seen.has(key)) {
         return false

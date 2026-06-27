@@ -1,64 +1,46 @@
 import { Metadata } from "next"
 
-import { PortfolioProject, getPortfolioProjects } from "@/lib/notion"
+import { getPortfolioProjects } from "@/lib/notion"
 import { ProjectCard } from "@/components/portfolio/project-card"
 import { MotionGrid, Reveal } from "@/components/portfolio/reveal"
 
 export const metadata: Metadata = {
-  title: "Projects",
+  title: "Work List",
   description:
-    "A Notion-backed project system for AI-native UX, product systems, and design engineering work.",
+    "A Notion-backed work list for product projects, platform flows, design systems, and AI-native workflow experiments.",
 }
 
 export const revalidate = 300
 
-const dataSelfServiceAgentProject: PortfolioProject = {
-  id: "data-self-service-agent",
-  title: "数据自助查询 Agent",
-  slug: "agent",
-  description:
-    "从模糊业务问题到可信数据资产的 AI Native 工作流设计：用澄清、方案确认、证据追溯和资产沉淀，把一次临时问数变成可复用的数据工作对象。",
-  tags: ["AI Native Workflow", "Agent UX", "Data Platform", "Workflow UX"],
-  collaborator: "miHoYo Data Platform",
-  year: "2026",
-  url: "#",
-  cover: null,
-  coverAlt: "数据自助查询 Agent case study cover",
-}
-
 export default async function ProjectsPage() {
-  const notionProjects = await getPortfolioProjects()
-  const projects = [
-    dataSelfServiceAgentProject,
-    ...notionProjects.filter(
-      (project) => project.slug !== dataSelfServiceAgentProject.slug
-    ),
-  ]
+  const projects = await getPortfolioProjects()
 
   return (
-    <main className="container py-16 md:py-24">
-      <Reveal className="max-w-3xl">
-        <p className="text-sm font-medium uppercase tracking-[0.2em] text-muted-foreground">
-          Projects
-        </p>
-        <h1 className="mt-5 font-heading text-5xl leading-tight tracking-tight md:text-7xl">
-          Project systems, not portfolio slides.
-        </h1>
-        <p className="mt-6 text-lg leading-7 text-muted-foreground md:text-xl md:leading-8">
-          A Notion-backed workspace for product projects, platform flows, design
-          systems, and AI-native workflow experiments.
-        </p>
-      </Reveal>
+    <main>
+      <section className="border-b border-black/10 bg-[#fbf7ef]">
+        <div className="container py-20 md:py-24">
+          <Reveal className="max-w-4xl">
+            <p className="text-sm font-medium uppercase tracking-[0.2em] text-muted-foreground">
+              Work List
+            </p>
+            <h1 className="mt-5 font-heading text-6xl leading-[0.96] tracking-tight md:text-8xl">
+              A quieter archive for everything beyond the four main cases.
+            </h1>
+            <p className="mt-7 max-w-2xl text-lg leading-8 text-muted-foreground">
+              The homepage keeps the spotlight tight. This page keeps the rest
+              of the work visible, searchable, and synced from Notion.
+            </p>
+          </Reveal>
+        </div>
+      </section>
 
-      <MotionGrid className="mt-12 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-        {projects.map((project, index) => (
-          <ProjectCard
-            key={project.id}
-            project={project}
-            featured={index === 0 && Boolean(project.cover)}
-          />
-        ))}
-      </MotionGrid>
+      <section className="portfolio-grid-bg py-16 md:py-20">
+        <MotionGrid className="container grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+          {projects.map((project) => (
+            <ProjectCard key={project.id} project={project} />
+          ))}
+        </MotionGrid>
+      </section>
     </main>
   )
 }

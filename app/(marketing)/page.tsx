@@ -1,202 +1,375 @@
 import Link from "next/link"
-import { ArrowRight, ExternalLink, Zap } from "lucide-react"
-
 import {
-  focusAreas,
-  heroSignals,
+  ArrowRight,
+  ArrowUpRight,
+  Briefcase,
+  FileText,
+  Mail,
+} from "lucide-react"
+
+import { PortfolioProject, getPortfolioProjects } from "@/lib/notion"
+import {
   labTopics,
-  playgroundDemos,
+  resumeSummary,
   socialLinks,
-  systemLoop,
+  toolStack,
 } from "@/lib/portfolio-content"
-import { getPortfolioProjects } from "@/lib/notion"
 import { cn } from "@/lib/utils"
-import { ProjectCard } from "@/components/portfolio/project-card"
-import { MotionGrid, MotionItem, Reveal } from "@/components/portfolio/reveal"
 import { buttonVariants } from "@/components/ui/button"
+import { ProjectCover } from "@/components/portfolio/project-cover"
+import { MotionGrid, MotionItem, Reveal } from "@/components/portfolio/reveal"
 
 export const revalidate = 300
 
-export default async function IndexPage() {
-  const projects = await getPortfolioProjects()
-  const selectedProjects = projects.slice(0, 6)
+const projectAccents = [
+  {
+    label: "Data workflow",
+    bg: "bg-[#eaf6ff]",
+    ink: "text-[#213142]",
+    chip: "bg-[#f7fbff]",
+  },
+  {
+    label: "Platform system",
+    bg: "bg-[#e8f8ef]",
+    ink: "text-[#25382d]",
+    chip: "bg-[#eef7ff]",
+  },
+  {
+    label: "Learning flow",
+    bg: "bg-[#e8ecff]",
+    ink: "text-[#2b3040]",
+    chip: "bg-[#fff5f6]",
+  },
+  {
+    label: "Business tooling",
+    bg: "bg-[#fff1dc]",
+    ink: "text-[#3d3028]",
+    chip: "bg-[#eef8f1]",
+  },
+]
+
+const projectStackTops = ["md:top-28", "md:top-32", "md:top-36", "md:top-40"]
+const projectStackLayers = ["md:z-[1]", "md:z-[2]", "md:z-[3]", "md:z-[4]"]
+const projectStackScales = [
+  "md:[--stack-scale:0.955] md:[--stack-hover-scale:0.962]",
+  "md:[--stack-scale:0.97] md:[--stack-hover-scale:0.977]",
+  "md:[--stack-scale:0.985] md:[--stack-hover-scale:0.992]",
+  "md:[--stack-scale:1] md:[--stack-hover-scale:1.005]",
+]
+
+const heroMarquee = [
+  "Complex system UX",
+  "AI Native workflow",
+  "Design engineering",
+  "B-side tools",
+  "Community products",
+  "Data assets",
+  "Interaction prototypes",
+  "Design systems",
+]
+
+const homeStats = [
+  ["Current", "miHoYo UX"],
+  ["Focus", "AI + platform"],
+  ["Base", "Shanghai"],
+  ["Archive", "Notion synced"],
+]
+
+function ProjectVisual({
+  project,
+  index,
+}: {
+  project: PortfolioProject
+  index: number
+}) {
+  return (
+    <ProjectCover
+      src={project.cover}
+      alt={project.coverAlt}
+      priority={index === 0}
+      className="h-full min-h-[240px] rounded-[8px] border-black/10"
+    />
+  )
+}
+
+function FeaturedProjectCard({
+  project,
+  index,
+  className,
+}: {
+  project: PortfolioProject
+  index: number
+  className?: string
+}) {
+  const accent = projectAccents[index % projectAccents.length]
 
   return (
-    <>
-      <section className="container relative grid min-h-[calc(100vh-5rem)] gap-12 py-16 md:grid-cols-[1.08fr_0.92fr] md:items-center md:py-24">
-        <Reveal className="max-w-3xl">
-          <h1 className="font-heading text-5xl leading-[0.98] tracking-tight sm:text-6xl lg:text-7xl">
-            Cherie Wang
-          </h1>
-          <p className="mt-3 text-2xl font-semibold tracking-tight text-foreground/70 md:text-3xl">
-            王馨悦
-          </p>
-          <p className="text-foreground/85 mt-5 text-2xl font-medium tracking-tight md:text-3xl">
-            Designer × AI Builder × System Thinker
-          </p>
-          <p className="mt-6 max-w-2xl text-lg leading-7 text-muted-foreground md:text-xl md:leading-8">
-            Designer building systems between AI, code, and interfaces. This is
-            a living workspace for projects, research notes, and experimental
-            tools.
-          </p>
-          <div className="mt-7 flex flex-wrap gap-2">
-            {focusAreas.map((item) => (
-              <span
-                key={item}
-                className="rounded-full border bg-background/70 px-3 py-1.5 text-sm text-muted-foreground backdrop-blur"
-              >
-                {item}
-              </span>
-            ))}
+    <Link
+      href={`/projects/${project.slug}`}
+      aria-label={`View ${project.title} case study`}
+      className={cn("project-stack-card group block", className)}
+    >
+      <article
+        className={cn(
+          "project-stack-card-inner grid min-h-[440px] scale-[var(--stack-scale)] overflow-hidden rounded-[8px] border border-black/10 shadow-sm transition duration-500 [--stack-hover-scale:1.005] [--stack-scale:1] group-hover:-translate-y-1 group-hover:scale-[var(--stack-hover-scale)] group-hover:shadow-2xl group-hover:shadow-black/10 md:min-h-[460px] lg:grid-cols-[0.9fr_1.1fr]",
+          accent.bg,
+          accent.ink,
+          projectStackScales[index] ||
+            projectStackScales[projectStackScales.length - 1]
+        )}
+      >
+        <div className="flex flex-col p-6 md:p-8">
+          <div className="flex items-center justify-between gap-4 text-xs uppercase tracking-[0.16em] text-black/[0.45]">
+            <span>{String(index + 1).padStart(2, "0")}</span>
+            <span>{project.year}</span>
           </div>
-          <div className="mt-9 flex flex-col gap-3 sm:flex-row">
-            <Link
-              href="/projects"
-              className={cn(buttonVariants({ size: "lg" }), "gap-2")}
-            >
-              View projects
-              <ArrowRight className="h-4 w-4" />
-            </Link>
-            <Link
-              href="/about"
-              className={cn(
-                buttonVariants({ variant: "outline", size: "lg" }),
-                "gap-2 bg-background/60"
-              )}
-            >
-              Operating manual
-              <Zap className="h-4 w-4" />
-            </Link>
-          </div>
-          <div className="mt-8 flex flex-wrap gap-5 text-sm text-muted-foreground">
-            {socialLinks.map((link) => (
-              <Link
-                key={link.label}
-                href={link.href}
-                target={link.href.startsWith("http") ? "_blank" : undefined}
-                rel={link.href.startsWith("http") ? "noreferrer" : undefined}
-                className="inline-flex items-center gap-1 transition hover:text-foreground"
-              >
-                {link.label}
-                {link.href.startsWith("http") ? (
-                  <ExternalLink className="h-3.5 w-3.5" />
-                ) : null}
-              </Link>
-            ))}
-          </div>
-        </Reveal>
-
-        <Reveal delay={0.12}>
-          <div className="rounded-2xl border bg-card/70 p-2 shadow-2xl shadow-black/5 backdrop-blur dark:shadow-black/30">
-            <div className="rounded-xl border bg-zinc-950 p-4 text-zinc-100">
-              <div className="flex items-center gap-2 border-b border-white/10 pb-3">
-                <span className="h-3 w-3 rounded-full bg-red-400" />
-                <span className="h-3 w-3 rounded-full bg-amber-400" />
-                <span className="h-3 w-3 rounded-full bg-emerald-400" />
-                <span className="ml-auto text-xs text-zinc-500">
-                  cherie.os
-                </span>
-              </div>
-              <div className="space-y-4 py-5 font-mono text-sm leading-7">
-                <p className="text-zinc-500">$ system_mode</p>
-                <p>
-                  <span className="text-emerald-300">AI builder</span> +{" "}
-                  <span className="text-sky-300">interface systems</span> +{" "}
-                  <span className="text-amber-200">design ops</span>
-                </p>
-                <p className="text-zinc-500">
-                  $ project_index --from notion --surface projects
-                </p>
-                <div className="grid gap-2">
-                  {selectedProjects.slice(0, 4).map((project, index) => (
-                    <Link
-                      key={project.id}
-                      href={`/projects/${project.slug}`}
-                      className="flex items-center justify-between rounded-lg border border-white/10 bg-white/[0.03] px-3 py-2 transition hover:bg-white/[0.07]"
-                    >
-                      <span>{project.title}</span>
-                      <span className="text-zinc-500">
-                        {String(index + 1).padStart(2, "0")}
-                      </span>
-                    </Link>
-                  ))}
-                </div>
-              </div>
-              <div className="grid grid-cols-2 gap-2 border-t border-white/10 pt-4 sm:grid-cols-4">
-                {heroSignals.map((signal) => (
-                  <div key={signal.label}>
-                    <p className="text-xs text-zinc-500">{signal.label}</p>
-                    <p className="mt-1 text-sm">{signal.value}</p>
-                  </div>
+          <div className="mt-auto pt-12">
+            <p className="text-sm font-medium text-black/[0.45]">
+              {project.collaborator || "Selected work"}
+            </p>
+            <h3 className="mt-4 text-4xl font-semibold leading-[1.03] tracking-tight md:text-5xl">
+              {project.title}
+            </h3>
+            <p className="mt-5 max-w-xl text-base leading-7 text-black/[0.62]">
+              {project.description}
+            </p>
+            <div className="mt-7 flex flex-wrap gap-2">
+              {(project.tags.length ? project.tags : ["Portfolio"])
+                .slice(0, 4)
+                .map((tag) => (
+                  <span
+                    key={tag}
+                    className={cn(
+                      "rounded-full border border-black/10 px-3 py-1.5 text-xs text-black/[0.55]",
+                      accent.chip
+                    )}
+                  >
+                    {tag}
+                  </span>
                 ))}
-              </div>
+            </div>
+            <div className="mt-8 inline-flex items-center gap-2 rounded-full bg-[#1b1514] px-5 py-3 text-sm font-medium text-white transition group-hover:translate-x-1">
+              View case study
+              <ArrowRight className="h-4 w-4" />
             </div>
           </div>
-        </Reveal>
+        </div>
+        <div className="p-4 lg:p-6">
+          <ProjectVisual project={project} index={index} />
+        </div>
+      </article>
+    </Link>
+  )
+}
+
+function WorkList({ projects }: { projects: PortfolioProject[] }) {
+  if (!projects.length) {
+    return null
+  }
+
+  return (
+    <div className="divide-y divide-black/10 border-y border-black/10">
+      {projects.map((project, index) => (
+        <Link
+          key={project.id}
+          href={`/projects/${project.slug}`}
+          className="group grid gap-4 py-5 transition hover:bg-white/[0.45] md:grid-cols-[80px_1fr_160px_auto]"
+        >
+          <span className="font-mono text-sm text-muted-foreground">
+            {String(index + 5).padStart(2, "0")}
+          </span>
+          <span>
+            <span className="block text-xl font-semibold tracking-tight">
+              {project.title}
+            </span>
+            <span className="mt-1 line-clamp-2 block text-sm leading-6 text-muted-foreground">
+              {project.description}
+            </span>
+          </span>
+          <span className="text-sm text-muted-foreground">
+            {project.collaborator || "Project"}
+          </span>
+          <ArrowUpRight className="h-5 w-5 text-muted-foreground transition group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-foreground" />
+        </Link>
+      ))}
+    </div>
+  )
+}
+
+export default async function IndexPage() {
+  const projects = await getPortfolioProjects()
+  const featuredProjects = projects.slice(0, 4)
+  const archiveProjects = projects.slice(4, 12)
+  const duplicatedMarquee = [...heroMarquee, ...heroMarquee]
+
+  return (
+    <main>
+      <section className="relative overflow-hidden border-b border-black/10 bg-[#fbf7ef]">
+        <div className="container py-14 md:py-20">
+          <Reveal className="mx-auto flex max-w-5xl flex-col items-center text-center">
+            <div className="flex h-28 w-28 items-center justify-center overflow-hidden rounded-full border border-black/10 bg-white shadow-sm">
+              <span className="font-heading text-3xl font-semibold tracking-tight">
+                CW
+              </span>
+            </div>
+            <p className="mt-8 text-sm font-medium uppercase tracking-[0.22em] text-muted-foreground">
+              From complex systems to clear working products
+            </p>
+            <h1 className="mt-5 max-w-6xl font-heading text-5xl leading-[0.95] tracking-tight sm:text-7xl lg:text-8xl">
+              Xinyue Wang designs AI-native product systems.
+            </h1>
+            <p className="mt-6 max-w-3xl text-lg leading-8 text-muted-foreground md:text-xl md:leading-9">
+              UX designer at miHoYo, working across community products, account
+              systems, game launcher flows, enterprise tools, and data asset
+              platforms.
+            </p>
+            <div className="mt-9 flex flex-col gap-3 sm:flex-row">
+              <Link
+                href="#projects"
+                className={cn(
+                  buttonVariants({ size: "lg" }),
+                  "gap-2 rounded-full bg-[#1b1514] px-6"
+                )}
+              >
+                View selected work
+                <ArrowRight className="h-4 w-4" />
+              </Link>
+              <Link
+                href="/about"
+                className={cn(
+                  buttonVariants({ variant: "outline", size: "lg" }),
+                  "gap-2 rounded-full border-black/[0.15] bg-white/[0.55] px-6"
+                )}
+              >
+                About Cherie
+                <FileText className="h-4 w-4" />
+              </Link>
+            </div>
+          </Reveal>
+
+          <Reveal
+            delay={0.08}
+            className="mx-auto mt-14 grid max-w-4xl grid-cols-2 border-y border-black/10 md:grid-cols-4"
+          >
+            {homeStats.map(([label, value]) => (
+              <div key={label} className="p-4 text-center">
+                <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">
+                  {label}
+                </p>
+                <p className="mt-2 font-medium">{value}</p>
+              </div>
+            ))}
+          </Reveal>
+        </div>
+
+        <div className="border-y border-black/10 bg-white/40 py-5">
+          <div className="marquee-mask overflow-hidden">
+            <div className="marquee-track flex w-max gap-4">
+              {duplicatedMarquee.map((item, index) => (
+                <span
+                  key={`${item}-${index}`}
+                  className="rounded-full border border-black/10 bg-white px-5 py-2 text-sm text-muted-foreground shadow-sm"
+                >
+                  {item}
+                </span>
+              ))}
+            </div>
+          </div>
+        </div>
       </section>
 
-      <section id="projects" className="container py-20">
-        <Reveal className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
-          <div className="max-w-2xl">
+      <section id="projects" className="container scroll-m-24 py-20 md:py-24">
+        <Reveal className="grid gap-8 md:grid-cols-[0.65fr_1fr] md:items-end">
+          <div>
             <p className="text-sm font-medium uppercase tracking-[0.2em] text-muted-foreground">
               Selected Projects
             </p>
-            <h2 className="mt-4 font-heading text-4xl leading-tight tracking-tight md:text-5xl">
-              Project systems, not portfolio slides.
+            <h2 className="mt-4 font-heading text-5xl leading-tight tracking-tight md:text-6xl">
+              Four main cases on the front page.
             </h2>
-            <p className="mt-4 text-base leading-7 text-muted-foreground">
-              A curated view into product systems, workflow tools, and AI-shaped
-              making. The full archive stays synced with Notion.
-            </p>
           </div>
-          <Link
-            href="/projects"
-            className={cn(
-              buttonVariants({ variant: "outline" }),
-              "w-fit gap-2 bg-background/60"
-            )}
-          >
-            View all projects
-            <ArrowRight className="h-4 w-4" />
-          </Link>
+          <p className="max-w-2xl text-base leading-7 text-muted-foreground md:justify-self-end">
+            The homepage now stays focused: four major projects get the large
+            editorial treatment, while the rest are collected into a quieter
+            work list.
+          </p>
         </Reveal>
-        <MotionGrid className="mt-10 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-          {selectedProjects.map((project, index) => (
-            <ProjectCard
+
+        <MotionGrid className="mt-12 grid gap-6 md:block md:pb-24">
+          {featuredProjects.map((project, index) => (
+            <FeaturedProjectCard
               key={project.id}
               project={project}
-              featured={index === 0 && Boolean(project.cover)}
+              index={index}
+              className={cn(
+                "md:sticky",
+                projectStackTops[index] || "md:top-32",
+                projectStackLayers[index] || "md:z-[4]",
+                index > 0 && "md:mt-10 lg:mt-12"
+              )}
             />
           ))}
         </MotionGrid>
       </section>
 
-      <section className="border-y bg-muted/25 py-20">
-        <div className="container">
-          <Reveal className="max-w-2xl">
+      <section className="border-y border-black/10 bg-[#f5f4ee] py-20">
+        <div className="container grid gap-10 lg:grid-cols-[0.55fr_1.45fr]">
+          <Reveal>
+            <p className="text-sm font-medium uppercase tracking-[0.2em] text-muted-foreground">
+              Work List
+            </p>
+            <h2 className="mt-4 font-heading text-4xl tracking-tight md:text-5xl">
+              Everything else stays findable.
+            </h2>
+            <p className="mt-4 text-base leading-7 text-muted-foreground">
+              Smaller, older, or still-forming work lives here for scanning. The
+              full archive remains synced from Notion.
+            </p>
+            <Link
+              href="/projects"
+              className="mt-8 inline-flex items-center gap-2 text-sm font-medium transition hover:text-muted-foreground"
+            >
+              Open full work list
+              <ArrowUpRight className="h-4 w-4" />
+            </Link>
+          </Reveal>
+          <Reveal delay={0.08}>
+            <WorkList projects={archiveProjects} />
+          </Reveal>
+        </div>
+      </section>
+
+      <section id="lab" className="container scroll-m-24 py-20 md:py-24">
+        <Reveal className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
+          <div className="max-w-2xl">
             <p className="text-sm font-medium uppercase tracking-[0.2em] text-muted-foreground">
               Lab
             </p>
             <h2 className="mt-4 font-heading text-4xl tracking-tight md:text-5xl">
-              Ongoing research and system explorations.
+              Notes for the systems behind the work.
             </h2>
-            <p className="mt-4 text-base leading-7 text-muted-foreground">
-              Notes on AI workflow, interface infrastructure, tokens, MCP, and
-              design-to-code practice.
-            </p>
-          </Reveal>
-          <MotionGrid className="mt-10 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {labTopics.slice(0, 6).map((topic) => {
+          </div>
+          <Link
+            href="/lab"
+            className="inline-flex items-center gap-2 text-sm font-medium transition hover:text-muted-foreground"
+          >
+            Visit lab
+            <ArrowUpRight className="h-4 w-4" />
+          </Link>
+        </Reveal>
+        {labTopics.length > 0 ? (
+          <MotionGrid className="mt-10 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+            {labTopics.slice(0, 4).map((topic) => {
               const Icon = topic.icon
 
               return (
                 <MotionItem key={topic.title}>
                   <Link
                     href={topic.href}
-                    className="group block h-full rounded-xl border bg-background/70 p-5 transition hover:-translate-y-1 hover:border-foreground/20 hover:bg-background"
+                    className="group block h-full rounded-[8px] border border-black/10 bg-white/70 p-5 transition duration-300 hover:-translate-y-1 hover:bg-white hover:shadow-xl hover:shadow-black/5"
                   >
                     <Icon className="h-5 w-5 text-muted-foreground transition group-hover:text-foreground" />
-                    <h3 className="mt-5 text-xl font-semibold">
+                    <h3 className="mt-5 text-xl font-semibold tracking-tight">
                       {topic.title}
                     </h3>
                     <p className="mt-3 text-sm leading-6 text-muted-foreground">
@@ -207,93 +380,104 @@ export default async function IndexPage() {
               )
             })}
           </MotionGrid>
-        </div>
+        ) : null}
       </section>
 
-      <section className="container grid gap-10 py-20 lg:grid-cols-[0.85fr_1.15fr]">
-        <Reveal>
-          <p className="text-sm font-medium uppercase tracking-[0.2em] text-muted-foreground">
-            Playground
-          </p>
-          <h2 className="mt-4 font-heading text-4xl tracking-tight md:text-5xl">
-            Interactive experiments for thinking with interfaces.
-          </h2>
-          <p className="mt-5 text-lg leading-7 text-muted-foreground">
-            A preview of small tools that turn design process into usable
-            product surfaces: color, motion, prompts, flows, and AI interaction.
-          </p>
-          <Link
-            href="/playground"
-            className={cn(buttonVariants({ variant: "outline" }), "mt-8 gap-2")}
-          >
-            Open playground
-            <ArrowRight className="h-4 w-4" />
-          </Link>
-        </Reveal>
-        <MotionGrid className="grid gap-4">
-          {playgroundDemos.map((demo) => {
-            const Icon = demo.icon
-
-            return (
-              <MotionItem key={demo.title} className="group">
+      <section
+        id="about"
+        className="border-y border-black/10 bg-[#1f1b1a] py-20 text-white"
+      >
+        <div className="container grid gap-12 lg:grid-cols-[0.75fr_1.25fr]">
+          <Reveal>
+            <p className="text-sm font-medium uppercase tracking-[0.2em] text-white/[0.45]">
+              About
+            </p>
+            <h2 className="mt-4 font-heading text-4xl leading-tight tracking-tight md:text-6xl">
+              I turn fuzzy product problems into usable systems.
+            </h2>
+            <p className="mt-6 text-base leading-7 text-white/[0.62]">
+              {resumeSummary.intro}
+            </p>
+            <div className="mt-8 flex flex-wrap gap-3">
+              {socialLinks.map((link) => (
                 <Link
-                  href={demo.href}
-                  className="block rounded-xl border bg-card/70 p-5 shadow-sm transition duration-300 hover:-translate-y-1 hover:border-foreground/20 hover:bg-card hover:shadow-2xl hover:shadow-black/5 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-background dark:hover:shadow-black/30"
+                  key={link.label}
+                  href={link.href}
+                  target={link.href.startsWith("http") ? "_blank" : undefined}
+                  rel={link.href.startsWith("http") ? "noreferrer" : undefined}
+                  className="inline-flex items-center gap-2 rounded-full border border-white/[0.15] px-4 py-2 text-sm text-white/[0.72] transition hover:border-white/[0.35] hover:text-white"
                 >
-                  <div className="flex items-start justify-between gap-4">
-                    <Icon className="h-5 w-5 text-muted-foreground" />
-                    <span className="rounded-full border bg-background px-2.5 py-1 text-xs text-muted-foreground">
-                      {demo.status}
-                    </span>
-                  </div>
-                  <div className="mt-5 flex items-start justify-between gap-4">
-                    <h3 className="text-xl font-semibold">{demo.title}</h3>
-                    <ArrowRight className="mt-1 h-4 w-4 shrink-0 text-muted-foreground transition group-hover:translate-x-0.5 group-hover:text-foreground" />
-                  </div>
-                  <p className="mt-3 text-sm leading-6 text-muted-foreground">
-                    {demo.description}
-                  </p>
+                  {link.label}
+                  <ArrowUpRight className="h-3.5 w-3.5" />
                 </Link>
-              </MotionItem>
-            )
-          })}
-        </MotionGrid>
-      </section>
-
-      <section className="container pb-20">
-        <Reveal className="rounded-2xl border bg-card/70 p-6 md:p-8">
-          <div className="grid gap-8 lg:grid-cols-[0.8fr_1.2fr]">
-            <div>
-              <p className="text-sm font-medium uppercase tracking-[0.2em] text-muted-foreground">
-                System loop
-              </p>
-              <h2 className="mt-4 text-3xl font-semibold tracking-tight">
-                A portfolio that behaves like a workspace.
-              </h2>
-              <p className="mt-4 text-sm leading-6 text-muted-foreground">
-                Project notes stay editable in Notion. The website translates
-                them into project systems, research notes, and interactive
-                surfaces.
-              </p>
+              ))}
             </div>
-            <div className="grid gap-4 md:grid-cols-3">
-              {systemLoop.map((item) => {
-                const Icon = item.icon
+          </Reveal>
+
+          <Reveal delay={0.08}>
+            <div className="grid gap-4 md:grid-cols-2">
+              {resumeSummary.highlights.slice(0, 4).map((item) => (
+                <div
+                  key={item}
+                  className="rounded-[8px] border border-white/10 bg-white/[0.06] p-5 text-sm leading-7 text-white/[0.68]"
+                >
+                  {item}
+                </div>
+              ))}
+            </div>
+            <div className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+              {toolStack.slice(0, 8).map((tool) => {
+                const Icon = tool.icon
 
                 return (
-                  <div key={item.label} className="rounded-xl border p-4">
-                    <Icon className="h-5 w-5 text-muted-foreground" />
-                    <h3 className="mt-4 font-semibold">{item.label}</h3>
-                    <p className="mt-2 text-sm leading-6 text-muted-foreground">
-                      {item.value}
-                    </p>
+                  <div
+                    key={tool.label}
+                    className="flex items-center gap-3 border-t border-white/10 py-3 text-sm text-white/[0.62]"
+                  >
+                    <Icon className="h-4 w-4" />
+                    {tool.label}
                   </div>
                 )
               })}
             </div>
+          </Reveal>
+        </div>
+      </section>
+
+      <section id="contact" className="container scroll-m-24 py-20 md:py-24">
+        <Reveal className="grid gap-8 md:grid-cols-[0.7fr_1fr] md:items-end">
+          <div>
+            <p className="text-sm font-medium uppercase tracking-[0.2em] text-muted-foreground">
+              Contact
+            </p>
+            <h2 className="mt-4 font-heading text-5xl leading-tight tracking-tight md:text-6xl">
+              Looking forward to building clear things together.
+            </h2>
+          </div>
+          <div className="grid gap-4 md:grid-cols-2">
+            <Link
+              href="mailto:wangxy19971219@163.com"
+              className="group rounded-[8px] border border-black/10 bg-white/70 p-5 transition hover:-translate-y-1 hover:bg-white hover:shadow-xl hover:shadow-black/5"
+            >
+              <Mail className="h-5 w-5 text-muted-foreground" />
+              <p className="mt-5 text-lg font-semibold">Email</p>
+              <p className="mt-2 text-sm text-muted-foreground">
+                wangxy19971219@163.com
+              </p>
+            </Link>
+            <Link
+              href="/about"
+              className="group rounded-[8px] border border-black/10 bg-white/70 p-5 transition hover:-translate-y-1 hover:bg-white hover:shadow-xl hover:shadow-black/5"
+            >
+              <Briefcase className="h-5 w-5 text-muted-foreground" />
+              <p className="mt-5 text-lg font-semibold">Resume</p>
+              <p className="mt-2 text-sm text-muted-foreground">
+                Full experience, education, awards, and operating style.
+              </p>
+            </Link>
           </div>
         </Reveal>
       </section>
-    </>
+    </main>
   )
 }

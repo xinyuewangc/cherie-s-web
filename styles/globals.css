@@ -9,37 +9,37 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 240 10% 3.9%;
+    --background: 42 42% 97%;
+    --foreground: 18 16% 10%;
 
-    --muted: 240 4.8% 95.9%;
-    --muted-foreground: 240 3.8% 46.1%;
+    --muted: 43 28% 91%;
+    --muted-foreground: 26 8% 42%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 240 10% 3.9%;
+    --popover: 42 42% 98%;
+    --popover-foreground: 18 16% 10%;
 
-    --border: 240 5.9% 90%;
-    --input: 240 5.9% 90%;
+    --border: 24 18% 86%;
+    --input: 24 18% 86%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 240 10% 3.9%;
+    --card: 42 55% 99%;
+    --card-foreground: 18 16% 10%;
 
-    --primary: 240 5.9% 10%;
-    --primary-foreground: 0 0% 98%;
+    --primary: 18 16% 10%;
+    --primary-foreground: 42 55% 98%;
 
-    --secondary: 240 4.8% 95.9%;
-    --secondary-foreground: 240 5.9% 10%;
+    --secondary: 45 35% 92%;
+    --secondary-foreground: 18 16% 10%;
 
-    --accent: 214 100% 97%;
-    --accent-foreground: 240 5.9% 10%;
-    --accent-soft: 214 95% 74%;
+    --accent: 168 42% 91%;
+    --accent-foreground: 18 16% 10%;
+    --accent-soft: 174 55% 58%;
 
     --destructive: 0 100% 50%;
     --destructive-foreground: 210 40% 98%;
 
-    --ring: 240 5% 64.9%;
+    --ring: 18 16% 40%;
 
-    --radius: 0.75rem;
+    --radius: 0.5rem;
   }
 
   .dark {
@@ -82,7 +82,7 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground selection:bg-foreground selection:text-background;
+    @apply overflow-x-hidden bg-background text-foreground selection:bg-foreground selection:text-background;
     font-feature-settings: "rlig" 1, "calt" 1;
     font-kerning: normal;
     letter-spacing: 0;
@@ -104,11 +104,7 @@
         hsl(var(--border) / 0.45) 1px,
         transparent 1px
       ),
-      linear-gradient(
-        to bottom,
-        hsl(var(--border) / 0.45) 1px,
-        transparent 1px
-      );
+      linear-gradient(to bottom, hsl(var(--border) / 0.45) 1px, transparent 1px);
     background-size: 72px 72px;
   }
 
@@ -118,12 +114,50 @@
         hsl(var(--border) / 0.7) 1px,
         transparent 1px
       ),
-      linear-gradient(
-        to bottom,
-        hsl(var(--border) / 0.7) 1px,
-        transparent 1px
-    );
+      linear-gradient(to bottom, hsl(var(--border) / 0.7) 1px, transparent 1px);
     background-size: 28px 28px;
   }
 
+  .marquee-mask {
+    mask-image: linear-gradient(
+      to right,
+      transparent,
+      black 10%,
+      black 90%,
+      transparent
+    );
+  }
+
+  .marquee-track {
+    animation: portfolio-marquee 28s linear infinite;
+  }
+
+  .marquee-track:hover {
+    animation-play-state: paused;
+  }
+
+  .project-stack-card {
+    isolation: isolate;
+  }
+
+  .project-stack-card-inner {
+    transform-origin: center top;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .project-stack-card,
+    .project-stack-card-inner,
+    .project-stack-card:hover .project-stack-card-inner {
+      transform: none;
+    }
+  }
+
+  @keyframes portfolio-marquee {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
+    }
+  }
 }

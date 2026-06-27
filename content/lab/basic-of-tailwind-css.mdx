@@ -1,0 +1,373 @@
+---
+title: "Basic of Tailwind CSS"
+description: "Build the UI system like a product surface."
+date: "2026-05-19T07:39:00.000Z"
+category: "Lab"
+cover: "/images/lab/basic-of-tailwind-css-cover.png"
+---
+## 一、Tailwind CSS是啥
+
+Tailwind CSS 是一个“实用类优先”（Utility-First）的 CSS 框架，
+
+简单来说，实用类就是只包含单一（或极少数）CSS 属性的底层类名。你不需要在 CSS 文件中写一大堆自定义样式，而是直接在 HTML 标签上组合这些现成的、功能单一的类名来构建页面。
+
+## 1️⃣ 传统 CSS 与 Tailwind 实用类的对比
+
+为了更好地理解，我们来看看实现一个“蓝色按钮”的两种方式：
+
+a.传统 CSS（语义化类名）： 你需要先在 HTML 中想一个名字，然后在 CSS 文件里写样式。
+
+HTML
+
+```html
+<button class="btn-primary">点击我</button>
+```
+
+CSS
+
+```css
+/* CSS */
+.btn-primary {
+  background-color: #3b82f6;
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 0.25rem;
+}
+```
+
+b.Tailwind CSS（实用类）： 你不需要写任何 CSS 代码，直接在 HTML 中堆叠工具类。
+
+HTML
+
+```html
+<button class="bg-blue-500 text-white px-4 py-2 rounded">点击我</button>
+```
+
+在这里：
+
+- bg-blue-500 = 背景颜色为特定的蓝色
+
+- text-white = 文字颜色为白色
+
+- px-4 = 左右内边距（padding-x）
+
+- py-2 = 上下内边距（padding-y）
+
+- rounded = 设置圆角（border-radius）
+
+## 2️⃣ 常见的实用类分类
+
+Tailwind 将 CSS 属性极其细致地拆分成了各种缩写。虽然一开始需要记一些前缀，但它的命名非常有规律：
+
+- 布局 (Layout): flex, grid, block, hidden, absolute, relative
+
+- 间距 (Spacing): * m (margin), p (padding)
+  - 加上方向：mt (margin-top), pr (padding-right), px (水平方向), py (垂直方向)
+
+  - 例如：mt-4, p-6
+
+- 尺寸 (Sizing): w-full (width: 100%), h-screen (height: 100vh), w-1/2 (宽度 50%)
+
+- 排版 (Typography): text-sm, text-lg, font-bold, text-center, leading-loose (行高)
+
+- 颜色 (Colors): 格式通常是 [属性]-[颜色]-[深浅度]。例如：text-red-500, bg-gray-100, border-blue-300
+
+- 边框与圆角 (Borders): border, border-2, rounded-md, rounded-full
+
+---
+
+## 3️⃣ 强大的修饰符（Modifiers）
+
+Tailwind 的实用类不仅限于静态样式，它最强大的地方在于可以通过前缀修饰符来处理各种状态和响应式设计。
+
+### 交互状态 (Hover, Focus, Active 等)
+
+你可以在任何实用类前面加上状态前缀，只在该状态下应用样式：
+
+HTML
+
+```html
+<button class="bg-blue-500 hover:bg-blue-700">提交</button>
+```
+
+### 响应式设计 (Responsive Design)
+
+Tailwind 内置了移动端优先的断点（sm, md, lg, xl, 2xl）。
+
+HTML
+
+```html
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
+  </div>
+```
+
+### 暗黑模式 (Dark Mode)
+
+使用 dark: 前缀轻松适配暗色主题：
+
+HTML
+
+```html
+<div class="bg-white dark:bg-gray-800 text-black dark:text-white">
+  支持暗黑模式的卡片
+</div>
+```
+
+---
+
+## 4️⃣ 实用类的优缺点
+
+| 优势 | 劣势 |
+| --- | --- |
+| 告别起名困难症：不用再纠结 wrapper, container, inner-box 这种类名。 | HTML 显得臃肿：标签上会堆积长长的一串类名（被称为 "Class Soup"）。 |
+| 无需在文件间切换：在 HTML 里就能完成所有的 UI 编写，心智负担更小。 | 有一定的学习曲线：需要花时间熟悉 Tailwind 的缩写规则。 |
+| CSS 体积极小：构建时会自动剔除（Purge）未使用的类，生产环境的 CSS 文件通常只有几 KB 到几十 KB。 | 代码复用需借助组件：如果不结合 React/Vue 等组件化框架，单纯复用一段长长的 HTML 结构会很痛苦（虽然可以通过 @apply 提取，但官方不推荐滥用）。 |
+| 高度一致性：强制使用预设的设计系统（间距、颜色），UI 看起来更统一。 | - |
+
+## 🧠 二、Tailwind缩写规则
+
+## 1️⃣ 基本结构
+
+Tailwind class 的基本结构👉大多数 utility class 都长这样：
+
+```html
+属性-值
+```
+
+比如：
+
+p-4 → padding: 16px
+
+text-lg → font-size
+
+bg-blue-500 → 背景色
+
+👉 本质就是：
+
+> [property]-[value]
+
+## 2️⃣常见“属性缩写”规则（重点）：
+
+Tailwind 把 CSS 属性压缩成很短的前缀
+
+### 📏 间距类（最常用）
+
+| class | 含义 |
+| --- | --- |
+| p | padding |
+| m | margin |
+
+再加方向👇
+
+| class | 含义 |
+| --- | --- |
+| t | top |
+| b | bottom |
+| l | left |
+| r | right |
+| x | 左右 |
+| y | 上下 |
+
+组合起来：
+
+```css
+p-4     → 全部 padding
+px-4    → 左右 padding
+pt-2    → 上 padding
+mb-6    → 下 margin
+```
+
+### 🎨 颜色类
+
+```css
+bg-blue-500     → 背景色
+text-gray-700   → 文字颜色
+border-red-300  → 边框颜色
+```
+
+👉 结构：
+
+```html
+[color-type]-[color]-[shade]
+```
+
+---
+
+### 🔤 字体类
+
+```css
+text-lg       → 字号
+font-bold     → 字重
+leading-6     → 行高
+tracking-wide → 字间距
+```
+
+---
+
+### 📦 尺寸类
+
+```css
+w-full     → width: 100%
+h-screen   → height: 100vh
+max-w-md   → 最大宽度
+```
+
+---
+
+### 📐 布局类
+
+```html
+flex
+grid
+block
+hidden
+```
+
+👉 这一类通常没有 -value，直接就是属性
+
+## 3️⃣“数字”代表什么？
+
+这是很多人一开始最懵的👇
+
+```html
+p-4
+```
+
+不是 4px，而是：
+
+👉 来自 Tailwind 的 spacing scale 的默认规则：
+
+| class | 实际值 |
+| --- | --- |
+| 1 | 4px |
+| 2 | 8px |
+| 4 | 16px |
+| 6 | 24px |
+
+👉 所以：
+
+```text
+p-4 = padding: 16px
+```
+
+本质是：
+
+> 设计系统里的 token
+
+## 4️⃣ 负值写法（很巧妙）
+
+```text
+-mt-4
+```
+
+👉 意思是：
+
+```text
+margin-top: -16px
+```
+
+规则：
+
+> 在前面加 -
+
+## 5️⃣状态前缀（非常关键）
+
+Tailwind 有一套“状态语法”：
+
+```text
+状态:属性
+```
+
+```css
+hover:bg-blue-500
+focus:outline-none
+active:scale-95
+```
+
+👉 读法：
+
+> hover 时 → 背景变蓝
+
+---
+
+## 6️⃣ 响应式写法（断点前缀）
+
+```text
+断点:class
+```
+
+```text
+sm:text-sm
+md:text-lg
+lg:flex
+```
+
+👉 意思：
+
+sm: → 小屏生效
+
+md: → 中屏生效
+
+---
+
+## 7️⃣ 组合写法（最真实的使用场景）
+
+你平时看到的其实是这样👇
+
+```text
+<div class="p-4 md:p-6 bg-white hover:bg-gray-100 rounded-lg">
+```
+
+拆开读：
+
+p-4 → 默认 padding
+
+md:p-6 → 中屏更大 padding
+
+bg-white → 白背景
+
+hover:bg-gray-100 → hover 变灰
+
+rounded-lg → 圆角
+
+👉 就像一句“CSS 句子”
+
+---
+
+## 8️⃣ 一个“翻译技巧”
+
+你可以用这个心法读 Tailwind：
+
+> 从左到右 = 条件 + 属性 + 值
+
+比如：
+
+```text
+md:hover:bg-blue-500
+```
+
+拆解：
+
+md → 中屏
+
+hover → hover 时
+
+bg-blue-500 → 背景蓝
+
+👉 完整意思：
+
+> 在中等屏幕下 hover 时背景变蓝
+
+---
+
+## 9️⃣ 总结一句话版本
+
+> Tailwind 的缩写规则 =
+
+> “属性缩写 + 设计 token + 状态/断点前缀”
+
+---
+
+👉 Tailwind 本质就是：
+
+把设计 token 编译成一套可读的 class 语言

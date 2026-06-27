@@ -1,0 +1,175 @@
+---
+title: "Get to know OKLCH"
+description: "Build the UI system like a product surface."
+date: "2026-05-27T02:08:00.000Z"
+category: "Lab"
+cover: "/images/lab/get-to-know-oklch-cover.webp"
+---
+What OKLCH is？
+
+![Lab image](/images/lab/get-to-know-oklch-01.webp)
+
+![Lab image](/images/lab/get-to-know-oklch-02.webp)
+
+有点复杂...
+
+---
+
+> 💡换个方式打开💡
+
+> https://32428068.titan.mihoyo.com/
+
+> 简单总结一下：
+
+> OKLCH 是一种定义 CSS 颜色的新方法。它使用亮度、色度和色相来定义颜色，提供了一种更准确、一致且有意义的颜色处理方式。其结构如下：
+
+> ```css
+> oklch(L C H / A)
+> ```
+
+> L:   Lightness value 0-1 表示颜色的感知亮度。lightness定义了物体黑暗的程度
+
+> C:   Chroma  表示色度，从灰色到最饱和的颜色。
+
+> H:   Hue 0-360  表示色调，从 0 到 360 度的角度定义。
+
+> A:   Optional alpha (opacity)  0-1 or 0-100%表示不透明度值。
+
+---
+
+### 💾 一些参考资料
+
+https://evilmartians.com/chronicles/oklch-in-css-why-quit-rgb-hsl
+
+https://harmonizer.evilmartians.com/#hZK7csMgEEX_ZdNqMjyEHnSJM6niJnaXSYFl9JhgUAC5iMf_nsETW8gFobyXPexd9gRHad1gNHCcgZJHqRzwjxNocZDAASMEGTRGeyucB44RyqDprTkI4OgR4apkV2ElRuB6Uuqc3erJXX29LM8ZxYSh2ylSLHrHKssFqyJVzMIpVH6HKliMwiTEmrvKUyh2h2J4gSpYEQckKVSR7iqncVPprsrkrDChCxhNoar0F9bFYlbJgPU_21Qi-s8XfudrLfkxmcnH1cxReefiYbmYTF5uvU9G4Qs00JCt056f2gOwf8dAu6NnupgIMYm1CwH6xs_GB00IFD223NcwfXsH-qPEoNGey6lVHGvg1d74HDQ9u2s_oi7FcQ0WWuu-5ya-OFDXsYBq2M3YyiCbyRwvn8Cw
+
+https://oklch.com/#0.7567,0.1,208,100
+
+### ✏️ 一些 Figma 插件
+
+OKLCH Color Variations
+
+https://www.figma.com/community/plugin/1261721955648857186
+
+OKCOLOR 这个更好👍
+
+https://www.figma.com/community/plugin/1173638098109123591/okcolor?q_id=c88dc029-5102-4bc6-83c2-c43fd9bc945a
+
+### 🎨 HSL👉OKLCH convert
+
+https://oklch.fyi/bulk-convert
+
+### ♟️ Skill
+
+可以给 agent 安装的 skill：https://oklch.fyi/skill
+
+```text
+npx skills add jakubkrehel/oklch-skill
+```
+
+---
+
+## 后半段：OKLCH 为什么适合现代 UI 系统
+
+前面我们已经知道 OKLCH 的 L、C、H 分别控制明度、色度和色相。真正进入项目时，它的价值不只是换一种颜色写法，而是让颜色从“手动挑选”变成“有规律地推导”。
+
+### 1. 色板不是一串手写颜色，而是一套关系
+
+做组件库或主题系统时，我们通常不会只需要一个主色，而是需要从 50 到 900 的色阶、hover/active 状态、浅色背景、深色文字和边框色。OKLCH 的好处是：你可以先稳定 hue，再用 lightness 建立层级，用 chroma 控制颜色的鲜明程度。
+
+```css
+:root {
+  --brand-50: oklch(96% 0.03 252);
+  --brand-100: oklch(92% 0.06 252);
+  --brand-300: oklch(78% 0.12 252);
+  --brand-500: oklch(62% 0.18 252);
+  --brand-700: oklch(46% 0.16 252);
+  --brand-900: oklch(28% 0.12 252);
+}
+```
+
+这套写法里，颜色不是孤立存在的。每一级都能解释：为什么更亮、为什么更深、为什么仍然属于同一个颜色家族。
+
+### 2. 状态色可以从同一个基色长出来
+
+在真实 UI 里，按钮不只需要 default，还需要 hover、active、subtle、outline、disabled。用 OKLCH 和 relative colors，可以围绕一个基色推导这些状态，而不是每次都重新吸色。
+
+```css
+:root {
+  --primary: oklch(60% 0.17 250);
+  --primary-hover: oklch(from var(--primary) calc(l - 0.06) c h);
+  --primary-active: oklch(from var(--primary) calc(l - 0.1) c h);
+  --primary-soft: oklch(from var(--primary) calc(l + 0.24) calc(c - 0.06) h);
+}
+```
+
+它的关键不是“代码更短”，而是设计决策更清楚：hover 是降低明度，soft surface 是提高明度并降低色度。以后要换品牌色时，这些关系仍然成立。
+
+### 3. 对比度不会自动合格，但调参路径更清楚
+
+OKLCH 不是无障碍检查器。文字是否可读，仍然要看具体前景色和背景色的对比。但 OKLCH 让修正方向更明确：大多数时候优先调整 L，也就是明度。
+
+- 浅背景上的文字不清楚：降低文字的 L，让它更暗。
+
+- 深背景上的文字不清楚：提高文字的 L，让它更亮。
+
+- 颜色太刺眼但对比够：适当降低 C，而不是先乱改 hue。
+
+- 正式上线前仍然要用 WCAG 或 APCA 检查真实组合。
+
+### 4. 它特别适合 shadcn/ui、Tailwind 和 design tokens
+
+shadcn/ui 和 Tailwind 本来就鼓励把颜色放进变量和 token。OKLCH 刚好适合这类系统：组件不直接依赖某个 hex，而是依赖语义 token，比如 primary、muted、border、accent。
+
+```css
+@theme {
+  --color-primary: oklch(60% 0.17 250);
+  --color-primary-foreground: oklch(98% 0.01 250);
+  --color-muted: oklch(94% 0.02 250);
+  --color-border: oklch(88% 0.02 250);
+}
+```
+
+当颜色进入 token 层之后，OKLCH 的优势会被放大：你可以更稳定地生成一组色阶，也更容易解释每个 token 在界面里的角色。
+
+### 什么时候不必急着用 OKLCH
+
+- 如果项目只需要少量静态品牌色，且不会做主题、色阶、渐变或动态换肤，hex 也完全够用。
+
+- 如果需要兼容非常老的浏览器，要准备 fallback，或者仍然保留已有颜色系统。
+
+- 如果设计稿里已经有成熟 token，不要为了改写法而重构；优先在新增主题或新色阶里引入。
+
+> 可以把 OKLCH 理解成：当颜色开始系统化、可推导、可切换时，它比 HSL 和纯 hex 更好用。
+
+---
+
+## 互动 Playground：拖一下就懂
+
+下面这个交互页就是这篇文章的后半段实践版。它把 OKLCH 拆成五个可操作的小实验：语法结构、感知亮度、色盘生成、相对颜色和渐变质量。建议读完前面的概念后，直接拖动滑块看颜色如何变化。
+
+[https://32428068.titan.mihoyo.com/](https://32428068.titan.mihoyo.com/)
+
+> 如果 Notion 里的 iframe 没有正常显示，可以直接打开 Playground 链接。
+
+> [https://32428068.titan.mihoyo.com/](https://32428068.titan.mihoyo.com/)
+
+> - 先调 L，观察颜色从暗到亮的变化。
+
+> - 再调 C，观察颜色从灰到鲜明的变化。
+
+> - 切换 HSL / OKLCH 对比，感受相同 lightness 在不同色相里的稳定性差异。
+
+> - 最后看 relative colors 和 gradient，理解它为什么适合主题系统。
+
+## 最后记住 4 句话
+
+1. OKLCH 的 L 更接近人眼感知里的亮度。
+
+1. C 控制颜色离灰轴有多远，适合管理鲜艳程度。
+
+1. H 决定色相，适合保持一组颜色的家族感。
+
+1. 它最适合用在 token、palette、theme、gradient 和动态配色里。
+
+所以，OKLCH 最值得学习的地方不是“我能不能写一个新语法”，而是“我能不能用它搭出一套更稳定、更好解释、也更容易维护的颜色系统”。

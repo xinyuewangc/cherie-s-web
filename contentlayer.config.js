@@ -162,6 +162,9 @@ export const Lab = defineDocumentType(() => ({
       type: "string",
       required: true,
     },
+    cover: {
+      type: "string",
+    },
   },
   computedFields,
 }))

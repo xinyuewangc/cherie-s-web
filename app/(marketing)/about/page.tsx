@@ -4,13 +4,10 @@ import {
   ArrowUpRight,
   Award,
   Briefcase,
-  Download,
-  ExternalLink,
   GraduationCap,
   Mail,
 } from "lucide-react"
 
-import { getResumeCaseStudy } from "@/lib/notion"
 import {
   designPrinciples,
   resumeSummary,
@@ -26,93 +23,27 @@ export const metadata: Metadata = {
     "About Cherie Wang, a UX designer working across complex systems, AI Native workflows, and design engineering.",
 }
 
-const notionResumeUrl =
-  "https://www.notion.so/xinyuewang/Xinyue-Wang-UX-38759cfd921d8076bed6e1fdffd68547?source=copy_link"
-
-const profileFacts = [
-  ["Current", "UX Designer at miHoYo"],
-  ["Focus", "Complex systems, AI Native workflow, data products"],
-  ["Education", "RCA Service Design, LBS exchange, Jiangnan University"],
-  ["Mode", "Design, prototype, validate, document, ship"],
-]
-
-export default async function AboutPage() {
-  const resume = await getResumeCaseStudy()
-  const resumePdf = resume?.attachments?.find((attachment) =>
-    attachment.name.toLowerCase().endsWith(".pdf")
-  )
-
+export default function AboutPage() {
   return (
     <main>
-      <section className="border-b border-black/10 bg-[#fbf7ef]">
-        <div className="container grid gap-12 py-20 md:py-24 lg:grid-cols-[0.95fr_1.05fr] lg:items-end">
-          <Reveal>
-            <p className="text-sm font-medium uppercase tracking-[0.2em] text-muted-foreground">
-              About Cherie
-            </p>
-            <h1 className="mt-5 max-w-4xl font-heading text-6xl leading-[0.96] tracking-tight md:text-8xl">
-              Designer for complex product systems.
+      <section className="border-b border-border bg-[#fbf7ef] dark:bg-background">
+        <div className="container py-20 md:py-24">
+          <Reveal className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+            <h1 className="max-w-4xl font-heading text-6xl leading-[0.96] tracking-tight md:text-8xl">
+              About Me
             </h1>
-            <p className="mt-7 max-w-2xl text-lg leading-8 text-muted-foreground md:text-xl md:leading-9">
-              {resumeSummary.intro}
-            </p>
-            <div className="mt-9 flex flex-col gap-3 sm:flex-row">
-              <Link
-                href={resume?.url ?? notionResumeUrl}
-                target="_blank"
-                rel="noreferrer"
-                className={cn(
-                  buttonVariants({ size: "lg" }),
-                  "gap-2 rounded-full bg-[#1b1514] px-6"
-                )}
-              >
-                Open Notion resume
-                <ExternalLink className="h-4 w-4" />
-              </Link>
-              {resumePdf ? (
-                <Link
-                  href="/api/resume"
-                  className={cn(
-                    buttonVariants({ variant: "outline", size: "lg" }),
-                    "border-black/15 gap-2 rounded-full bg-white/60 px-6"
-                  )}
-                >
-                  Download PDF
-                  <Download className="h-4 w-4" />
-                </Link>
-              ) : null}
-            </div>
-          </Reveal>
-
-          <Reveal delay={0.08}>
-            <div className="rounded-[8px] border border-black/10 bg-white/70 p-6 shadow-sm">
-              <div className="flex items-center gap-4">
-                <div className="flex h-20 w-20 items-center justify-center rounded-full border border-black/10 bg-[#f1f6dd] font-heading text-2xl font-semibold">
-                  CW
-                </div>
-                <div>
-                  <h2 className="text-2xl font-semibold tracking-tight">
-                    Xinyue Wang
-                  </h2>
-                  <p className="mt-1 text-sm text-muted-foreground">
-                    UX designer, system thinker, AI workflow builder
-                  </p>
-                </div>
-              </div>
-              <div className="mt-8 divide-y divide-black/10 border-y border-black/10">
-                {profileFacts.map(([label, value]) => (
-                  <div
-                    key={label}
-                    className="grid gap-3 py-4 md:grid-cols-[150px_1fr]"
-                  >
-                    <span className="text-xs uppercase tracking-[0.18em] text-muted-foreground">
-                      {label}
-                    </span>
-                    <span className="text-sm leading-6">{value}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
+            <Link
+              href="/api/resume"
+              target="_blank"
+              rel="noreferrer"
+              className={cn(
+                buttonVariants({ size: "lg" }),
+                "w-fit gap-2 rounded-full px-6"
+              )}
+            >
+              个人简历
+              <ArrowUpRight className="h-4 w-4" />
+            </Link>
           </Reveal>
         </div>
       </section>
@@ -127,7 +58,7 @@ export default async function AboutPage() {
           </div>
         </Reveal>
 
-        <div className="divide-y divide-black/10 border-y border-black/10">
+        <div className="divide-y divide-border border-y border-border">
           {resumeSummary.experience.map((item) => (
             <Reveal key={item.company} className="py-8 md:py-10">
               <div
@@ -176,6 +107,55 @@ export default async function AboutPage() {
         </div>
       </section>
 
+      <section className="container py-8 md:py-12">
+        <Reveal className="border-y border-border py-6 md:py-9">
+          <div className="mb-4 flex flex-col gap-3 md:mb-5 md:flex-row md:items-end md:justify-between">
+            <div>
+              <div className="flex items-center gap-3">
+                <GraduationCap className="h-5 w-5 text-muted-foreground" />
+                <p className="text-sm font-medium uppercase tracking-[0.2em] text-muted-foreground">
+                  Education
+                </p>
+              </div>
+              <h2 className="mt-2 font-heading text-xl tracking-tight md:mt-3 md:text-3xl">
+                A compact design foundation.
+              </h2>
+            </div>
+            <p className="hidden max-w-lg text-sm leading-6 text-muted-foreground md:block md:text-right">
+              Service design, prototyping, product design, and interaction
+              design across graduate study and focused exchanges.
+            </p>
+          </div>
+
+          <div className="grid gap-2 sm:grid-cols-2 md:gap-3 xl:grid-cols-4">
+            {resumeSummary.education.map((item) => (
+              <article
+                key={item.school}
+                className="rounded-[8px] border border-border bg-card/75 p-3 transition hover:-translate-y-1 hover:bg-card md:p-4"
+              >
+                <div className="flex h-full flex-col justify-between gap-3 md:gap-4">
+                  <div>
+                    <h3 className="text-base font-semibold leading-tight tracking-tight md:text-lg">
+                      {item.school}
+                    </h3>
+                    <p className="mt-1 text-xs leading-5 text-muted-foreground md:mt-2 md:text-sm md:leading-6">
+                      {[item.program, item.format].filter(Boolean).join("｜")}
+                    </p>
+                  </div>
+
+                  <div className="space-y-1 text-xs md:text-sm">
+                    <p className="text-muted-foreground">{item.period}</p>
+                    {item.note ? (
+                      <p className="font-medium text-foreground">{item.note}</p>
+                    ) : null}
+                  </div>
+                </div>
+              </article>
+            ))}
+          </div>
+        </Reveal>
+      </section>
+
       <section className="container grid gap-10 py-20 md:py-24 lg:grid-cols-[0.75fr_1.25fr]">
         <Reveal>
           <p className="text-sm font-medium uppercase tracking-[0.2em] text-muted-foreground">
@@ -188,7 +168,7 @@ export default async function AboutPage() {
         <MotionGrid className="grid gap-4 md:grid-cols-2">
           {designPrinciples.map((principle) => (
             <MotionItem key={principle.title}>
-              <div className="h-full rounded-[8px] border border-black/10 bg-white/70 p-5">
+              <div className="h-full rounded-[8px] border border-border bg-card/75 p-5">
                 <h3 className="text-xl font-semibold tracking-tight">
                   {principle.title}
                 </h3>
@@ -201,37 +181,26 @@ export default async function AboutPage() {
         </MotionGrid>
       </section>
 
-      <section className="border-y border-black/10 bg-[#1f1b1a] py-20 text-white">
+      <section className="border-y border-border bg-[#1f1b1a] py-20 text-white">
         <div className="container grid gap-10 lg:grid-cols-[0.75fr_1.25fr]">
           <Reveal>
             <p className="text-white/45 text-sm font-medium uppercase tracking-[0.2em]">
-              Education and Awards
+              Awards
             </p>
             <h2 className="mt-4 font-heading text-4xl tracking-tight md:text-5xl">
-              A service design base with product craft around it.
+              Recognition across innovation, entrepreneurship, and product craft.
             </h2>
           </Reveal>
 
-          <div className="grid gap-4 md:grid-cols-2">
-            <Reveal>
-              <div className="h-full rounded-[8px] border border-white/10 bg-white/[0.06] p-5">
-                <GraduationCap className="text-white/55 h-5 w-5" />
-                <h3 className="mt-5 text-xl font-semibold">Education</h3>
-                <p className="text-white/65 mt-3 text-sm leading-7">
-                  {resumeSummary.education}
-                </p>
-              </div>
-            </Reveal>
-            <Reveal delay={0.08}>
-              <div className="h-full rounded-[8px] border border-white/10 bg-white/[0.06] p-5">
-                <Award className="text-white/55 h-5 w-5" />
-                <h3 className="mt-5 text-xl font-semibold">Awards</h3>
-                <p className="text-white/65 mt-3 text-sm leading-7">
-                  {resumeSummary.awards}
-                </p>
-              </div>
-            </Reveal>
-          </div>
+          <Reveal delay={0.08}>
+            <div className="h-full rounded-[8px] border border-white/10 bg-white/[0.06] p-5">
+              <Award className="text-white/55 h-5 w-5" />
+              <h3 className="mt-5 text-xl font-semibold">Awards</h3>
+              <p className="text-white/65 mt-3 text-sm leading-7">
+                {resumeSummary.awards}
+              </p>
+            </div>
+          </Reveal>
         </div>
       </section>
 
@@ -252,7 +221,7 @@ export default async function AboutPage() {
               return (
                 <div
                   key={tool.label}
-                  className="flex items-center gap-3 rounded-[8px] border border-black/10 bg-white/70 p-3 text-sm"
+                  className="flex items-center gap-3 rounded-[8px] border border-border bg-card/75 p-3 text-sm"
                 >
                   <Icon className="h-4 w-4 text-muted-foreground" />
                   <span>{tool.label}</span>
@@ -262,7 +231,7 @@ export default async function AboutPage() {
           </div>
         </Reveal>
 
-        <Reveal className="mt-16 border-t border-black/10 pt-10">
+        <Reveal className="mt-16 border-t border-border pt-10">
           <div className="grid gap-6 md:grid-cols-[1fr_auto] md:items-center">
             <div>
               <h2 className="font-heading text-4xl tracking-tight">
@@ -275,7 +244,7 @@ export default async function AboutPage() {
             </div>
             <Link
               href="mailto:wangxy19971219@163.com"
-              className="inline-flex items-center gap-2 rounded-full bg-[#1b1514] px-6 py-3 text-sm font-medium text-white transition hover:translate-x-1"
+              className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-medium text-primary-foreground transition hover:translate-x-1 hover:bg-primary/90"
             >
               <Mail className="h-4 w-4" />
               Email Cherie

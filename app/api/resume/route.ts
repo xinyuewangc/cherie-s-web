@@ -1,41 +1,30 @@
-import { NextRequest, NextResponse } from "next/server"
+import { readFile } from "fs/promises"
+import path from "path"
 
-import { getResumeCaseStudy } from "@/lib/notion"
+import { NextResponse } from "next/server"
 
 export const dynamic = "force-dynamic"
 
-export async function GET(request: NextRequest) {
-  const resume = await getResumeCaseStudy()
-  const pdf = resume?.attachments?.find((attachment) =>
-    attachment.name.toLowerCase().endsWith(".pdf")
-  )
+const resumeFileName = "王馨悦 个人简历17766476119.pdf"
+const resumePath = path.join(process.cwd(), "public", "resume", resumeFileName)
 
-  if (!pdf) {
+export async function GET() {
+  try {
+    const file = await readFile(resumePath)
+    const fileName = encodeURIComponent(resumeFileName)
+
+    return new NextResponse(file, {
+      headers: {
+        "Cache-Control": "private, max-age=300",
+        "Content-Disposition": `inline; filename*=UTF-8''${fileName}`,
+        "Content-Length": String(file.byteLength),
+        "Content-Type": "application/pdf",
+      },
+    })
+  } catch {
     return NextResponse.json(
       { error: "Resume PDF was not found." },
       { status: 404 }
     )
   }
-
-  const pdfUrl = pdf.url.startsWith("/")
-    ? new URL(pdf.url, request.nextUrl.origin).toString()
-    : pdf.url
-  const response = await fetch(pdfUrl)
-
-  if (!response.ok) {
-    return NextResponse.json(
-      { error: "Resume PDF could not be loaded." },
-      { status: 502 }
-    )
-  }
-
-  const fileName = encodeURIComponent(pdf.name || "cherie-wang-resume.pdf")
-
-  return new NextResponse(response.body, {
-    headers: {
-      "Cache-Control": "private, max-age=300",
-      "Content-Disposition": `attachment; filename*=UTF-8''${fileName}`,
-      "Content-Type": "application/pdf",
-    },
-  })
 }

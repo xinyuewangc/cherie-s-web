@@ -221,3 +221,22 @@ Only the latest 20 entries are retained.
   - components/portfolio/data-agent-case-study.tsx
 - files:
   - components/portfolio/data-agent-case-study.tsx
+
+## Entry 2026-06-29 13:26:13 +0800
+- task: agent-task-path-image-update
+- skills:
+  - otakus-ux-pro
+  - browser:control-in-app-browser
+- workflows:
+  - style-implementation.md
+  - execution-playbook.md
+- paths:
+  - components/portfolio/data-agent-case-study.tsx
+  - docs/data-agent-illustration-guide.md
+- files:
+  - components/portfolio/data-agent-case-study.tsx
+  - docs/data-agent-illustration-guide.md
+  - public/images/portfolio/data-agent-path-find.webp
+  - public/images/portfolio/data-agent-path-query.webp
+  - public/images/portfolio/data-agent-path-use.webp
+  - public/images/portfolio/data-agent-path-retain.webp

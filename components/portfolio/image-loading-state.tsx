@@ -29,7 +29,7 @@ export function ImageLoadingState({
         <span className="mt-5 text-sm font-semibold leading-none text-muted-foreground">
           {title}
         </span>
-        <span className="mt-2 text-sm leading-none text-muted-foreground/60">
+        <span className="mt-2 text-sm leading-none text-muted-foreground">
           {subtitle}
         </span>
       </span>

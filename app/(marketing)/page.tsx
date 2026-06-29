@@ -1,4 +1,5 @@
 import Link from "next/link"
+import Image from "next/image"
 import {
   ArrowRight,
   ArrowUpRight,
@@ -8,12 +9,7 @@ import {
 } from "lucide-react"
 
 import { PortfolioProject, getPortfolioProjects } from "@/lib/notion"
-import {
-  labTopics,
-  resumeSummary,
-  socialLinks,
-  toolStack,
-} from "@/lib/portfolio-content"
+import { labTopics } from "@/lib/portfolio-content"
 import { cn } from "@/lib/utils"
 import { buttonVariants } from "@/components/ui/button"
 import { ProjectCover } from "@/components/portfolio/project-cover"
@@ -24,27 +20,27 @@ export const revalidate = 300
 const projectAccents = [
   {
     label: "Data workflow",
-    bg: "bg-[#eaf6ff]",
-    ink: "text-[#213142]",
-    chip: "bg-[#f7fbff]",
+    bg: "bg-[#eaf6ff] dark:bg-[#10202d]",
+    ink: "text-[#213142] dark:text-[#e7f4ff]",
+    chip: "bg-[#f7fbff] dark:bg-white/[0.06]",
   },
   {
     label: "Platform system",
-    bg: "bg-[#e8f8ef]",
-    ink: "text-[#25382d]",
-    chip: "bg-[#eef7ff]",
+    bg: "bg-[#e8f8ef] dark:bg-[#102318]",
+    ink: "text-[#25382d] dark:text-[#e7f8ed]",
+    chip: "bg-[#eef7ff] dark:bg-white/[0.06]",
   },
   {
     label: "Learning flow",
-    bg: "bg-[#e8ecff]",
-    ink: "text-[#2b3040]",
-    chip: "bg-[#fff5f6]",
+    bg: "bg-[#e8ecff] dark:bg-[#171a32]",
+    ink: "text-[#2b3040] dark:text-[#eef1ff]",
+    chip: "bg-[#fff5f6] dark:bg-white/[0.06]",
   },
   {
     label: "Business tooling",
-    bg: "bg-[#fff1dc]",
-    ink: "text-[#3d3028]",
-    chip: "bg-[#eef8f1]",
+    bg: "bg-[#fff1dc] dark:bg-[#2a1d13]",
+    ink: "text-[#3d3028] dark:text-[#fff1dc]",
+    chip: "bg-[#eef8f1] dark:bg-white/[0.06]",
   },
 ]
 
@@ -87,7 +83,7 @@ function ProjectVisual({
       src={project.cover}
       alt={project.coverAlt}
       priority={index === 0}
-      className="h-full min-h-[240px] rounded-[8px] border-black/10"
+      className="h-full min-h-[240px] rounded-xl border-border"
     />
   )
 }
@@ -111,7 +107,7 @@ function FeaturedProjectCard({
     >
       <article
         className={cn(
-          "project-stack-card-inner grid min-h-[440px] scale-[var(--stack-scale)] overflow-hidden rounded-[8px] border border-black/10 shadow-sm transition duration-500 [--stack-hover-scale:1.005] [--stack-scale:1] group-hover:-translate-y-1 group-hover:scale-[var(--stack-hover-scale)] group-hover:shadow-2xl group-hover:shadow-black/10 md:min-h-[460px] lg:grid-cols-[0.9fr_1.1fr]",
+          "project-stack-card-inner grid min-h-[440px] scale-[var(--stack-scale)] overflow-hidden rounded-xl border border-border shadow-sm transition duration-500 [--stack-hover-scale:1.005] [--stack-scale:1] group-hover:-translate-y-1 group-hover:scale-[var(--stack-hover-scale)] group-hover:shadow-2xl group-hover:shadow-black/10 dark:group-hover:shadow-black/40 md:min-h-[460px] lg:grid-cols-[0.9fr_1.1fr]",
           accent.bg,
           accent.ink,
           projectStackScales[index] ||
@@ -119,18 +115,18 @@ function FeaturedProjectCard({
         )}
       >
         <div className="flex flex-col p-6 md:p-8">
-          <div className="flex items-center justify-between gap-4 text-xs uppercase tracking-[0.16em] text-black/[0.45]">
+          <div className="flex items-center justify-between gap-4 text-xs uppercase tracking-[0.16em] opacity-60">
             <span>{String(index + 1).padStart(2, "0")}</span>
             <span>{project.year}</span>
           </div>
           <div className="mt-auto pt-12">
-            <p className="text-sm font-medium text-black/[0.45]">
+            <p className="text-sm font-medium opacity-60">
               {project.collaborator || "Selected work"}
             </p>
             <h3 className="mt-4 text-4xl font-semibold leading-[1.03] tracking-tight md:text-5xl">
               {project.title}
             </h3>
-            <p className="mt-5 max-w-xl text-base leading-7 text-black/[0.62]">
+            <p className="mt-5 max-w-xl text-base leading-7 opacity-75">
               {project.description}
             </p>
             <div className="mt-7 flex flex-wrap gap-2">
@@ -140,7 +136,7 @@ function FeaturedProjectCard({
                   <span
                     key={tag}
                     className={cn(
-                      "rounded-full border border-black/10 px-3 py-1.5 text-xs text-black/[0.55]",
+                      "border-current/15 rounded-full border px-3 py-1.5 text-xs opacity-75",
                       accent.chip
                     )}
                   >
@@ -148,7 +144,7 @@ function FeaturedProjectCard({
                   </span>
                 ))}
             </div>
-            <div className="mt-8 inline-flex items-center gap-2 rounded-full bg-[#1b1514] px-5 py-3 text-sm font-medium text-white transition group-hover:translate-x-1">
+            <div className="mt-8 inline-flex items-center gap-2 rounded-full bg-primary px-5 py-3 text-sm font-medium text-primary-foreground transition group-hover:translate-x-1 group-hover:bg-primary/90">
               View case study
               <ArrowRight className="h-4 w-4" />
             </div>
@@ -168,12 +164,12 @@ function WorkList({ projects }: { projects: PortfolioProject[] }) {
   }
 
   return (
-    <div className="divide-y divide-black/10 border-y border-black/10">
+    <div className="divide-y divide-border border-y border-border">
       {projects.map((project, index) => (
         <Link
           key={project.id}
           href={`/projects/${project.slug}`}
-          className="group grid gap-4 py-5 transition hover:bg-white/[0.45] md:grid-cols-[80px_1fr_160px_auto]"
+          className="group grid gap-4 py-5 transition hover:bg-card/70 md:grid-cols-[80px_1fr_160px_auto]"
         >
           <span className="font-mono text-sm text-muted-foreground">
             {String(index + 5).padStart(2, "0")}
@@ -204,52 +200,70 @@ export default async function IndexPage() {
 
   return (
     <main>
-      <section className="relative overflow-hidden border-b border-black/10 bg-[#fbf7ef]">
-        <div className="container py-14 md:py-20">
-          <Reveal className="mx-auto flex max-w-5xl flex-col items-center text-center">
-            <div className="flex h-28 w-28 items-center justify-center overflow-hidden rounded-full border border-black/10 bg-white shadow-sm">
-              <span className="font-heading text-3xl font-semibold tracking-tight">
-                CW
-              </span>
+      <section className="relative overflow-hidden border-b border-border bg-[#fbf7ef] dark:bg-background">
+        <div className="mx-auto max-w-[1440px] px-6 py-12 md:px-8 md:py-16 lg:px-10 lg:py-20 xl:py-24">
+          <Reveal className="grid gap-10 lg:grid-cols-[minmax(0,1.02fr)_minmax(380px,0.72fr)] lg:items-center xl:grid-cols-[minmax(0,1fr)_minmax(420px,0.68fr)]">
+            <div className="mx-auto max-w-5xl text-center lg:mx-0 lg:text-left">
+              <p className="text-sm font-medium uppercase tracking-[0.22em] text-muted-foreground">
+                From complex systems to clear working products
+              </p>
+              <h1 className="mt-5 font-heading text-5xl leading-[0.95] tracking-tight sm:text-7xl lg:text-[6rem] xl:text-[6.7rem]">
+                Hi It&apos;s Xinyue Wang
+              </h1>
+              <div className="mt-6 max-w-3xl space-y-4 text-lg leading-8 text-muted-foreground md:text-xl md:leading-9 lg:max-w-[820px]">
+                <p>
+                  I&apos;m Xinyue Wang 馨悦 王, an interaction designer with a
+                  diverse and interdisciplinary background.
+                </p>
+                <p>
+                  The only thing that matters about design is its relationship
+                  with people. I have a keen interest and ability in applying
+                  user-centred design, identifying the real hidden problems and
+                  developing workable, enjoyable and practical solutions.
+                </p>
+              </div>
+              <div className="mt-9 flex flex-col justify-center gap-3 sm:flex-row lg:justify-start">
+                <a
+                  href="#projects"
+                  data-work-scroll=""
+                  className={cn(
+                    buttonVariants({ size: "lg" }),
+                    "gap-2 rounded-full px-6"
+                  )}
+                >
+                  View selected work
+                  <ArrowRight className="h-4 w-4" />
+                </a>
+                <Link
+                  href="/about"
+                  className={cn(
+                    buttonVariants({ variant: "outline", size: "lg" }),
+                    "gap-2 rounded-full border-border bg-card/60 px-6"
+                  )}
+                >
+                  About Me
+                  <FileText className="h-4 w-4" />
+                </Link>
+              </div>
             </div>
-            <p className="mt-8 text-sm font-medium uppercase tracking-[0.22em] text-muted-foreground">
-              From complex systems to clear working products
-            </p>
-            <h1 className="mt-5 max-w-6xl font-heading text-5xl leading-[0.95] tracking-tight sm:text-7xl lg:text-8xl">
-              Xinyue Wang designs AI-native product systems.
-            </h1>
-            <p className="mt-6 max-w-3xl text-lg leading-8 text-muted-foreground md:text-xl md:leading-9">
-              UX designer at miHoYo, working across community products, account
-              systems, game launcher flows, enterprise tools, and data asset
-              platforms.
-            </p>
-            <div className="mt-9 flex flex-col gap-3 sm:flex-row">
-              <Link
-                href="#projects"
-                className={cn(
-                  buttonVariants({ size: "lg" }),
-                  "gap-2 rounded-full bg-[#1b1514] px-6"
-                )}
-              >
-                View selected work
-                <ArrowRight className="h-4 w-4" />
-              </Link>
-              <Link
-                href="/about"
-                className={cn(
-                  buttonVariants({ variant: "outline", size: "lg" }),
-                  "gap-2 rounded-full border-black/[0.15] bg-white/[0.55] px-6"
-                )}
-              >
-                About Cherie
-                <FileText className="h-4 w-4" />
-              </Link>
+
+            <div className="mx-auto w-full max-w-[380px] lg:ml-auto lg:max-w-[440px] xl:max-w-[470px]">
+              <div className="relative aspect-[0.82/1] overflow-hidden rounded-[8px] border border-border bg-card shadow-sm">
+                <Image
+                  src="/images/profile-xinyue-wang.jpg"
+                  alt="Xinyue Wang portrait"
+                  fill
+                  priority
+                  sizes="(min-width: 1280px) 470px, (min-width: 1024px) 440px, 76vw"
+                  className="object-cover"
+                />
+              </div>
             </div>
           </Reveal>
 
           <Reveal
             delay={0.08}
-            className="mx-auto mt-14 grid max-w-4xl grid-cols-2 border-y border-black/10 md:grid-cols-4"
+            className="mx-auto mt-12 grid max-w-[1240px] grid-cols-2 border-y border-border md:grid-cols-4 lg:mt-14"
           >
             {homeStats.map(([label, value]) => (
               <div key={label} className="p-4 text-center">
@@ -262,13 +276,13 @@ export default async function IndexPage() {
           </Reveal>
         </div>
 
-        <div className="border-y border-black/10 bg-white/40 py-5">
+        <div className="bg-card/35 border-y border-border py-5">
           <div className="marquee-mask overflow-hidden">
             <div className="marquee-track flex w-max gap-4">
               {duplicatedMarquee.map((item, index) => (
                 <span
                   key={`${item}-${index}`}
-                  className="rounded-full border border-black/10 bg-white px-5 py-2 text-sm text-muted-foreground shadow-sm"
+                  className="rounded-full border border-border bg-card px-5 py-2 text-sm text-muted-foreground shadow-sm"
                 >
                   {item}
                 </span>
@@ -278,24 +292,9 @@ export default async function IndexPage() {
         </div>
       </section>
 
-      <section id="projects" className="container scroll-m-24 py-20 md:py-24">
-        <Reveal className="grid gap-8 md:grid-cols-[0.65fr_1fr] md:items-end">
-          <div>
-            <p className="text-sm font-medium uppercase tracking-[0.2em] text-muted-foreground">
-              Selected Projects
-            </p>
-            <h2 className="mt-4 font-heading text-5xl leading-tight tracking-tight md:text-6xl">
-              Four main cases on the front page.
-            </h2>
-          </div>
-          <p className="max-w-2xl text-base leading-7 text-muted-foreground md:justify-self-end">
-            The homepage now stays focused: four major projects get the large
-            editorial treatment, while the rest are collected into a quieter
-            work list.
-          </p>
-        </Reveal>
-
-        <MotionGrid className="mt-12 grid gap-6 md:block md:pb-24">
+      <section id="projects" className="container scroll-m-24 py-12 md:py-14">
+        <h2 className="sr-only">Selected projects</h2>
+        <MotionGrid className="grid gap-6 md:block md:pb-24">
           {featuredProjects.map((project, index) => (
             <FeaturedProjectCard
               key={project.id}
@@ -312,7 +311,7 @@ export default async function IndexPage() {
         </MotionGrid>
       </section>
 
-      <section className="border-y border-black/10 bg-[#f5f4ee] py-20">
+      <section className="border-y border-border bg-[#f5f4ee] py-20 dark:bg-muted/20">
         <div className="container grid gap-10 lg:grid-cols-[0.55fr_1.45fr]">
           <Reveal>
             <p className="text-sm font-medium uppercase tracking-[0.2em] text-muted-foreground">
@@ -366,7 +365,7 @@ export default async function IndexPage() {
                 <MotionItem key={topic.title}>
                   <Link
                     href={topic.href}
-                    className="group block h-full rounded-[8px] border border-black/10 bg-white/70 p-5 transition duration-300 hover:-translate-y-1 hover:bg-white hover:shadow-xl hover:shadow-black/5"
+                    className="group block h-full rounded-[8px] border border-border bg-card/75 p-5 transition duration-300 hover:-translate-y-1 hover:bg-card hover:shadow-xl hover:shadow-black/5 dark:hover:shadow-black/30"
                   >
                     <Icon className="h-5 w-5 text-muted-foreground transition group-hover:text-foreground" />
                     <h3 className="mt-5 text-xl font-semibold tracking-tight">
@@ -385,61 +384,25 @@ export default async function IndexPage() {
 
       <section
         id="about"
-        className="border-y border-black/10 bg-[#1f1b1a] py-20 text-white"
+        className="border-y border-border bg-[#1f1b1a] py-20 text-white"
       >
-        <div className="container grid gap-12 lg:grid-cols-[0.75fr_1.25fr]">
-          <Reveal>
-            <p className="text-sm font-medium uppercase tracking-[0.2em] text-white/[0.45]">
-              About
-            </p>
-            <h2 className="mt-4 font-heading text-4xl leading-tight tracking-tight md:text-6xl">
-              I turn fuzzy product problems into usable systems.
+        <div className="container">
+          <Reveal className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+            <h2 className="font-heading text-4xl leading-tight tracking-tight md:text-6xl">
+              About Me
             </h2>
-            <p className="mt-6 text-base leading-7 text-white/[0.62]">
-              {resumeSummary.intro}
-            </p>
-            <div className="mt-8 flex flex-wrap gap-3">
-              {socialLinks.map((link) => (
-                <Link
-                  key={link.label}
-                  href={link.href}
-                  target={link.href.startsWith("http") ? "_blank" : undefined}
-                  rel={link.href.startsWith("http") ? "noreferrer" : undefined}
-                  className="inline-flex items-center gap-2 rounded-full border border-white/[0.15] px-4 py-2 text-sm text-white/[0.72] transition hover:border-white/[0.35] hover:text-white"
-                >
-                  {link.label}
-                  <ArrowUpRight className="h-3.5 w-3.5" />
-                </Link>
-              ))}
-            </div>
-          </Reveal>
-
-          <Reveal delay={0.08}>
-            <div className="grid gap-4 md:grid-cols-2">
-              {resumeSummary.highlights.slice(0, 4).map((item) => (
-                <div
-                  key={item}
-                  className="rounded-[8px] border border-white/10 bg-white/[0.06] p-5 text-sm leading-7 text-white/[0.68]"
-                >
-                  {item}
-                </div>
-              ))}
-            </div>
-            <div className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-              {toolStack.slice(0, 8).map((tool) => {
-                const Icon = tool.icon
-
-                return (
-                  <div
-                    key={tool.label}
-                    className="flex items-center gap-3 border-t border-white/10 py-3 text-sm text-white/[0.62]"
-                  >
-                    <Icon className="h-4 w-4" />
-                    {tool.label}
-                  </div>
-                )
-              })}
-            </div>
+            <Link
+              href="/api/resume"
+              target="_blank"
+              rel="noreferrer"
+              className={cn(
+                buttonVariants({ size: "lg" }),
+                "w-fit gap-2 rounded-full px-6"
+              )}
+            >
+              个人简历
+              <ArrowUpRight className="h-4 w-4" />
+            </Link>
           </Reveal>
         </div>
       </section>
@@ -457,7 +420,7 @@ export default async function IndexPage() {
           <div className="grid gap-4 md:grid-cols-2">
             <Link
               href="mailto:wangxy19971219@163.com"
-              className="group rounded-[8px] border border-black/10 bg-white/70 p-5 transition hover:-translate-y-1 hover:bg-white hover:shadow-xl hover:shadow-black/5"
+              className="group rounded-[8px] border border-border bg-card/75 p-5 transition hover:-translate-y-1 hover:bg-card hover:shadow-xl hover:shadow-black/5 dark:hover:shadow-black/30"
             >
               <Mail className="h-5 w-5 text-muted-foreground" />
               <p className="mt-5 text-lg font-semibold">Email</p>
@@ -467,7 +430,7 @@ export default async function IndexPage() {
             </Link>
             <Link
               href="/about"
-              className="group rounded-[8px] border border-black/10 bg-white/70 p-5 transition hover:-translate-y-1 hover:bg-white hover:shadow-xl hover:shadow-black/5"
+              className="group rounded-[8px] border border-border bg-card/75 p-5 transition hover:-translate-y-1 hover:bg-card hover:shadow-xl hover:shadow-black/5 dark:hover:shadow-black/30"
             >
               <Briefcase className="h-5 w-5 text-muted-foreground" />
               <p className="mt-5 text-lg font-semibold">Resume</p>

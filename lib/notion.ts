@@ -120,7 +120,7 @@ const dataSelfServiceAgentProject: PortfolioCaseStudy = {
   collaborator: "miHoYo Data Platform",
   year: "2026",
   url: "#",
-  cover: "/images/portfolio/data-agent-cover.png",
+  cover: "/images/portfolio/data-agent-laptop-cover-gradient.png",
   coverAlt: "数据自助查询 Agent case study cover",
   blocks: [],
   attachments: [],
@@ -726,7 +726,9 @@ async function notionFetch<T>(
     return (await response.json()) as T
   } catch (error) {
     if ((error as Error).name === "AbortError" || timedOut) {
-      console.error(`Failed to load Notion data: timed out after ${timeoutMs}ms`)
+      console.error(
+        `Failed to load Notion data: timed out after ${timeoutMs}ms`
+      )
     } else {
       console.error("Failed to load Notion data")
     }

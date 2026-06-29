@@ -17,7 +17,7 @@
 | Figure 01 / User friction         | Situation，问题卡片之后   | 已放入：`public/images/portfolio/data-agent-friction-cards.png` | 你已完成的三张摩擦卡片：没真正用起来、配置卡点多、核心能力难理解。                                |
 | Situation evidence                | Situation，旧平台能力说明 | 已使用现有三页轮播                                              | 可以后续替换为更统一的产品界面截图或 Figma 框架图。建议保持“真实界面 + 框架说明”的双层表达。      |
 | Figure 02 / Workflow overview     | Task，核心假设之后        | 空态占位                                                        | 横向流程图：模糊业务问题 -> AI 理解与澄清 -> 方案确认 -> 可检查视图 -> 保存复用 / 发布 MCP。      |
-| Figure 03 / Path map              | Move 01，路径卡片之后     | 空态占位                                                        | 找、查、用、留四段任务路径地图。建议每段下方放产品触点、设计动作和指标。                          |
+| Figure 03 / Path map              | Move 01，路径卡片之后     | 已放入：`public/images/portfolio/data-agent-path-find.webp`、`data-agent-path-query.webp`、`data-agent-path-use.webp`、`data-agent-path-retain.webp` | 找、查、用、留四段任务路径地图。建议每段下方放产品触点、设计动作和指标。                          |
 | Figure 04 / Clarification pattern | Move 02，澄清机制之后     | 空态占位                                                        | 对话流程图：意图不清、槽位缺失、执行失败三种触发条件，对应选项卡、自然语言追问和 Preflight 确认。 |
 | Figure 05 / Result trust          | Move 03，可信机制之后     | 空态占位                                                        | 结果页结构图或截图：结论、明细表格、图表、数据流转 / 处理规则 / SQL Tab、反馈闭环。               |
 | Figure 06 / Asset loop            | Move 04，资产闭环之后     | 空态占位                                                        | 闭环图：临时会话 -> 保存视图 -> 发布 MCP -> 官方资产管理 -> 被其他 Agent 或系统复用。             |

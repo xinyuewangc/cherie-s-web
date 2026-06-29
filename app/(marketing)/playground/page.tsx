@@ -15,7 +15,7 @@ export const metadata: Metadata = {
 export default function PlaygroundPage() {
   return (
     <main>
-      <section className="border-b border-black/10 bg-[#fbf7ef]">
+      <section className="border-b border-border bg-[#fbf7ef] dark:bg-background">
         <div className="container py-20 md:py-24">
           <Reveal className="max-w-4xl">
             <p className="text-sm font-medium uppercase tracking-[0.2em] text-muted-foreground">
@@ -44,11 +44,11 @@ export default function PlaygroundPage() {
                 <Link
                   id={demo.href.split("#")[1]}
                   href={demo.href}
-                  className="block h-full scroll-mt-28 rounded-[8px] border border-black/10 bg-white/70 p-5 shadow-sm transition duration-300 hover:-translate-y-1 hover:bg-white hover:shadow-xl hover:shadow-black/5 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-background"
+                  className="block h-full scroll-mt-28 rounded-[8px] border border-border bg-card/75 p-5 shadow-sm transition duration-300 hover:-translate-y-1 hover:bg-card hover:shadow-xl hover:shadow-black/5 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-background dark:hover:shadow-black/30"
                 >
                   <div className="flex items-start justify-between gap-4">
                     <Icon className="h-5 w-5 text-muted-foreground" />
-                    <span className="rounded-full border border-black/10 bg-background px-2.5 py-1 text-xs text-muted-foreground">
+                    <span className="rounded-full border border-border bg-background px-2.5 py-1 text-xs text-muted-foreground">
                       {demo.status}
                     </span>
                   </div>

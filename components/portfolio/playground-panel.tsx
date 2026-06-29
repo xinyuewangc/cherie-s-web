@@ -18,7 +18,7 @@ export default function PlaygroundPanel() {
   const [density, setDensity] = React.useState(2)
 
   return (
-    <div className="rounded-[8px] border border-black/10 bg-white/70 p-4 shadow-sm md:p-6">
+    <div className="rounded-[8px] border border-border bg-card/75 p-4 shadow-sm md:p-6">
       <div className="grid gap-6 lg:grid-cols-[320px_1fr]">
         <div>
           <p className="text-sm font-medium uppercase tracking-[0.2em] text-muted-foreground">
@@ -31,10 +31,10 @@ export default function PlaygroundPanel() {
                 type="button"
                 onClick={() => setActivePrompt(prompt)}
                 className={cn(
-                  "rounded-[8px] border border-black/10 px-4 py-3 text-left text-sm transition",
+                  "rounded-[8px] border border-border px-4 py-3 text-left text-sm transition",
                   activePrompt === prompt
-                    ? "bg-[#1b1514] text-white"
-                    : "bg-background text-muted-foreground hover:bg-white hover:text-foreground"
+                    ? "bg-primary text-primary-foreground"
+                    : "bg-background text-muted-foreground hover:bg-card hover:text-foreground"
                 )}
               >
                 {prompt}
@@ -54,7 +54,7 @@ export default function PlaygroundPanel() {
           />
         </div>
 
-        <div className="rounded-[8px] border border-black/10 bg-[#fbf7ef] p-4">
+        <div className="rounded-[8px] border border-border bg-[#fbf7ef] p-4 dark:bg-background">
           <div className="flex items-center justify-between gap-4">
             <div>
               <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">
@@ -64,7 +64,7 @@ export default function PlaygroundPanel() {
                 {activePrompt}
               </h2>
             </div>
-            <span className="rounded-full border border-black/10 bg-white/70 px-3 py-1 text-xs text-muted-foreground">
+            <span className="rounded-full border border-border bg-card/75 px-3 py-1 text-xs text-muted-foreground">
               live
             </span>
           </div>
@@ -75,7 +75,7 @@ export default function PlaygroundPanel() {
                 initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.05 }}
-                className="rounded-[8px] border border-black/10 bg-white/70 p-4"
+                className="rounded-[8px] border border-border bg-card/75 p-4"
               >
                 <p className="text-sm font-medium">{surface}</p>
                 <div className="mt-4 grid gap-2">

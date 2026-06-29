@@ -110,16 +110,16 @@ const sections = [
 ]
 
 const images = {
-  cover: "/images/portfolio/data-agent-cover.png",
+  cover: "/images/portfolio/data-agent-laptop-cover-gradient.png",
   oldPublish: "/images/portfolio/data-agent-old-publish.webp",
   oldMarket: "/images/portfolio/data-agent-old-market.webp",
   oldSubscriptions: "/images/portfolio/data-agent-old-subscriptions.webp",
   userFriction: "/images/portfolio/data-agent-user-friction-cards.webp",
   userWorkflow: "/images/portfolio/data-agent-user-workflow-loop.webp",
-  pathFind: "/images/portfolio/data-agent-path-find-placeholder.png",
-  pathQuery: "/images/portfolio/data-agent-path-query-placeholder.png",
-  pathUse: "/images/portfolio/data-agent-path-use-placeholder.png",
-  pathRetain: "/images/portfolio/data-agent-path-retain-placeholder.png",
+  pathFind: "/images/portfolio/data-agent-path-find.webp",
+  pathQuery: "/images/portfolio/data-agent-path-query.webp",
+  pathUse: "/images/portfolio/data-agent-path-use.webp",
+  pathRetain: "/images/portfolio/data-agent-path-retain.webp",
   clarificationStates: "/images/portfolio/data-agent-clarification-states.webp",
   resultTrust: "/images/portfolio/data-agent-result-trust.webp",
 }
@@ -141,8 +141,8 @@ const pathItems: PathItem[] = [
     preview: {
       image: {
         src: images.pathFind,
-        alt: "找数据：搜索入口和官方数据资产占位图",
-        aspect: "aspect-[150/57]",
+        alt: "找数据：轻量弹窗搜索框和官方数据资产界面组合图",
+        aspect: "aspect-[2400/913]",
       },
     },
   },
@@ -155,8 +155,8 @@ const pathItems: PathItem[] = [
     preview: {
       image: {
         src: images.pathQuery,
-        alt: "查数据：自然语言输入、意图解析和澄清追问占位图",
-        aspect: "aspect-[150/57]",
+        alt: "查数据：自然语言输入、意图解析和澄清追问界面组合图",
+        aspect: "aspect-[2400/913]",
       },
     },
   },
@@ -169,8 +169,8 @@ const pathItems: PathItem[] = [
     preview: {
       image: {
         src: images.pathUse,
-        alt: "用数据：思考链、数据流转和筛选排序占位图",
-        aspect: "aspect-[150/57]",
+        alt: "用数据：数据流转、处理规则和筛选排序界面组合图",
+        aspect: "aspect-[2400/913]",
       },
     },
   },
@@ -183,8 +183,8 @@ const pathItems: PathItem[] = [
     preview: {
       image: {
         src: images.pathRetain,
-        alt: "留数据：保存复用为资产的任务闭环占位图",
-        aspect: "aspect-[75/23]",
+        alt: "留数据：我的数据资产和发布 MCP 界面组合图",
+        aspect: "aspect-[2400/913]",
       },
     },
   },
@@ -711,11 +711,7 @@ function Figure({
     return <div className={className}>{content}</div>
   }
 
-  return (
-    <Reveal className={className}>
-      {content}
-    </Reveal>
-  )
+  return <Reveal className={className}>{content}</Reveal>
 }
 
 function TextBlock({
@@ -841,9 +837,7 @@ function Callout({
         compact ? "p-4 md:p-4" : "p-5 md:p-6"
       )}
     >
-      <div
-        className={cn("flex", Icon ? "items-start gap-3" : "items-center")}
-      >
+      <div className={cn("flex", Icon ? "items-start gap-3" : "items-center")}>
         {Icon ? (
           <span
             className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-foreground text-background"
@@ -870,11 +864,7 @@ function Callout({
     return content
   }
 
-  return (
-    <Reveal>
-      {content}
-    </Reveal>
-  )
+  return <Reveal>{content}</Reveal>
 }
 
 function InlineNote({
@@ -1266,11 +1256,7 @@ function TrustStack({ reveal = true }: { reveal?: boolean }) {
     return content
   }
 
-  return (
-    <Reveal>
-      {content}
-    </Reveal>
-  )
+  return <Reveal>{content}</Reveal>
 }
 
 function TrustDesignModule() {

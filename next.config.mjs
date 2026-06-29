@@ -7,6 +7,7 @@ const nextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
   images: {
+    unoptimized: true,
     domains: ["avatars.githubusercontent.com"],
     remotePatterns: [
       {

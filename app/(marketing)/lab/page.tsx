@@ -147,13 +147,13 @@ function CategorySection({
                       "inline-flex items-center gap-2 text-sm transition",
                       active
                         ? "text-foreground"
-                        : "text-muted-foreground/70"
+                        : "text-muted-foreground"
                     )}
                   >
                     <span
                       className={cn(
                         "h-1.5 w-1.5 rounded-full",
-                        active ? "bg-foreground" : "bg-muted-foreground/30"
+                        active ? "bg-foreground" : "bg-muted-foreground/55"
                       )}
                     />
                     {topic}

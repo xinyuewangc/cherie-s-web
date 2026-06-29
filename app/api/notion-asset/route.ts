@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server"
-import sharp from "sharp"
 
 import {
   getFreshNotionBlockFileUrl,
@@ -55,31 +54,38 @@ export async function GET(request: NextRequest) {
 
   const contentType =
     response.headers.get("content-type") ?? "application/octet-stream"
+  const body = Buffer.from(await response.arrayBuffer())
 
   if (contentType.startsWith("image/") && contentType !== "image/gif") {
-    const input = Buffer.from(await response.arrayBuffer())
-    const output = await sharp(input)
-      .rotate()
-      .resize({
-        width: 1800,
-        height: 1800,
-        fit: "inside",
-        withoutEnlargement: true,
-      })
-      .webp({ quality: 86 })
-      .toBuffer()
+    try {
+      const { default: sharp } = await import("sharp")
+      const optimized = await sharp(body)
+        .rotate()
+        .resize({
+          width: 1800,
+          height: 1800,
+          fit: "inside",
+          withoutEnlargement: true,
+        })
+        .webp({ quality: 86 })
+        .toBuffer()
 
-    return new NextResponse(output, {
-      headers: {
-        "Cache-Control": "public, max-age=300, stale-while-revalidate=86400",
-        "Content-Type": "image/webp",
-      },
-    })
+      return new NextResponse(optimized, {
+        headers: {
+          "Cache-Control": "public, max-age=300, stale-while-revalidate=86400",
+          "Content-Length": optimized.byteLength.toString(),
+          "Content-Type": "image/webp",
+        },
+      })
+    } catch (error) {
+      console.warn("Notion asset optimization failed; serving original asset.")
+    }
   }
 
-  return new NextResponse(response.body, {
+  return new NextResponse(body, {
     headers: {
       "Cache-Control": "public, max-age=300, stale-while-revalidate=86400",
+      "Content-Length": body.byteLength.toString(),
       "Content-Type": contentType,
     },
   })
